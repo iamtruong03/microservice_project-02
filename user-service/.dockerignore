@@ -1,0 +1,9 @@
+target/
+!target/*.jar
+*.md
+.git
+.gitignore
+README.md
+Dockerfile*
+docker-compose*
+.dockerignore
