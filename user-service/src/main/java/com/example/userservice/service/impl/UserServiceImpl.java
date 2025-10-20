@@ -25,9 +25,16 @@ public class UserServiceImpl implements IUserService {
 
   @Override
   public User create(User user) {
+    // Check email uniqueness
     if (userRepository.existsByEmail(user.getEmail())) {
       throw new DuplicateEmailException("Email đã tồn tại");
     }
+    
+    // Check national ID uniqueness
+    if (userRepository.existsByNationalId(user.getNationalId())) {
+      throw new DuplicateEmailException("National ID đã tồn tại");
+    }
+    
     return userRepository.save(user);
   }
 
@@ -45,14 +52,7 @@ public class UserServiceImpl implements IUserService {
 
   @Override
   public Optional<User> update(Long id, User update) {
-    return userRepository.findById(id).map(existing -> {
-      if (userRepository.existsByEmailAndIdNot(update.getEmail(), id)) {
-        throw new DuplicateEmailException("Email đã tồn tại");
-      }
-      existing.setName(update.getName());
-      existing.setEmail(update.getEmail());
-      return userRepository.save(existing);
-    });
+    return Optional.of(userRepository.save(update));
   }
 
   @Override

@@ -29,8 +29,27 @@ public class UserController {
   @PostMapping
   public ResponseEntity<User> create(@Valid @RequestBody CreateUserRequest request) {
     User toCreate = User.builder()
-        .name(request.getName())
+        .firstName(request.getFirstName())
+        .lastName(request.getLastName())
         .email(request.getEmail())
+        .phoneNumber(request.getPhoneNumber())
+        .dateOfBirth(request.getDateOfBirth())
+        .gender(request.getGender())
+        .nationalId(request.getNationalId())
+        .address(request.getAddress())
+        .city(request.getCity())
+        .state(request.getState())
+        .postalCode(request.getPostalCode())
+        .country(request.getCountry())
+        .occupation(request.getOccupation())
+        .employerName(request.getEmployerName())
+        .monthlyIncome(request.getMonthlyIncome())
+        .preferredLanguage(request.getPreferredLanguage() != null ? request.getPreferredLanguage() : "en")
+        .preferredCurrency(request.getPreferredCurrency() != null ? request.getPreferredCurrency() : "USD")
+        .notificationEnabled(request.getNotificationEnabled() != null ? request.getNotificationEnabled() : true)
+        .emergencyContactName(request.getEmergencyContactName())
+        .emergencyContactPhone(request.getEmergencyContactPhone())
+        .emergencyContactRelationship(request.getEmergencyContactRelationship())
         .build();
     User created = userService.create(toCreate);
     URI location = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -117,12 +136,34 @@ public class UserController {
 
   @PutMapping("/{id}")
   public ResponseEntity<User> update(@PathVariable Long id, @Valid @RequestBody UpdateUserRequest request) {
-    User toUpdate = User.builder()
-        .name(request.getName())
-        .email(request.getEmail())
-        .build();
-    return userService.update(id, toUpdate)
-        .map(ResponseEntity::ok)
+    return userService.findById(id)
+        .map(existingUser -> {
+          // Only update non-null fields
+          if (request.getFirstName() != null) existingUser.setFirstName(request.getFirstName());
+          if (request.getLastName() != null) existingUser.setLastName(request.getLastName());
+          if (request.getEmail() != null) existingUser.setEmail(request.getEmail());
+          if (request.getPhoneNumber() != null) existingUser.setPhoneNumber(request.getPhoneNumber());
+          if (request.getDateOfBirth() != null) existingUser.setDateOfBirth(request.getDateOfBirth());
+          if (request.getGender() != null) existingUser.setGender(request.getGender());
+          if (request.getAddress() != null) existingUser.setAddress(request.getAddress());
+          if (request.getCity() != null) existingUser.setCity(request.getCity());
+          if (request.getState() != null) existingUser.setState(request.getState());
+          if (request.getPostalCode() != null) existingUser.setPostalCode(request.getPostalCode());
+          if (request.getCountry() != null) existingUser.setCountry(request.getCountry());
+          if (request.getOccupation() != null) existingUser.setOccupation(request.getOccupation());
+          if (request.getEmployerName() != null) existingUser.setEmployerName(request.getEmployerName());
+          if (request.getMonthlyIncome() != null) existingUser.setMonthlyIncome(request.getMonthlyIncome());
+          if (request.getPreferredLanguage() != null) existingUser.setPreferredLanguage(request.getPreferredLanguage());
+          if (request.getPreferredCurrency() != null) existingUser.setPreferredCurrency(request.getPreferredCurrency());
+          if (request.getNotificationEnabled() != null) existingUser.setNotificationEnabled(request.getNotificationEnabled());
+          if (request.getEmergencyContactName() != null) existingUser.setEmergencyContactName(request.getEmergencyContactName());
+          if (request.getEmergencyContactPhone() != null) existingUser.setEmergencyContactPhone(request.getEmergencyContactPhone());
+          if (request.getEmergencyContactRelationship() != null) existingUser.setEmergencyContactRelationship(request.getEmergencyContactRelationship());
+          
+          return userService.update(id, existingUser)
+              .map(ResponseEntity::ok)
+              .orElseGet(() -> ResponseEntity.notFound().build());
+        })
         .orElseGet(() -> ResponseEntity.notFound().build());
   }
 
