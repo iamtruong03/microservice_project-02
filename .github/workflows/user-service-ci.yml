@@ -38,20 +38,11 @@ jobs:
         chmod +x ./mvnw
         ./mvnw clean compile package
 
-    - name: Build Docker image
-      run: |
-        cd user-service
-        docker build -t user-service:${{ github.sha }} .
-
-    - name: Save Docker image
-      run: |
-        docker save user-service:${{ github.sha }} | gzip > user-service-image.tar.gz
-
-    - name: Upload Docker image artifact
+    - name: Upload JAR artifact
       uses: actions/upload-artifact@v4
       with:
-        name: user-service-docker-image
-        path: user-service-image.tar.gz
+        name: user-service-jar
+        path: user-service/target/*.jar
 
   security-scan:
     runs-on: ubuntu-latest
@@ -91,18 +82,19 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Download Docker image
+    - name: Download JAR artifact
       uses: actions/download-artifact@v4
       with:
-        name: user-service-docker-image
-
-    - name: Load Docker image
-      run: |
-        docker load < user-service-image.tar.gz
+        name: user-service-jar
+        path: ./artifacts
 
     - name: Deploy to staging
       run: |
-        echo "Deploying user-service:${{ github.sha }} to staging environment"
+        echo "Deploying user-service JAR to staging environment"
+        ls -la ./artifacts/
+        echo "JAR file ready for deployment"
         # Add your staging deployment commands here
-        # For example: kubectl apply -f k8s/staging/ or docker-compose up -d
+        # For example: 
+        # - Copy JAR to staging server: scp ./artifacts/*.jar user@staging:/app/
+        # - Restart service: ssh user@staging "sudo systemctl restart user-service"
 
