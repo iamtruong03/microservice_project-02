@@ -30,6 +30,9 @@ public class UpdateUserRequest {
   @Pattern(regexp = "^(MALE|FEMALE|OTHER)$", message = "Gender must be MALE, FEMALE, or OTHER")
   private String gender;
 
+  @Size(min = 9, max = 12, message = "National ID must be between 9 and 12 characters")
+  private String nationalId;
+
   // Address Information
   @Size(max = 255, message = "Address must not exceed 255 characters")
   private String address;
