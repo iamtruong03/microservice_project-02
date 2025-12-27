@@ -3,7 +3,7 @@ package com.example.common.config;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -21,7 +21,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @Slf4j
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(
+@EnableMethodSecurity(
     securedEnabled = true,
     jsr250Enabled = true,
     prePostEnabled = true
@@ -35,19 +35,19 @@ public class SecurityConfig {
             .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-            .authorizeRequests()
+            .authorizeHttpRequests()
                 // Public endpoints
-                .antMatchers("/api/public/**").permitAll()
-                .antMatchers("/api/auth/login").permitAll()
-                .antMatchers("/api/auth/register").permitAll()
-                .antMatchers("/health").permitAll()
-                .antMatchers("/actuator/**").permitAll()
+                .requestMatchers("/api/public/**").permitAll()
+                .requestMatchers("/api/auth/login").permitAll()
+                .requestMatchers("/api/auth/register").permitAll()
+                .requestMatchers("/health").permitAll()
+                .requestMatchers("/actuator/**").permitAll()
                 // Admin endpoints
-                .antMatchers("/api/admin/**").hasRole("ADMIN")
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 // User endpoints
-                .antMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
+                .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
                 // Order endpoints
-                .antMatchers("/api/orders/**").hasAnyRole("USER", "ADMIN")
+                .requestMatchers("/api/orders/**").hasAnyRole("USER", "ADMIN")
                 // All other endpoints require authentication
                 .anyRequest().authenticated()
                 .and()

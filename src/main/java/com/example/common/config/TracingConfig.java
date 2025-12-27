@@ -1,8 +1,5 @@
 package com.example.common.config;
 
-import brave.Tracing;
-import brave.baggage.BaggagePropagation;
-import brave.propagation.B3Propagation;
 import brave.sampler.Sampler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -30,20 +27,5 @@ public class TracingConfig {
     @Bean
     public Sampler sampler() {
         return Sampler.ALWAYS_SAMPLE;
-    }
-
-    /**
-     * Propagation - Cách truyền trace context giữa các service
-     * B3Propagation: Standard format cho distributed tracing
-     * BaggagePropagation: Custom baggage propagation
-     */
-    @Bean
-    public brave.propagation.Propagation propagation() {
-        return BaggagePropagation.create(
-            B3Propagation.FACTORY,
-            BaggagePropagation.newFactoryBuilder(B3Propagation.FACTORY)
-                .add(brave.baggage.BaggagePropagationSetup.B3_SINGLE_NO_PARENT)
-                .build()
-        );
     }
 }
