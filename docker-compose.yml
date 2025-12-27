@@ -51,6 +51,26 @@ services:
     networks:
       - microservice-network
 
+  # MySQL Database for Auth Service
+  mysql-auth:
+    image: mysql:8.0
+    container_name: mysql-auth
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: auth_db
+    ports:
+      - "3305:3306"
+    volumes:
+      - mysql_auth_data:/var/lib/mysql
+      - ./init-databases.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - microservice-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   # MySQL Database for Order Service
   mysql-order:
     image: mysql:8.0
@@ -64,6 +84,11 @@ services:
       - mysql_order_data:/var/lib/mysql
     networks:
       - microservice-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # MySQL Database for Inventory Service
   mysql-inventory:
@@ -78,6 +103,11 @@ services:
       - mysql_inventory_data:/var/lib/mysql
     networks:
       - microservice-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # MySQL Database for Accounting Service
   mysql-accounting:
@@ -92,12 +122,21 @@ services:
       - mysql_accounting_data:/var/lib/mysql
     networks:
       - microservice-network
-
-networks:
-  microservice-network:
-    driver: bridge
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
+  mysql_auth_data:
+    driver: local
+  mysql_order_data:
+    driver: local
+  mysql_inventory_data:
+    driver: local
+  mysql_accounting_data:
+    driver: local
   mysql_order_data:
   mysql_inventory_data:
   mysql_accounting_data:
