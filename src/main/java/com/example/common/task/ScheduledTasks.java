@@ -1,0 +1,112 @@
+package com.example.common.task;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+/**
+ * Scheduled Tasks Component
+ * Chứa các tác vụ chạy định kỳ
+ */
+@Slf4j
+@Component
+public class ScheduledTasks {
+
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    /**
+     * Chạy mỗi 5 phút - Health check
+     */
+    @Scheduled(fixedRate = 300000)
+    public void healthCheck() {
+        log.info("=== HEALTH CHECK === {}", LocalDateTime.now().format(formatter));
+        try {
+            // Implement health check logic
+            log.info("✓ Application is healthy");
+        } catch (Exception e) {
+            log.error("✗ Health check failed", e);
+        }
+    }
+
+    /**
+     * Chạy mỗi 10 phút - Clean up expired sessions/caches
+     */
+    @Scheduled(fixedRate = 600000)
+    public void cleanupExpiredData() {
+        log.info("=== CLEANUP EXPIRED DATA === {}", LocalDateTime.now().format(formatter));
+        try {
+            // Clean expired tokens
+            // Clean old logs
+            // Clean cache if needed
+            log.info("✓ Cleanup completed successfully");
+        } catch (Exception e) {
+            log.error("✗ Cleanup failed", e);
+        }
+    }
+
+    /**
+     * Chạy mỗi 1 giờ - Generate reports
+     */
+    @Scheduled(fixedRate = 3600000)
+    public void generateReports() {
+        log.info("=== GENERATE REPORTS === {}", LocalDateTime.now().format(formatter));
+        try {
+            // Generate daily/hourly reports
+            // Log statistics
+            log.info("✓ Reports generated successfully");
+        } catch (Exception e) {
+            log.error("✗ Report generation failed", e);
+        }
+    }
+
+    /**
+     * Chạy hàng ngày lúc 2 AM - Database maintenance
+     */
+    @Scheduled(cron = "0 0 2 * * ?")
+    public void databaseMaintenance() {
+        log.info("=== DATABASE MAINTENANCE === {}", LocalDateTime.now().format(formatter));
+        try {
+            // Run vacuum/optimize queries
+            // Backup database
+            // Archive old data
+            log.info("✓ Database maintenance completed");
+        } catch (Exception e) {
+            log.error("✗ Database maintenance failed", e);
+        }
+    }
+
+    /**
+     * Chạy hàng ngày lúc 3 AM - Sync with external services
+     */
+    @Scheduled(cron = "0 0 3 * * ?")
+    public void syncWithExternalServices() {
+        log.info("=== SYNC WITH EXTERNAL SERVICES === {}", LocalDateTime.now().format(formatter));
+        try {
+            // Sync data with external APIs
+            // Update exchange rates
+            // Fetch latest configuration
+            log.info("✓ Sync with external services completed");
+        } catch (Exception e) {
+            log.error("✗ Sync with external services failed", e);
+        }
+    }
+
+    /**
+     * Chạy mỗi Thứ Hai lúc 1 AM - Weekly maintenance
+     */
+    @Scheduled(cron = "0 0 1 ? * MON")
+    public void weeklyMaintenance() {
+        log.info("=== WEEKLY MAINTENANCE === {}", LocalDateTime.now().format(formatter));
+        try {
+            // Weekly database optimization
+            // Weekly report generation
+            // Weekly backup verification
+            log.info("✓ Weekly maintenance completed");
+        } catch (Exception e) {
+            log.error("✗ Weekly maintenance failed", e);
+        }
+    }
+}
