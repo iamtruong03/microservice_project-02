@@ -37,7 +37,7 @@ public class GlobalExceptionHandler implements ErrorWebExceptionHandler {
         exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
         return exchange.getResponse().writeWith(
-                Mono.fromValue(exchange.getResponse().bufferFactory()
+                Mono.just(exchange.getResponse().bufferFactory()
                         .wrap(errorResponse.toString().getBytes()))
         );
     }
