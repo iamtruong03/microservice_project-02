@@ -1,0 +1,40 @@
+# React Frontend for Microservice Project
+
+## Installation
+
+```bash
+npm install
+```
+
+## Development
+
+```bash
+npm run dev
+```
+
+The frontend will run on http://localhost:5173
+
+## Build
+
+```bash
+npm run build
+```
+
+## Project Structure
+
+- `/src/components` - Reusable React components
+- `/src/pages` - Page components
+- `/src/services` - API services
+- `/src/hooks` - Custom React hooks
+- `/src/context` - React Context for state management
+- `/src/utils` - Utility functions
+- `/public` - Static assets
+
+## Features
+
+- Order Management
+- Inventory Management
+- Accounting/Transaction Management
+- Notification System
+- Dashboard with real-time status updates
+- Responsive UI with Ant Design

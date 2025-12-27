@@ -1,0 +1,15 @@
+# Frontend service for Docker Compose
+frontend:
+  build:
+    context: ./frontend
+    dockerfile: Dockerfile
+  container_name: frontend
+  ports:
+    - "5173:5173"
+  environment:
+    - VITE_API_URL=http://api-gateway:8080/api
+  depends_on:
+    - api-gateway
+  networks:
+    - microservice-network
+  restart: unless-stopped
