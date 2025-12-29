@@ -11,15 +11,18 @@ public class GatewayRoutesConfig {
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
-                // Auth Service Routes
+                // Auth Service Routes (with stripPrefix)
                 .route("auth-login", r -> r
                         .path("/api/auth/login")
+                        .filters(f -> f.stripPrefix(1))
                         .uri("lb://auth-service"))
                 .route("auth-register", r -> r
                         .path("/api/auth/register")
+                        .filters(f -> f.stripPrefix(1))
                         .uri("lb://auth-service"))
                 .route("auth-validate", r -> r
                         .path("/api/auth/validate")
+                        .filters(f -> f.stripPrefix(1))
                         .uri("lb://auth-service"))
 
                 // Order Service Routes
