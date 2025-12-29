@@ -3,6 +3,7 @@ package com.example.accountservice.service;
 import com.example.accountservice.dto.TransactionDTO;
 import com.example.accountservice.model.Transaction;
 import com.example.accountservice.repository.TransactionRepository;
+import com.example.accountservice.security.UserContextHolder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -35,24 +36,48 @@ public class TransactionService {
     }
 
     public TransactionDTO getTransactionById(Long id) {
-        return transactionRepository.findById(id)
-                .map(this::convertToDTO)
+        Transaction transaction = transactionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Transaction not found"));
+        
+        if (!UserContextHolder.hasAccess(transaction.getCustomerId())) {
+            throw new RuntimeException("Access denied");
+        }
+        
+        return convertToDTO(transaction);
     }
 
     public List<TransactionDTO> getAllTransactions() {
-        return transactionRepository.findAll().stream()
+        Long currentUserId = UserContextHolder.getCurrentUserId();
+        if (currentUserId == null) {
+            throw new RuntimeException("User not authenticated");
+        }
+        
+        return transactionRepository.findByCustomerId(currentUserId).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     public List<TransactionDTO> getTransactionsByOrderId(Long orderId) {
-        return transactionRepository.findByOrderId(orderId).stream()
+        List<TransactionDTO> transactions = transactionRepository.findByOrderId(orderId).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
+        
+        // Verify user has access to at least one transaction
+        if (!transactions.isEmpty()) {
+            Transaction firstTx = transactionRepository.findByOrderId(orderId).get(0);
+            if (!UserContextHolder.hasAccess(firstTx.getCustomerId())) {
+                throw new RuntimeException("Access denied");
+            }
+        }
+        
+        return transactions;
     }
 
     public List<TransactionDTO> getTransactionsByCustomerId(Long customerId) {
+        if (!UserContextHolder.hasAccess(customerId)) {
+            throw new RuntimeException("Access denied");
+        }
+        
         return transactionRepository.findByCustomerId(customerId).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
@@ -61,6 +86,10 @@ public class TransactionService {
     public TransactionDTO updateTransaction(Long id, TransactionDTO transactionDTO) {
         Transaction transaction = transactionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Transaction not found"));
+
+        if (!UserContextHolder.hasAccess(transaction.getCustomerId())) {
+            throw new RuntimeException("Access denied");
+        }
 
         transaction.setStatus(transactionDTO.getStatus());
         Transaction updatedTransaction = transactionRepository.save(transaction);
@@ -72,6 +101,13 @@ public class TransactionService {
     }
 
     public void deleteTransaction(Long id) {
+        Transaction transaction = transactionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Transaction not found"));
+        
+        if (!UserContextHolder.hasAccess(transaction.getCustomerId())) {
+            throw new RuntimeException("Access denied");
+        }
+        
         transactionRepository.deleteById(id);
     }
 

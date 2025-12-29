@@ -3,6 +3,7 @@ package com.example.orderservice.service;
 import com.example.orderservice.dto.OrderDTO;
 import com.example.orderservice.model.Order;
 import com.example.orderservice.repository.OrderRepository;
+import com.example.orderservice.security.UserContextHolder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -31,18 +32,35 @@ public class OrderService {
     }
 
     public OrderDTO getOrderById(Long orderId) {
-        return orderRepository.findById(orderId)
-                .map(this::convertToDTO)
+        Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
+        
+        // Verify user has access to this order
+        if (!UserContextHolder.hasAccess(order.getCustomerId())) {
+            throw new RuntimeException("Access denied");
+        }
+        
+        return convertToDTO(order);
     }
 
     public List<OrderDTO> getAllOrders() {
-        return orderRepository.findAll().stream()
+        // Get only orders for current user
+        Long currentUserId = UserContextHolder.getCurrentUserId();
+        if (currentUserId == null) {
+            throw new RuntimeException("User not authenticated");
+        }
+        
+        return orderRepository.findByCustomerId(currentUserId).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     public List<OrderDTO> getOrdersByCustomerId(Long customerId) {
+        // Only allow users to view their own orders
+        if (!UserContextHolder.hasAccess(customerId)) {
+            throw new RuntimeException("Access denied");
+        }
+        
         return orderRepository.findByCustomerId(customerId).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
@@ -51,6 +69,11 @@ public class OrderService {
     public OrderDTO updateOrder(Long orderId, OrderDTO orderDTO) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
+        
+        // Verify user has access to update this order
+        if (!UserContextHolder.hasAccess(order.getCustomerId())) {
+            throw new RuntimeException("Access denied");
+        }
         
         order.setStatus(orderDTO.getStatus());
         Order updatedOrder = orderRepository.save(order);
@@ -62,6 +85,14 @@ public class OrderService {
     }
 
     public void deleteOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+        
+        // Verify user has access to delete this order
+        if (!UserContextHolder.hasAccess(order.getCustomerId())) {
+            throw new RuntimeException("Access denied");
+        }
+        
         orderRepository.deleteById(orderId);
     }
 
