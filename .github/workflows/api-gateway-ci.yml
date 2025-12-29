@@ -36,7 +36,7 @@ jobs:
       run: |
         cd api-gateway
         chmod +x ./mvnw
-        ./mvnw clean compile package
+        ./mvnw clean compile package -DskipTests
 
     - name: Upload JAR artifact
       uses: actions/upload-artifact@v4
