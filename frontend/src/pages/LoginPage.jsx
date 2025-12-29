@@ -1,15 +1,35 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Form, Input, Button, Card, Row, Col, Alert, Spin, Checkbox, Divider } from 'antd';
-import { UserOutlined, LockOutlined, LoginOutlined } from '@ant-design/icons';
-import { useNavigate, Link } from 'react-router-dom';
+import { UserOutlined, LockOutlined, LoginOutlined, GoogleOutlined } from '@ant-design/icons';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import './AuthPages.css';
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { login, loading, error } = useContext(AuthContext);
+  const { login, loading, error, setToken } = useContext(AuthContext);
   const [form] = Form.useForm();
   const [localError, setLocalError] = useState(null);
+  const [searchParams] = useSearchParams();
+
+  // Handle OAuth2 callback
+  useEffect(() => {
+    const token = searchParams.get('token');
+    const email = searchParams.get('email');
+    const errorParam = searchParams.get('error');
+
+    if (token) {
+      // Token from OAuth2 Google login
+      localStorage.setItem('token', token);
+      localStorage.setItem('email', email);
+      if (setToken) {
+        setToken(token);
+      }
+      navigate('/');
+    } else if (errorParam) {
+      setLocalError('Google login failed. Please try again.');
+    }
+  }, [searchParams, navigate, setToken]);
 
   const onFinish = async (values) => {
     setLocalError(null);
@@ -109,6 +129,27 @@ const LoginPage = () => {
               <Divider style={{ margin: '32px 0', color: '#999', fontSize: '14px' }}>
                 Hoặc
               </Divider>
+
+              <Form.Item style={{ marginBottom: '16px' }}>
+                <Button
+                  type="default"
+                  block
+                  size="large"
+                  icon={<GoogleOutlined />}
+                  onClick={() => window.location.href = 'http://localhost:8086/oauth2/authorization/google'}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    borderColor: '#EA4335',
+                    color: '#EA4335',
+                    fontWeight: '500'
+                  }}
+                >
+                  Đăng Nhập Với Google
+                </Button>
+              </Form.Item>
 
               <div className="auth-form-footer">
                 <p style={{ margin: 0 }}>
