@@ -41,7 +41,7 @@ public class GatewayRoutesConfig {
                 .route("accounting-service", r -> r
                         .path("/api/accounting/**")
                         .filters(f -> f.stripPrefix(1))
-                        .uri("lb://account-service"))
+                        .uri("lb://accounting-service"))
 
                 // Notification Service Routes
                 .route("notification-service", r -> r
