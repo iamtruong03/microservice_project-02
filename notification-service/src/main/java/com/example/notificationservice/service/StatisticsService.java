@@ -19,7 +19,6 @@ import java.util.Random;
 @EnableScheduling
 public class StatisticsService {
 
-    @Autowired
     private StatisticsWebSocketHandler webSocketHandler;
 
     private final Random random = new Random();
@@ -32,6 +31,11 @@ public class StatisticsService {
 
     public StatisticsService() {
         initializeStatistics();
+    }
+
+    @Autowired
+    public void setWebSocketHandler(StatisticsWebSocketHandler webSocketHandler) {
+        this.webSocketHandler = webSocketHandler;
     }
 
     private void initializeStatistics() {

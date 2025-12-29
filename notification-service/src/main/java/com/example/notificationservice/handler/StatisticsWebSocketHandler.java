@@ -1,7 +1,6 @@
 package com.example.notificationservice.handler;
 
 import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.stereotype.Component;

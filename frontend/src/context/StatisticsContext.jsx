@@ -11,7 +11,7 @@ export const StatisticsProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   const wsService = new StatisticsWebSocketService(
-    process.env.REACT_APP_WS_URL || 'ws://localhost:8080/ws/statistics'
+    import.meta.env.VITE_WS_URL || 'ws://localhost:8080/ws/statistics'
   );
 
   useEffect(() => {
