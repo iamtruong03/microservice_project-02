@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   Layout,
   Menu,
   Button,
   Drawer,
   Badge,
+  Dropdown,
+  Space,
 } from 'antd';
 import {
   MenuFoldOutlined,
@@ -15,8 +17,11 @@ import {
   DollarOutlined,
   BellOutlined,
   BarChartOutlined,
+  LogoutOutlined,
+  UserOutlined,
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 
 const { Header, Sider, Content } = Layout;
 
@@ -24,6 +29,7 @@ const MainLayout = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const navigate = useNavigate();
+  const { user, logout } = useContext(AuthContext);
 
   const menuItems = [
     {

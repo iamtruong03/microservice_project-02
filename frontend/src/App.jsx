@@ -7,8 +7,12 @@ import Orders from './pages/Orders';
 import Inventory from './pages/Inventory';
 import Accounting from './pages/Accounting';
 import Notifications from './pages/Notifications';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 import RealTimeDashboard from './components/RealTimeDashboard';
+import PrivateRoute from './components/PrivateRoute';
 import { StatisticsProvider } from './context/StatisticsContext';
+import { AuthProvider } from './context/AuthContext';
 import './App.css';
 
 function App() {
@@ -21,21 +25,37 @@ function App() {
         },
       }}
     >
-      <StatisticsProvider>
-        <BrowserRouter>
-          <MainLayout>
+      <AuthProvider>
+        <StatisticsProvider>
+          <BrowserRouter>
             <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/orders" element={<Orders />} />
-              <Route path="/inventory" element={<Inventory />} />
-              <Route path="/accounting" element={<Accounting />} />
-              <Route path="/notifications" element={<Notifications />} />
-              <Route path="/statistics" element={<RealTimeDashboard />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
+              {/* Public Routes */}
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+
+              {/* Protected Routes */}
+              <Route
+                path="/*"
+                element={
+                  <PrivateRoute>
+                    <MainLayout>
+                      <Routes>
+                        <Route path="/" element={<Dashboard />} />
+                        <Route path="/orders" element={<Orders />} />
+                        <Route path="/inventory" element={<Inventory />} />
+                        <Route path="/accounting" element={<Accounting />} />
+                        <Route path="/notifications" element={<Notifications />} />
+                        <Route path="/statistics" element={<RealTimeDashboard />} />
+                        <Route path="*" element={<Navigate to="/" replace />} />
+                      </Routes>
+                    </MainLayout>
+                  </PrivateRoute>
+                }
+              />
             </Routes>
-          </MainLayout>
-        </BrowserRouter>
-      </StatisticsProvider>
+          </BrowserRouter>
+        </StatisticsProvider>
+      </AuthProvider>
     </ConfigProvider>
   );
 }

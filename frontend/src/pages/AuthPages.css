@@ -1,0 +1,54 @@
+.auth-container {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-card {
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  background: white !important;
+}
+
+.auth-card .ant-card-head {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 12px 12px 0 0 !important;
+}
+
+.auth-card .ant-card-head .ant-card-head-title {
+  color: white;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.auth-card .ant-input,
+.auth-card .ant-input-number,
+.auth-card .ant-select-selector,
+.auth-card .ant-picker {
+  border-radius: 8px !important;
+}
+
+.auth-card .ant-btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  height: 40px;
+}
+
+.auth-card .ant-btn-primary:hover {
+  background: linear-gradient(135deg, #5568d3 0%, #6a3d8a 100%);
+}
+
+.auth-card .ant-form-item-label > label {
+  font-weight: 600;
+  color: #333;
+}
+
+.auth-card .ant-form-item {
+  margin-bottom: 20px;
+}
