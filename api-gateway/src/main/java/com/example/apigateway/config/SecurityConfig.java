@@ -17,7 +17,7 @@ public class SecurityConfig {
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         http
-            .csrf(csrf -> csrf.disable())  // Disable CSRF for REST API (using JWT instead)
+            .csrf(csrf -> csrf.disable())
             .authorizeExchange(authz -> authz
                 .pathMatchers("/api/auth/**").permitAll()
                 .pathMatchers("/api/public/**").permitAll()
@@ -25,8 +25,8 @@ public class SecurityConfig {
                 .pathMatchers("/actuator/**").permitAll()
                 .anyExchange().authenticated()
             )
-            .httpBasic(httpBasic -> httpBasic.disable())  // Disable HTTP Basic for REST API
-            .formLogin(formLogin -> formLogin.disable()); // Disable form login for REST API
+            .httpBasic(httpBasic -> httpBasic.disable())
+            .formLogin(formLogin -> formLogin.disable());
 
         return http.build();
     }
