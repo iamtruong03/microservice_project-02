@@ -2,8 +2,8 @@ package com.example.orderservice.controller;
 
 import com.example.orderservice.dto.OrderDTO;
 import com.example.orderservice.service.OrderService;
+import com.example.orderservice.util.ResponseUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,34 +17,71 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(orderService.createOrder(orderDTO));
+    public ResponseEntity<?> createOrder(
+            @RequestHeader(name = "uid", defaultValue = "") String uid,
+            @RequestBody OrderDTO orderDTO) {
+        try {
+            orderDTO.setCustomerId(Long.parseLong(uid));
+            return ResponseUtils.handlerCreated(orderService.createOrder(orderDTO));
+        } catch (Exception e) {
+            return ResponseUtils.handlerException(e);
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrderDTO> getOrder(@PathVariable Long id) {
-        return ResponseEntity.ok(orderService.getOrderById(id));
+    public ResponseEntity<?> getOrder(
+            @RequestHeader(name = "uid", defaultValue = "") String uid,
+            @PathVariable Long id) {
+        try {
+            return ResponseUtils.handlerSuccess(orderService.getOrderById(id));
+        } catch (Exception e) {
+            return ResponseUtils.handlerException(e);
+        }
     }
 
     @GetMapping
-    public ResponseEntity<List<OrderDTO>> getAllOrders() {
-        return ResponseEntity.ok(orderService.getAllOrders());
+    public ResponseEntity<?> getAllOrders(
+            @RequestHeader(name = "uid", defaultValue = "") String uid) {
+        try {
+            return ResponseUtils.handlerSuccess(orderService.getAllOrders());
+        } catch (Exception e) {
+            return ResponseUtils.handlerException(e);
+        }
     }
 
     @GetMapping("/customer/{customerId}")
-    public ResponseEntity<List<OrderDTO>> getOrdersByCustomer(@PathVariable Long customerId) {
-        return ResponseEntity.ok(orderService.getOrdersByCustomerId(customerId));
+    public ResponseEntity<?> getOrdersByCustomer(
+            @RequestHeader(name = "uid", defaultValue = "") String uid,
+            @PathVariable Long customerId) {
+        try {
+            return ResponseUtils.handlerSuccess(orderService.getOrdersByCustomerId(customerId));
+        } catch (Exception e) {
+            return ResponseUtils.handlerException(e);
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<OrderDTO> updateOrder(@PathVariable Long id, @RequestBody OrderDTO orderDTO) {
-        return ResponseEntity.ok(orderService.updateOrder(id, orderDTO));
+    public ResponseEntity<?> updateOrder(
+            @RequestHeader(name = "uid", defaultValue = "") String uid,
+            @PathVariable Long id,
+            @RequestBody OrderDTO orderDTO) {
+        try {
+            orderDTO.setCustomerId(Long.parseLong(uid));
+            return ResponseUtils.handlerSuccess(orderService.updateOrder(id, orderDTO));
+        } catch (Exception e) {
+            return ResponseUtils.handlerException(e);
+        }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
-        orderService.deleteOrder(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deleteOrder(
+            @RequestHeader(name = "uid", defaultValue = "") String uid,
+            @PathVariable Long id) {
+        try {
+            orderService.deleteOrder(id);
+            return ResponseUtils.handlerNoContent();
+        } catch (Exception e) {
+            return ResponseUtils.handlerException(e);
+        }
     }
 }

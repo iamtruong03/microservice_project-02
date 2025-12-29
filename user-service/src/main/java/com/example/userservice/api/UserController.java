@@ -5,6 +5,7 @@ import com.example.userservice.dto.PageResponse;
 import com.example.userservice.dto.UpdateUserRequest;
 import com.example.userservice.model.User;
 import com.example.userservice.service.IUserService;
+import com.example.userservice.util.ResponseUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,87 +28,130 @@ public class UserController {
     private final IUserService userService;
 
     @PostMapping
-    public ResponseEntity<User> createUser(@Valid @RequestBody CreateUserRequest request) {
-        User created = userService.createUser(request);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(created.getId())
-                .toUri();
-        return ResponseEntity.created(location).body(created);
+    public ResponseEntity<?> createUser(
+            @RequestHeader(name = "uid", defaultValue = "") String uid,
+            @Valid @RequestBody CreateUserRequest request) {
+        try {
+            User created = userService.createUser(request);
+            return ResponseUtils.handlerCreated(created);
+        } catch (Exception e) {
+            return ResponseUtils.handlerException(e);
+        }
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
+    public ResponseEntity<?> getAllUsers(
+            @RequestHeader(name = "uid", defaultValue = "") String uid) {
+        try {
+            return ResponseUtils.handlerSuccess(userService.getAllUsers());
+        } catch (Exception e) {
+            return ResponseUtils.handlerException(e);
+        }
     }
 
     @GetMapping("/paged")
-    public ResponseEntity<PageResponse<User>> getAllUsersWithPaging(
+    public ResponseEntity<?> getAllUsersWithPaging(
+            @RequestHeader(name = "uid", defaultValue = "") String uid,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "asc") String sortDir) {
-        
-        Pageable pageable = createPageable(page, size, sortBy, sortDir);
-        return ResponseEntity.ok(userService.getAllUsers(pageable));
+        try {
+            Pageable pageable = createPageable(page, size, sortBy, sortDir);
+            return ResponseUtils.handlerSuccess(userService.getAllUsers(pageable));
+        } catch (Exception e) {
+            return ResponseUtils.handlerException(e);
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        User user = userService.getUserById(id);
-        return ResponseEntity.ok(user);
+    public ResponseEntity<?> getUserById(
+            @RequestHeader(name = "uid", defaultValue = "") String uid,
+            @PathVariable Long id) {
+        try {
+            User user = userService.getUserById(id);
+            return ResponseUtils.handlerSuccess(user);
+        } catch (Exception e) {
+            return ResponseUtils.handlerException(e);
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @Valid @RequestBody UpdateUserRequest request) {
-        User updated = userService.updateUser(id, request);
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<?> updateUser(
+            @RequestHeader(name = "uid", defaultValue = "") String uid,
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateUserRequest request) {
+        try {
+            User updated = userService.updateUser(id, request);
+            return ResponseUtils.handlerSuccess(updated);
+        } catch (Exception e) {
+            return ResponseUtils.handlerException(e);
+        }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deleteUser(
+            @RequestHeader(name = "uid", defaultValue = "") String uid,
+            @PathVariable Long id) {
+        try {
+            userService.deleteUser(id);
+            return ResponseUtils.handlerNoContent();
+        } catch (Exception e) {
+            return ResponseUtils.handlerException(e);
+        }
     }
 
     @GetMapping("/search")
-    public ResponseEntity<PageResponse<User>> searchUsers(
+    public ResponseEntity<?> searchUsers(
+            @RequestHeader(name = "uid", defaultValue = "") String uid,
             @RequestParam String keyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "asc") String sortDir) {
-        
-        Pageable pageable = createPageable(page, size, sortBy, sortDir);
-        return ResponseEntity.ok(userService.searchUsers(keyword, pageable));
+        try {
+            Pageable pageable = createPageable(page, size, sortBy, sortDir);
+            return ResponseUtils.handlerSuccess(userService.searchUsers(keyword, pageable));
+        } catch (Exception e) {
+            return ResponseUtils.handlerException(e);
+        }
     }
 
     @GetMapping("/search/name")
-    public ResponseEntity<PageResponse<User>> searchByName(
+    public ResponseEntity<?> searchByName(
+            @RequestHeader(name = "uid", defaultValue = "") String uid,
             @RequestParam String name,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "asc") String sortDir) {
-        
-        Pageable pageable = createPageable(page, size, sortBy, sortDir);
-        return ResponseEntity.ok(userService.searchByName(name, pageable));
+        try {
+            Pageable pageable = createPageable(page, size, sortBy, sortDir);
+            return ResponseUtils.handlerSuccess(userService.searchByName(name, pageable));
+        } catch (Exception e) {
+            return ResponseUtils.handlerException(e);
+        }
     }
 
     @GetMapping("/search/email")
-    public ResponseEntity<PageResponse<User>> searchByEmail(
+    public ResponseEntity<?> searchByEmail(
+            @RequestHeader(name = "uid", defaultValue = "") String uid,
             @RequestParam String email,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "asc") String sortDir) {
-        
-        Pageable pageable = createPageable(page, size, sortBy, sortDir);
-        return ResponseEntity.ok(userService.searchByEmail(email, pageable));
+        try {
+            Pageable pageable = createPageable(page, size, sortBy, sortDir);
+            return ResponseUtils.handlerSuccess(userService.searchByEmail(email, pageable));
+        } catch (Exception e) {
+            return ResponseUtils.handlerException(e);
+        }
     }
 
     @GetMapping("/search/advanced")
-    public ResponseEntity<PageResponse<User>> advancedSearch(
+    public ResponseEntity<?> advancedSearch(
+            @RequestHeader(name = "uid", defaultValue = "") String uid,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String email,
             @RequestParam(required = false) String city,
@@ -116,9 +160,12 @@ public class UserController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "asc") String sortDir) {
-        
-        Pageable pageable = createPageable(page, size, sortBy, sortDir);
-        return ResponseEntity.ok(userService.advancedSearch(name, email, city, occupation, pageable));
+        try {
+            Pageable pageable = createPageable(page, size, sortBy, sortDir);
+            return ResponseUtils.handlerSuccess(userService.advancedSearch(name, email, city, occupation, pageable));
+        } catch (Exception e) {
+            return ResponseUtils.handlerException(e);
+        }
     }
 
     // Utility method to create Pageable
@@ -131,25 +178,51 @@ public class UserController {
 
     // Role Management Endpoints
     @PostMapping("/{userId}/roles/{roleId}")
-    public ResponseEntity<User> assignRoleToUser(@PathVariable Long userId, @PathVariable Long roleId) {
-        User updated = userService.assignRoleToUser(userId, roleId);
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<?> assignRoleToUser(
+            @RequestHeader(name = "uid", defaultValue = "") String uid,
+            @PathVariable Long userId,
+            @PathVariable Long roleId) {
+        try {
+            User updated = userService.assignRoleToUser(userId, roleId);
+            return ResponseUtils.handlerSuccess(updated);
+        } catch (Exception e) {
+            return ResponseUtils.handlerException(e);
+        }
     }
 
     @DeleteMapping("/{userId}/roles/{roleId}")
-    public ResponseEntity<User> removeRoleFromUser(@PathVariable Long userId, @PathVariable Long roleId) {
-        User updated = userService.removeRoleFromUser(userId, roleId);
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<?> removeRoleFromUser(
+            @RequestHeader(name = "uid", defaultValue = "") String uid,
+            @PathVariable Long userId,
+            @PathVariable Long roleId) {
+        try {
+            User updated = userService.removeRoleFromUser(userId, roleId);
+            return ResponseUtils.handlerSuccess(updated);
+        } catch (Exception e) {
+            return ResponseUtils.handlerException(e);
+        }
     }
 
     @GetMapping("/{userId}/roles")
-    public ResponseEntity<?> getUserRoles(@PathVariable Long userId) {
-        return ResponseEntity.ok(userService.getUserRoles(userId));
+    public ResponseEntity<?> getUserRoles(
+            @RequestHeader(name = "uid", defaultValue = "") String uid,
+            @PathVariable Long userId) {
+        try {
+            return ResponseUtils.handlerSuccess(userService.getUserRoles(userId));
+        } catch (Exception e) {
+            return ResponseUtils.handlerException(e);
+        }
     }
 
     @GetMapping("/{userId}/permissions")
-    public ResponseEntity<?> getUserPermissions(@PathVariable Long userId) {
-        return ResponseEntity.ok(userService.getUserPermissions(userId));
+    public ResponseEntity<?> getUserPermissions(
+            @RequestHeader(name = "uid", defaultValue = "") String uid,
+            @PathVariable Long userId) {
+        try {
+            return ResponseUtils.handlerSuccess(userService.getUserPermissions(userId));
+        } catch (Exception e) {
+            return ResponseUtils.handlerException(e);
+        }
     }
 }
 
