@@ -7,6 +7,8 @@ import Orders from './pages/Orders';
 import Inventory from './pages/Inventory';
 import Accounting from './pages/Accounting';
 import Notifications from './pages/Notifications';
+import RealTimeDashboard from './components/RealTimeDashboard';
+import { StatisticsProvider } from './context/StatisticsContext';
 import './App.css';
 
 function App() {
@@ -19,18 +21,21 @@ function App() {
         },
       }}
     >
-      <BrowserRouter>
-        <MainLayout>
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/orders" element={<Orders />} />
-            <Route path="/inventory" element={<Inventory />} />
-            <Route path="/accounting" element={<Accounting />} />
-            <Route path="/notifications" element={<Notifications />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </MainLayout>
-      </BrowserRouter>
+      <StatisticsProvider>
+        <BrowserRouter>
+          <MainLayout>
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/orders" element={<Orders />} />
+              <Route path="/inventory" element={<Inventory />} />
+              <Route path="/accounting" element={<Accounting />} />
+              <Route path="/notifications" element={<Notifications />} />
+              <Route path="/statistics" element={<RealTimeDashboard />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </MainLayout>
+        </BrowserRouter>
+      </StatisticsProvider>
     </ConfigProvider>
   );
 }

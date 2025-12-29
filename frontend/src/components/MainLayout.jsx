@@ -14,6 +14,7 @@ import {
   InboxOutlined,
   DollarOutlined,
   BellOutlined,
+  BarChartOutlined,
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 
@@ -67,6 +68,15 @@ const MainLayout = ({ children }) => {
       label: 'Notifications',
       onClick: () => {
         navigate('/notifications');
+        setMobileDrawerOpen(false);
+      },
+    },
+    {
+      key: '/statistics',
+      icon: <BarChartOutlined />,
+      label: 'Real-Time Statistics',
+      onClick: () => {
+        navigate('/statistics');
         setMobileDrawerOpen(false);
       },
     },
