@@ -31,7 +31,7 @@ import {
   MailOutlined,
   PhoneOutlined,
   EnvironmentOutlined,
-  BriefcaseOutlined,
+  ShopOutlined,
 } from '@ant-design/icons';
 import { userService } from '../services/index';
 import './Users.css';
@@ -438,6 +438,17 @@ const Users = () => {
           </Form.Item>
 
           <Form.Item
+            label="Password"
+            name="password"
+            rules={[
+              { required: !selectedUser, message: 'Please enter password' },
+              { min: 6, message: 'Password must be at least 6 characters' },
+            ]}
+          >
+            <Input.Password placeholder="Enter password" />
+          </Form.Item>
+
+          <Form.Item
             label="Phone"
             name="phone"
           >
@@ -517,7 +528,7 @@ const Users = () => {
               )}
               {selectedUser.occupation && (
                 <div>
-                  <BriefcaseOutlined /> <strong>Occupation:</strong> {selectedUser.occupation}
+                  <ShopOutlined /> <strong>Occupation:</strong> {selectedUser.occupation}
                 </div>
               )}
               <div>

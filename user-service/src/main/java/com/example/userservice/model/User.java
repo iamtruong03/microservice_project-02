@@ -12,6 +12,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -41,6 +43,11 @@ public class User {
   @Size(max = 150, message = "Email must not exceed 150 characters")
   @Column(name = "email", nullable = false, unique = true)
   private String email;
+
+  @NotBlank(message = "Password is required")
+  @Size(min = 6, max = 255, message = "Password must be between 6 and 255 characters")
+  @Column(name = "password", nullable = false)
+  private String password;
 
   @NotBlank(message = "Phone number is required")
   @Pattern(regexp = "^\\+?[1-9]\\d{1,14}$", message = "Phone number should be valid")
@@ -116,6 +123,16 @@ public class User {
   @Builder.Default
   @Column(name = "is_locked", nullable = false)
   private Boolean isLocked = false;
+
+  // Roles and Permissions
+  @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+  @JoinTable(
+      name = "user_roles",
+      joinColumns = @JoinColumn(name = "user_id"),
+      inverseJoinColumns = @JoinColumn(name = "role_id")
+  )
+  @Builder.Default
+  private Set<Role> roles = new HashSet<>();
 
   // KYC Information
   @Pattern(regexp = "^(PENDING|IN_PROGRESS|APPROVED|REJECTED)$", message = "KYC status must be PENDING, IN_PROGRESS, APPROVED, or REJECTED")

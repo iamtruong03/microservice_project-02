@@ -6,7 +6,10 @@ import com.example.userservice.dto.PageResponse;
 import com.example.userservice.exception.DuplicateEmailException;
 import com.example.userservice.exception.UserNotFoundException;
 import com.example.userservice.model.User;
+import com.example.userservice.model.Role;
+import com.example.userservice.model.Permission;
 import com.example.userservice.repo.UserRepository;
+import com.example.userservice.repository.RoleRepository;
 import com.example.userservice.service.IUserService;
 import com.example.userservice.util.UserMapper;
 import com.example.userservice.util.UserQueryBuilder;
@@ -15,10 +18,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -29,6 +35,8 @@ public class UserServiceImpl implements IUserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final UserQueryBuilder queryBuilder;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional(readOnly = true)
@@ -54,6 +62,8 @@ public class UserServiceImpl implements IUserService {
     public User createUser(CreateUserRequest request) {
         validateUniqueFields(request);
         User user = userMapper.toEntity(request);
+        // Encode password
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         User savedUser = userRepository.save(user);
         log.info("Created user with id: {}", savedUser.getId());
         return savedUser;
@@ -159,5 +169,45 @@ public class UserServiceImpl implements IUserService {
                 .hasNext(page.hasNext())
                 .hasPrevious(page.hasPrevious())
                 .build();
+    }
+
+    @Override
+    public User assignRoleToUser(Long userId, Long roleId) {
+        User user = getUserById(userId);
+        Role role = roleRepository.findById(roleId)
+                .orElseThrow(() -> new RuntimeException("Role not found with id: " + roleId));
+        user.getRoles().add(role);
+        User updated = userRepository.save(user);
+        log.info("Assigned role {} to user {}", roleId, userId);
+        return updated;
+    }
+
+    @Override
+    public User removeRoleFromUser(Long userId, Long roleId) {
+        User user = getUserById(userId);
+        Role role = roleRepository.findById(roleId)
+                .orElseThrow(() -> new RuntimeException("Role not found with id: " + roleId));
+        user.getRoles().remove(role);
+        User updated = userRepository.save(user);
+        log.info("Removed role {} from user {}", roleId, userId);
+        return updated;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Set<Role> getUserRoles(Long userId) {
+        User user = getUserById(userId);
+        return new HashSet<>(user.getRoles());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Set<Permission> getUserPermissions(Long userId) {
+        User user = getUserById(userId);
+        Set<Permission> permissions = new HashSet<>();
+        for (Role role : user.getRoles()) {
+            permissions.addAll(role.getPermissions());
+        }
+        return permissions;
     }
 }

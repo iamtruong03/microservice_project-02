@@ -4,9 +4,12 @@ import com.example.userservice.dto.CreateUserRequest;
 import com.example.userservice.dto.UpdateUserRequest;
 import com.example.userservice.dto.PageResponse;
 import com.example.userservice.model.User;
+import com.example.userservice.model.Role;
+import com.example.userservice.model.Permission;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Set;
 
 public interface IUserService {
     
@@ -29,4 +32,13 @@ public interface IUserService {
     PageResponse<User> searchByEmail(String email, Pageable pageable);
     
     PageResponse<User> advancedSearch(String name, String email, String city, String occupation, Pageable pageable);
+
+    // Role and Permission Management
+    User assignRoleToUser(Long userId, Long roleId);
+    
+    User removeRoleFromUser(Long userId, Long roleId);
+    
+    Set<Role> getUserRoles(Long userId);
+    
+    Set<Permission> getUserPermissions(Long userId);
 }

@@ -128,6 +128,29 @@ public class UserController {
                 : Sort.by(sortBy).ascending();
         return PageRequest.of(page, size, sort);
     }
+
+    // Role Management Endpoints
+    @PostMapping("/{userId}/roles/{roleId}")
+    public ResponseEntity<User> assignRoleToUser(@PathVariable Long userId, @PathVariable Long roleId) {
+        User updated = userService.assignRoleToUser(userId, roleId);
+        return ResponseEntity.ok(updated);
+    }
+
+    @DeleteMapping("/{userId}/roles/{roleId}")
+    public ResponseEntity<User> removeRoleFromUser(@PathVariable Long userId, @PathVariable Long roleId) {
+        User updated = userService.removeRoleFromUser(userId, roleId);
+        return ResponseEntity.ok(updated);
+    }
+
+    @GetMapping("/{userId}/roles")
+    public ResponseEntity<?> getUserRoles(@PathVariable Long userId) {
+        return ResponseEntity.ok(userService.getUserRoles(userId));
+    }
+
+    @GetMapping("/{userId}/permissions")
+    public ResponseEntity<?> getUserPermissions(@PathVariable Long userId) {
+        return ResponseEntity.ok(userService.getUserPermissions(userId));
+    }
 }
 
 

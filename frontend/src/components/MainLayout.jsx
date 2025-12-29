@@ -20,6 +20,7 @@ import {
   LogoutOutlined,
   UserOutlined,
   TeamOutlined,
+  SafetyOutlined,
 } from '@ant-design/icons';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
@@ -98,6 +99,15 @@ const MainLayout = ({ children }) => {
       label: 'Users',
       onClick: () => {
         navigate('/users');
+        setMobileDrawerOpen(false);
+      },
+    },
+    {
+      key: '/roles',
+      icon: <SafetyOutlined />,
+      label: 'Roles',
+      onClick: () => {
+        navigate('/roles');
         setMobileDrawerOpen(false);
       },
     },
