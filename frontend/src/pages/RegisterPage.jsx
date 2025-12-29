@@ -1,9 +1,8 @@
 import React, { useContext, useState } from 'react';
-import { Form, Input, Button, Card, Row, Col, Alert, Spin, Select, DatePicker } from 'antd';
-import { UserOutlined, LockOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons';
+import { Form, Input, Button, Card, Row, Col, Alert, Spin } from 'antd';
+import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import dayjs from 'dayjs';
 import './AuthPages.css';
 
 const RegisterPage = () => {
@@ -16,13 +15,10 @@ const RegisterPage = () => {
     setLocalError(null);
 
     const userData = {
-      firstName: values.firstName,
-      lastName: values.lastName,
+      username: values.username,
+      fullName: values.fullName,
       email: values.email,
       password: values.password,
-      phoneNumber: values.phoneNumber,
-      dateOfBirth: values.dateOfBirth ? values.dateOfBirth.format('YYYY-MM-DD') : null,
-      gender: values.gender || 'OTHER',
     };
 
     const result = await register(userData);
@@ -62,25 +58,25 @@ const RegisterPage = () => {
                 autoComplete="off"
               >
                 <Form.Item
-                  name="firstName"
-                  label="Tên"
+                  name="username"
+                  label="Username"
                   rules={[
-                    { required: true, message: 'Vui lòng nhập tên' },
-                    { min: 2, message: 'Tên phải có ít nhất 2 ký tự' },
+                    { required: true, message: 'Vui lòng nhập username' },
+                    { min: 3, message: 'Username phải có ít nhất 3 ký tự' },
                   ]}
                 >
-                  <Input placeholder="Nhập tên của bạn" />
+                  <Input prefix={<UserOutlined />} placeholder="Nhập username" />
                 </Form.Item>
 
                 <Form.Item
-                  name="lastName"
-                  label="Họ"
+                  name="fullName"
+                  label="Họ và Tên"
                   rules={[
-                    { required: true, message: 'Vui lòng nhập họ' },
-                    { min: 2, message: 'Họ phải có ít nhất 2 ký tự' },
+                    { required: true, message: 'Vui lòng nhập họ và tên' },
+                    { min: 2, message: 'Họ và tên phải có ít nhất 2 ký tự' },
                   ]}
                 >
-                  <Input placeholder="Nhập họ của bạn" />
+                  <Input placeholder="Nhập họ và tên" />
                 </Form.Item>
 
                 <Form.Item
@@ -95,48 +91,6 @@ const RegisterPage = () => {
                     prefix={<MailOutlined />}
                     placeholder="Nhập email"
                   />
-                </Form.Item>
-
-                <Form.Item
-                  name="phoneNumber"
-                  label="Số Điện Thoại"
-                  rules={[
-                    { required: true, message: 'Vui lòng nhập số điện thoại' },
-                    {
-                      pattern: /^[0-9+\-\s()]*$/,
-                      message: 'Số điện thoại không hợp lệ',
-                    },
-                  ]}
-                >
-                  <Input
-                    prefix={<PhoneOutlined />}
-                    placeholder="Nhập số điện thoại"
-                  />
-                </Form.Item>
-
-                <Form.Item
-                  name="dateOfBirth"
-                  label="Ngày Sinh"
-                  rules={[
-                    { required: true, message: 'Vui lòng chọn ngày sinh' },
-                  ]}
-                >
-                  <DatePicker
-                    style={{ width: '100%' }}
-                    placeholder="Chọn ngày sinh"
-                    format="DD/MM/YYYY"
-                  />
-                </Form.Item>
-
-                <Form.Item
-                  name="gender"
-                  label="Giới Tính"
-                >
-                  <Select placeholder="Chọn giới tính">
-                    <Select.Option value="MALE">Nam</Select.Option>
-                    <Select.Option value="FEMALE">Nữ</Select.Option>
-                    <Select.Option value="OTHER">Khác</Select.Option>
-                  </Select>
                 </Form.Item>
 
                 <Form.Item

@@ -20,7 +20,7 @@ import {
   LogoutOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
 const { Header, Sider, Content } = Layout;
@@ -30,6 +30,20 @@ const MainLayout = ({ children }) => {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const navigate = useNavigate();
   const { user, logout } = useContext(AuthContext);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
+  const userMenuItems = [
+    {
+      key: 'logout',
+      icon: <LogoutOutlined />,
+      label: 'Đăng xuất',
+      onClick: handleLogout,
+    },
+  ];
 
   const menuItems = [
     {
@@ -178,14 +192,22 @@ const MainLayout = ({ children }) => {
             </h1>
           </div>
 
-          <Badge count={3} style={{ backgroundColor: '#52c41a' }}>
-            <BellOutlined style={{ fontSize: '18px', cursor: 'pointer' }} />
-          </Badge>
+          <Space size="middle">
+            <Badge count={3} style={{ backgroundColor: '#52c41a' }}>
+              <BellOutlined style={{ fontSize: '18px', cursor: 'pointer' }} />
+            </Badge>
+
+            <Dropdown menu={{ items: userMenuItems }} placement="bottomRight" trigger={['click']}>
+              <Button type="text" icon={<UserOutlined />}>
+                {user?.fullName || user?.username || 'User'}
+              </Button>
+            </Dropdown>
+          </Space>
         </Header>
 
         {/* Content */}
         <Content style={{ background: '#f0f2f5' }}>
-          {children}
+          {children ?? <Outlet />}
         </Content>
 
         {/* Footer */}

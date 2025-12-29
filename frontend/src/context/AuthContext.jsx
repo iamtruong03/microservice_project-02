@@ -21,12 +21,20 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  const login = useCallback(async (email, password) => {
+  const login = useCallback(async (username, password) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await authService.login(email, password);
-      const { token, user } = response.data;
+      const response = await authService.login(username, password);
+      const { token, id, username: resUsername, email, fullName, type } = response.data;
+
+      const user = {
+        id,
+        username: resUsername,
+        email,
+        fullName,
+        type,
+      };
 
       authService.setToken(token);
       authService.setUser(user);
@@ -49,7 +57,16 @@ export const AuthProvider = ({ children }) => {
     setError(null);
     try {
       const response = await authService.register(userData);
-      const { token, user } = response.data;
+
+      const { token, id, username, email, fullName, type } = response.data;
+
+      const user = {
+        id,
+        username,
+        email,
+        fullName,
+        type,
+      };
 
       authService.setToken(token);
       authService.setUser(user);

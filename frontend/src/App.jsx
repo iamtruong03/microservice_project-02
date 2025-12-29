@@ -34,24 +34,16 @@ function App() {
               <Route path="/register" element={<RegisterPage />} />
 
               {/* Protected Routes */}
-              <Route
-                path="/*"
-                element={
-                  <PrivateRoute>
-                    <MainLayout>
-                      <Routes>
-                        <Route path="/" element={<Dashboard />} />
-                        <Route path="/orders" element={<Orders />} />
-                        <Route path="/inventory" element={<Inventory />} />
-                        <Route path="/accounting" element={<Accounting />} />
-                        <Route path="/notifications" element={<Notifications />} />
-                        <Route path="/statistics" element={<RealTimeDashboard />} />
-                        <Route path="*" element={<Navigate to="/" replace />} />
-                      </Routes>
-                    </MainLayout>
-                  </PrivateRoute>
-                }
-              />
+              <Route element={<PrivateRoute><MainLayout /></PrivateRoute>}>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/orders" element={<Orders />} />
+                <Route path="/inventory" element={<Inventory />} />
+                <Route path="/accounting" element={<Accounting />} />
+                <Route path="/notifications" element={<Notifications />} />
+                <Route path="/statistics" element={<RealTimeDashboard />} />
+              </Route>
+
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </BrowserRouter>
         </StatisticsProvider>

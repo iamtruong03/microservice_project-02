@@ -2,8 +2,8 @@ import api from './api';
 
 export const authService = {
   // Login
-  login: (email, password) =>
-    api.post('/auth/login', { email, password }),
+  login: (username, password) =>
+    api.post('/auth/login', { username, password }),
 
   // Register
   register: (userData) =>
@@ -11,7 +11,7 @@ export const authService = {
 
   // Verify token
   verifyToken: () =>
-    api.get('/auth/verify'),
+    api.get('/auth/validate'),
 
   // Logout
   logout: () => {

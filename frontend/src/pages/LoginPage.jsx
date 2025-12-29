@@ -13,7 +13,7 @@ const LoginPage = () => {
 
   const onFinish = async (values) => {
     setLocalError(null);
-    const result = await login(values.email, values.password);
+    const result = await login(values.username, values.password);
 
     if (result.success) {
       navigate('/');
@@ -50,16 +50,15 @@ const LoginPage = () => {
                 autoComplete="off"
               >
                 <Form.Item
-                  name="email"
-                  label="Email"
+                  name="username"
+                  label="Username"
                   rules={[
-                    { required: true, message: 'Vui lòng nhập email' },
-                    { type: 'email', message: 'Email không hợp lệ' },
+                    { required: true, message: 'Vui lòng nhập username' },
                   ]}
                 >
                   <Input
                     prefix={<UserOutlined />}
-                    placeholder="Nhập email của bạn"
+                    placeholder="Nhập username"
                     size="large"
                   />
                 </Form.Item>
