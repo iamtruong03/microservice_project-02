@@ -35,8 +35,7 @@ jobs:
     - name: Build application
       run: |
         cd inventory-service
-        chmod +x ./mvnw
-        ./mvnw clean compile package
+        mvn clean compile package
 
     - name: Upload JAR artifact
       uses: actions/upload-artifact@v4
@@ -68,8 +67,7 @@ jobs:
     - name: Build application for security check
       run: |
         cd inventory-service
-        chmod +x ./mvnw
-        ./mvnw clean compile
+        mvn clean compile
 
   deploy-staging:
     runs-on: ubuntu-latest
