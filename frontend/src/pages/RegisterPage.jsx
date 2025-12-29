@@ -33,7 +33,7 @@ const RegisterPage = () => {
   return (
     <div className="auth-container">
       <Row justify="center" style={{ minHeight: '100vh', paddingTop: '40px', paddingBottom: '40px' }}>
-        <Col xs={22} sm={20} md={12} lg={8}>
+        <Col xs={24} sm={22} md={16} lg={10}>
           <Card
             title="Đăng Ký"
             className="auth-card"
@@ -147,10 +147,10 @@ const RegisterPage = () => {
                 </Form.Item>
               </Form>
 
-              <div style={{ textAlign: 'center', marginTop: '20px' }}>
+              <div className="auth-form-footer">
                 <p>
                   Đã có tài khoản?{' '}
-                  <Link to="/login" style={{ color: '#1890ff' }}>
+                  <Link to="/login">
                     Đăng nhập
                   </Link>
                 </p>

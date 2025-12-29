@@ -24,11 +24,13 @@ const LoginPage = () => {
 
   return (
     <div className="auth-container">
-      <Card
-        title="Đăng Nhập"
-        className="auth-card"
-        bordered={false}
-      >
+      <Row justify="center" style={{ minHeight: '100vh', paddingTop: '40px', paddingBottom: '40px' }}>
+        <Col xs={24} sm={22} md={16} lg={10}>
+          <Card
+            title="Đăng Nhập"
+            className="auth-card"
+            bordered={false}
+          >
             {(error || localError) && (
               <Alert
                 message="Đăng nhập thất bại"
@@ -57,7 +59,6 @@ const LoginPage = () => {
                   <Input
                     prefix={<UserOutlined />}
                     placeholder="Nhập username"
-                    size="large"
                   />
                 </Form.Item>
 
@@ -71,7 +72,6 @@ const LoginPage = () => {
                   <Input.Password
                     prefix={<LockOutlined />}
                     placeholder="Nhập mật khẩu"
-                    size="large"
                   />
                 </Form.Item>
 
@@ -92,16 +92,18 @@ const LoginPage = () => {
                 </Form.Item>
               </Form>
 
-              <div style={{ textAlign: 'center', marginTop: '24px', color: '#666' }}>
-                <p style={{ margin: '0 0 8px 0', fontSize: '14px' }}>
+              <div className="auth-form-footer">
+                <p>
                   Chưa có tài khoản?{' '}
-                  <Link to="/register" style={{ color: '#667eea', fontWeight: '600', textDecoration: 'none' }}>
+                  <Link to="/register">
                     Đăng ký ngay
                   </Link>
                 </p>
               </div>
             </Spin>
           </Card>
+        </Col>
+      </Row>
     </div>
   );
 };
