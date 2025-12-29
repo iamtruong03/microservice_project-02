@@ -19,6 +19,7 @@ import {
   BarChartOutlined,
   LogoutOutlined,
   UserOutlined,
+  TeamOutlined,
 } from '@ant-design/icons';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
@@ -88,6 +89,15 @@ const MainLayout = ({ children }) => {
       label: 'Notifications',
       onClick: () => {
         navigate('/notifications');
+        setMobileDrawerOpen(false);
+      },
+    },
+    {
+      key: '/users',
+      icon: <TeamOutlined />,
+      label: 'Users',
+      onClick: () => {
+        navigate('/users');
         setMobileDrawerOpen(false);
       },
     },

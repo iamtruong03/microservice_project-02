@@ -49,6 +49,12 @@ public class GatewayRoutesConfig {
                         .filters(f -> f.stripPrefix(1))
                         .uri("lb://notification-service"))
 
+                // User Service Routes
+                .route("user-service", r -> r
+                        .path("/api/users/**")
+                        .filters(f -> f.stripPrefix(1))
+                        .uri("lb://user-service"))
+
                 // Eureka Routes
                 .route("eureka-service", r -> r
                         .path("/eureka/**")

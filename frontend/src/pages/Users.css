@@ -1,0 +1,88 @@
+/* Users Page Styles */
+
+.ant-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.ant-table {
+  font-size: 14px;
+}
+
+.ant-table-thead > tr > th {
+  background-color: #fafafa;
+  font-weight: 600;
+}
+
+.ant-pagination {
+  margin-top: 20px;
+}
+
+/* Statistics cards */
+.ant-statistic-title {
+  font-size: 12px;
+  color: #666;
+}
+
+.ant-statistic-content {
+  font-size: 28px;
+  font-weight: 600;
+}
+
+/* Modal and Form styles */
+.ant-modal-content {
+  border-radius: 8px;
+}
+
+.ant-form-item {
+  margin-bottom: 16px;
+}
+
+/* Button styles */
+.ant-button-primary {
+  border-radius: 6px;
+}
+
+.ant-button-default {
+  border-radius: 6px;
+}
+
+/* Input styles */
+.ant-input {
+  border-radius: 6px;
+}
+
+.ant-input:hover,
+.ant-input:focus {
+  border-color: #40a9ff;
+}
+
+/* Drawer styles */
+.ant-drawer {
+  border-radius: 8px;
+}
+
+.ant-drawer-header {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* Tag styles */
+.ant-tag {
+  border-radius: 4px;
+}
+
+/* Search input group */
+.ant-input-group {
+  border-radius: 6px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .ant-statistic-content {
+    font-size: 20px;
+  }
+
+  .ant-table {
+    font-size: 12px;
+  }
+}

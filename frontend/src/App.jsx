@@ -7,6 +7,7 @@ import Orders from './pages/Orders';
 import Inventory from './pages/Inventory';
 import Accounting from './pages/Accounting';
 import Notifications from './pages/Notifications';
+import Users from './pages/Users';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import RealTimeDashboard from './components/RealTimeDashboard';
@@ -40,6 +41,7 @@ function App() {
                 <Route path="/inventory" element={<Inventory />} />
                 <Route path="/accounting" element={<Accounting />} />
                 <Route path="/notifications" element={<Notifications />} />
+                <Route path="/users" element={<Users />} />
                 <Route path="/statistics" element={<RealTimeDashboard />} />
               </Route>
 

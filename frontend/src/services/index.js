@@ -84,3 +84,47 @@ export const notificationService = {
   // Check health
   checkHealth: () => api.get('/notifications/health'),
 };
+
+export const userService = {
+  // Create a new user
+  createUser: (userData) => api.post('/users', userData),
+
+  // Get user by ID
+  getUser: (userId) => api.get(`/users/${userId}`),
+
+  // Get all users
+  getAllUsers: (params) => api.get('/users', { params }),
+
+  // Get users with pagination
+  getUsersPaged: (page = 0, size = 10, sortBy = 'id', sortDir = 'asc') =>
+    api.get('/users/paged', {
+      params: { page, size, sortBy, sortDir },
+    }),
+
+  // Update user
+  updateUser: (userId, userData) => api.put(`/users/${userId}`, userData),
+
+  // Delete user
+  deleteUser: (userId) => api.delete(`/users/${userId}`),
+
+  // Search users
+  searchUsers: (keyword, page = 0, size = 10, sortBy = 'id', sortDir = 'asc') =>
+    api.get('/users/search', {
+      params: { keyword, page, size, sortBy, sortDir },
+    }),
+
+  // Search users by name
+  searchUsersByName: (name, page = 0, size = 10) =>
+    api.get('/users/search/name', {
+      params: { name, page, size },
+    }),
+
+  // Search users by email
+  searchUsersByEmail: (email) =>
+    api.get('/users/search/email', {
+      params: { email },
+    }),
+
+  // Advanced search
+  advancedSearch: (params) => api.get('/users/search/advanced', { params }),
+};
