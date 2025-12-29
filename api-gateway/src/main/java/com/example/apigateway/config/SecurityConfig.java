@@ -17,16 +17,16 @@ public class SecurityConfig {
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         http
-            .csrf().disable()  // Disable CSRF for REST API (using JWT instead)
-            .authorizeExchange()
+            .csrf(csrf -> csrf.disable())  // Disable CSRF for REST API (using JWT instead)
+            .authorizeExchange(authz -> authz
                 .pathMatchers("/api/auth/**").permitAll()
                 .pathMatchers("/api/public/**").permitAll()
                 .pathMatchers("/health").permitAll()
                 .pathMatchers("/actuator/**").permitAll()
                 .anyExchange().authenticated()
-                .and()
-            .httpBasic().disable()  // Disable HTTP Basic for REST API
-            .formLogin().disable(); // Disable form login for REST API
+            )
+            .httpBasic(httpBasic -> httpBasic.disable())  // Disable HTTP Basic for REST API
+            .formLogin(formLogin -> formLogin.disable()); // Disable form login for REST API
 
         return http.build();
     }
