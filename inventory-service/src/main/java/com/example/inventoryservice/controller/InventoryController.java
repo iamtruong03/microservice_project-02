@@ -17,40 +17,55 @@ public class InventoryController {
     private final InventoryService inventoryService;
 
     @PostMapping
-    public ResponseEntity<InventoryDTO> createInventory(@RequestBody InventoryDTO inventoryDTO) {
+    public ResponseEntity<InventoryDTO> createInventory(
+            @RequestHeader(name = "uid", required = true) Long uid,
+            @RequestBody InventoryDTO inventoryDTO) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(inventoryService.createInventory(inventoryDTO));
+                .body(inventoryService.createInventory(uid, inventoryDTO));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<InventoryDTO> getInventory(@PathVariable Long id) {
-        return ResponseEntity.ok(inventoryService.getInventoryById(id));
+    public ResponseEntity<InventoryDTO> getInventory(
+            @RequestHeader(name = "uid", required = true) Long uid,
+            @PathVariable Long id) {
+        return ResponseEntity.ok(inventoryService.getInventoryById(uid, id));
     }
 
     @GetMapping("/product/{productId}")
-    public ResponseEntity<InventoryDTO> getInventoryByProduct(@PathVariable Long productId) {
-        return ResponseEntity.ok(inventoryService.getInventoryByProductId(productId));
+    public ResponseEntity<InventoryDTO> getInventoryByProduct(
+            @RequestHeader(name = "uid", required = true) Long uid,
+            @PathVariable Long productId) {
+        return ResponseEntity.ok(inventoryService.getInventoryByProductId(uid, productId));
     }
 
     @GetMapping
-    public ResponseEntity<List<InventoryDTO>> getAllInventories() {
-        return ResponseEntity.ok(inventoryService.getAllInventories());
+    public ResponseEntity<List<InventoryDTO>> getAllInventories(
+            @RequestHeader(name = "uid", required = true) Long uid) {
+        return ResponseEntity.ok(inventoryService.getAllInventories(uid));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<InventoryDTO> updateInventory(@PathVariable Long id, @RequestBody InventoryDTO inventoryDTO) {
-        return ResponseEntity.ok(inventoryService.updateInventory(id, inventoryDTO));
+    public ResponseEntity<InventoryDTO> updateInventory(
+            @RequestHeader(name = "uid", required = true) Long uid,
+            @PathVariable Long id,
+            @RequestBody InventoryDTO inventoryDTO) {
+        return ResponseEntity.ok(inventoryService.updateInventory(uid, id, inventoryDTO));
     }
 
     @PostMapping("/reserve")
-    public ResponseEntity<Boolean> reserveInventory(@RequestParam Long productId, @RequestParam Integer quantity) {
-        boolean reserved = inventoryService.reserveInventory(productId, quantity);
+    public ResponseEntity<Boolean> reserveInventory(
+            @RequestHeader(name = "uid", required = true) Long uid,
+            @RequestParam Long productId,
+            @RequestParam Integer quantity) {
+        boolean reserved = inventoryService.reserveInventory(uid, productId, quantity);
         return ResponseEntity.ok(reserved);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteInventory(@PathVariable Long id) {
-        inventoryService.deleteInventory(id);
+    public ResponseEntity<Void> deleteInventory(
+            @RequestHeader(name = "uid", required = true) Long uid,
+            @PathVariable Long id) {
+        inventoryService.deleteInventory(uid, id);
         return ResponseEntity.noContent().build();
     }
 }

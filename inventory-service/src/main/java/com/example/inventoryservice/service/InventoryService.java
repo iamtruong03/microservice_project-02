@@ -3,7 +3,6 @@ package com.example.inventoryservice.service;
 import com.example.inventoryservice.dto.InventoryDTO;
 import com.example.inventoryservice.model.Inventory;
 import com.example.inventoryservice.repository.InventoryRepository;
-import com.example.inventoryservice.security.UserContextHolder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -19,14 +18,13 @@ public class InventoryService {
     private final InventoryRepository inventoryRepository;
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    public InventoryDTO createInventory(InventoryDTO inventoryDTO) {
-        Long currentUserId = UserContextHolder.getCurrentUserId();
-        if (currentUserId == null) {
+    public InventoryDTO createInventory(Long uid, InventoryDTO inventoryDTO) {
+        if (uid == null) {
             throw new RuntimeException("User not authenticated");
         }
         
         Inventory inventory = new Inventory();
-        inventory.setUserId(currentUserId);
+        inventory.setUserId(uid);
         inventory.setProductId(inventoryDTO.getProductId());
         inventory.setQuantity(inventoryDTO.getQuantity());
         
@@ -38,40 +36,39 @@ public class InventoryService {
         return convertToDTO(savedInventory);
     }
 
-    public InventoryDTO getInventoryById(Long id) {
+    public InventoryDTO getInventoryById(Long uid, Long id) {
         Inventory inventory = inventoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Inventory not found"));
         
-        if (!UserContextHolder.hasAccess(inventory.getUserId())) {
+        if (!uid.equals(inventory.getUserId())) {
             throw new RuntimeException("Access denied");
         }
         
         return convertToDTO(inventory);
     }
 
-    public InventoryDTO getInventoryByProductId(Long productId) {
+    public InventoryDTO getInventoryByProductId(Long uid, Long productId) {
         return inventoryRepository.findByProductId(productId)
-                .filter(inv -> UserContextHolder.hasAccess(inv.getUserId()))
+                .filter(inv -> uid.equals(inv.getUserId()))
                 .map(this::convertToDTO)
                 .orElseThrow(() -> new RuntimeException("Inventory not found or access denied"));
     }
 
-    public List<InventoryDTO> getAllInventories() {
-        Long currentUserId = UserContextHolder.getCurrentUserId();
-        if (currentUserId == null) {
+    public List<InventoryDTO> getAllInventories(Long uid) {
+        if (uid == null) {
             throw new RuntimeException("User not authenticated");
         }
         
-        return inventoryRepository.findByUserId(currentUserId).stream()
+        return inventoryRepository.findByUserId(uid).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    public InventoryDTO updateInventory(Long id, InventoryDTO inventoryDTO) {
+    public InventoryDTO updateInventory(Long uid, Long id, InventoryDTO inventoryDTO) {
         Inventory inventory = inventoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Inventory not found"));
         
-        if (!UserContextHolder.hasAccess(inventory.getUserId())) {
+        if (!uid.equals(inventory.getUserId())) {
             throw new RuntimeException("Access denied");
         }
         
@@ -86,11 +83,11 @@ public class InventoryService {
         return convertToDTO(updatedInventory);
     }
 
-    public boolean reserveInventory(Long productId, Integer quantity) {
+    public boolean reserveInventory(Long uid, Long productId, Integer quantity) {
         Inventory inventory = inventoryRepository.findByProductId(productId)
                 .orElseThrow(() -> new RuntimeException("Inventory not found"));
         
-        if (!UserContextHolder.hasAccess(inventory.getUserId())) {
+        if (!uid.equals(inventory.getUserId())) {
             throw new RuntimeException("Access denied");
         }
         
@@ -105,11 +102,11 @@ public class InventoryService {
         return false;
     }
 
-    public void deleteInventory(Long id) {
+    public void deleteInventory(Long uid, Long id) {
         Inventory inventory = inventoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Inventory not found"));
         
-        if (!UserContextHolder.hasAccess(inventory.getUserId())) {
+        if (!uid.equals(inventory.getUserId())) {
             throw new RuntimeException("Access denied");
         }
         

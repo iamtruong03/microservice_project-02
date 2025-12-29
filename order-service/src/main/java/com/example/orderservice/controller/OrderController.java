@@ -33,7 +33,8 @@ public class OrderController {
             @RequestHeader(name = "uid", defaultValue = "") String uid,
             @PathVariable Long id) {
         try {
-            return ResponseUtils.handlerSuccess(orderService.getOrderById(id));
+            Long uidLong = Long.parseLong(uid);
+            return ResponseUtils.handlerSuccess(orderService.getOrderById(id, uidLong));
         } catch (Exception e) {
             return ResponseUtils.handlerException(e);
         }
@@ -43,7 +44,8 @@ public class OrderController {
     public ResponseEntity<?> getAllOrders(
             @RequestHeader(name = "uid", defaultValue = "") String uid) {
         try {
-            return ResponseUtils.handlerSuccess(orderService.getAllOrders());
+            Long uidLong = Long.parseLong(uid);
+            return ResponseUtils.handlerSuccess(orderService.getAllOrders(uidLong));
         } catch (Exception e) {
             return ResponseUtils.handlerException(e);
         }
@@ -54,7 +56,8 @@ public class OrderController {
             @RequestHeader(name = "uid", defaultValue = "") String uid,
             @PathVariable Long customerId) {
         try {
-            return ResponseUtils.handlerSuccess(orderService.getOrdersByCustomerId(customerId));
+            Long uidLong = Long.parseLong(uid);
+            return ResponseUtils.handlerSuccess(orderService.getOrdersByCustomerId(customerId, uidLong));
         } catch (Exception e) {
             return ResponseUtils.handlerException(e);
         }
@@ -66,8 +69,9 @@ public class OrderController {
             @PathVariable Long id,
             @RequestBody OrderDTO orderDTO) {
         try {
-            orderDTO.setCustomerId(Long.parseLong(uid));
-            return ResponseUtils.handlerSuccess(orderService.updateOrder(id, orderDTO));
+            Long uidLong = Long.parseLong(uid);
+            orderDTO.setCustomerId(uidLong);
+            return ResponseUtils.handlerSuccess(orderService.updateOrder(id, orderDTO, uidLong));
         } catch (Exception e) {
             return ResponseUtils.handlerException(e);
         }
@@ -78,7 +82,8 @@ public class OrderController {
             @RequestHeader(name = "uid", defaultValue = "") String uid,
             @PathVariable Long id) {
         try {
-            orderService.deleteOrder(id);
+            Long uidLong = Long.parseLong(uid);
+            orderService.deleteOrder(id, uidLong);
             return ResponseUtils.handlerNoContent();
         } catch (Exception e) {
             return ResponseUtils.handlerException(e);

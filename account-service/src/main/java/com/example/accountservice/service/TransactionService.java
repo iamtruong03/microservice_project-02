@@ -3,7 +3,6 @@ package com.example.accountservice.service;
 import com.example.accountservice.dto.TransactionDTO;
 import com.example.accountservice.model.Transaction;
 import com.example.accountservice.repository.TransactionRepository;
-import com.example.accountservice.security.UserContextHolder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -35,29 +34,28 @@ public class TransactionService {
         return convertToDTO(savedTransaction);
     }
 
-    public TransactionDTO getTransactionById(Long id) {
+    public TransactionDTO getTransactionById(Long uid, Long id) {
         Transaction transaction = transactionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Transaction not found"));
         
-        if (!UserContextHolder.hasAccess(transaction.getCustomerId())) {
+        if (!uid.equals(transaction.getCustomerId())) {
             throw new RuntimeException("Access denied");
         }
         
         return convertToDTO(transaction);
     }
 
-    public List<TransactionDTO> getAllTransactions() {
-        Long currentUserId = UserContextHolder.getCurrentUserId();
-        if (currentUserId == null) {
+    public List<TransactionDTO> getAllTransactions(Long uid) {
+        if (uid == null) {
             throw new RuntimeException("User not authenticated");
         }
         
-        return transactionRepository.findByCustomerId(currentUserId).stream()
+        return transactionRepository.findByCustomerId(uid).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    public List<TransactionDTO> getTransactionsByOrderId(Long orderId) {
+    public List<TransactionDTO> getTransactionsByOrderId(Long uid, Long orderId) {
         List<TransactionDTO> transactions = transactionRepository.findByOrderId(orderId).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
@@ -65,7 +63,7 @@ public class TransactionService {
         // Verify user has access to at least one transaction
         if (!transactions.isEmpty()) {
             Transaction firstTx = transactionRepository.findByOrderId(orderId).get(0);
-            if (!UserContextHolder.hasAccess(firstTx.getCustomerId())) {
+            if (!uid.equals(firstTx.getCustomerId())) {
                 throw new RuntimeException("Access denied");
             }
         }
@@ -73,8 +71,8 @@ public class TransactionService {
         return transactions;
     }
 
-    public List<TransactionDTO> getTransactionsByCustomerId(Long customerId) {
-        if (!UserContextHolder.hasAccess(customerId)) {
+    public List<TransactionDTO> getTransactionsByCustomerId(Long uid, Long customerId) {
+        if (!uid.equals(customerId)) {
             throw new RuntimeException("Access denied");
         }
         
@@ -83,11 +81,11 @@ public class TransactionService {
                 .collect(Collectors.toList());
     }
 
-    public TransactionDTO updateTransaction(Long id, TransactionDTO transactionDTO) {
+    public TransactionDTO updateTransaction(Long uid, Long id, TransactionDTO transactionDTO) {
         Transaction transaction = transactionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Transaction not found"));
 
-        if (!UserContextHolder.hasAccess(transaction.getCustomerId())) {
+        if (!uid.equals(transaction.getCustomerId())) {
             throw new RuntimeException("Access denied");
         }
 
@@ -100,11 +98,11 @@ public class TransactionService {
         return convertToDTO(updatedTransaction);
     }
 
-    public void deleteTransaction(Long id) {
+    public void deleteTransaction(Long uid, Long id) {
         Transaction transaction = transactionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Transaction not found"));
         
-        if (!UserContextHolder.hasAccess(transaction.getCustomerId())) {
+        if (!uid.equals(transaction.getCustomerId())) {
             throw new RuntimeException("Access denied");
         }
         

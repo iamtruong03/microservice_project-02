@@ -23,33 +23,45 @@ public class TransactionController {
     }
 
     @GetMapping("/transactions/{id}")
-    public ResponseEntity<TransactionDTO> getTransaction(@PathVariable Long id) {
-        return ResponseEntity.ok(transactionService.getTransactionById(id));
+    public ResponseEntity<TransactionDTO> getTransaction(
+            @RequestHeader(name = "uid", required = true) Long uid,
+            @PathVariable Long id) {
+        return ResponseEntity.ok(transactionService.getTransactionById(uid, id));
     }
 
     @GetMapping("/transactions")
-    public ResponseEntity<List<TransactionDTO>> getAllTransactions() {
-        return ResponseEntity.ok(transactionService.getAllTransactions());
+    public ResponseEntity<List<TransactionDTO>> getAllTransactions(
+            @RequestHeader(name = "uid", required = true) Long uid) {
+        return ResponseEntity.ok(transactionService.getAllTransactions(uid));
     }
 
     @GetMapping("/orders/{orderId}/transactions")
-    public ResponseEntity<List<TransactionDTO>> getTransactionsByOrder(@PathVariable Long orderId) {
-        return ResponseEntity.ok(transactionService.getTransactionsByOrderId(orderId));
+    public ResponseEntity<List<TransactionDTO>> getTransactionsByOrder(
+            @RequestHeader(name = "uid", required = true) Long uid,
+            @PathVariable Long orderId) {
+        return ResponseEntity.ok(transactionService.getTransactionsByOrderId(uid, orderId));
     }
 
     @GetMapping("/customers/{customerId}/transactions")
-    public ResponseEntity<List<TransactionDTO>> getTransactionsByCustomer(@PathVariable Long customerId) {
-        return ResponseEntity.ok(transactionService.getTransactionsByCustomerId(customerId));
+    public ResponseEntity<List<TransactionDTO>> getTransactionsByCustomer(
+            @RequestHeader(name = "uid", required = true) Long uid,
+            @PathVariable Long customerId) {
+        return ResponseEntity.ok(transactionService.getTransactionsByCustomerId(uid, customerId));
     }
 
     @PutMapping("/transactions/{id}")
-    public ResponseEntity<TransactionDTO> updateTransaction(@PathVariable Long id, @RequestBody TransactionDTO transactionDTO) {
-        return ResponseEntity.ok(transactionService.updateTransaction(id, transactionDTO));
+    public ResponseEntity<TransactionDTO> updateTransaction(
+            @RequestHeader(name = "uid", required = true) Long uid,
+            @PathVariable Long id,
+            @RequestBody TransactionDTO transactionDTO) {
+        return ResponseEntity.ok(transactionService.updateTransaction(uid, id, transactionDTO));
     }
 
     @DeleteMapping("/transactions/{id}")
-    public ResponseEntity<Void> deleteTransaction(@PathVariable Long id) {
-        transactionService.deleteTransaction(id);
+    public ResponseEntity<Void> deleteTransaction(
+            @RequestHeader(name = "uid", required = true) Long uid,
+            @PathVariable Long id) {
+        transactionService.deleteTransaction(uid, id);
         return ResponseEntity.noContent().build();
     }
 }
