@@ -23,7 +23,7 @@ import {
   DeleteOutlined,
   ShoppingCartOutlined,
 } from '@ant-design/icons';
-import { inventoryService } from '../../services';
+import { inventoryService } from '../services';
 
 const Inventory = () => {
   const [inventories, setInventories] = useState([]);

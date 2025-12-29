@@ -1,40 +1,35 @@
-# React Frontend for Microservice Project
+﻿# Dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
 
-## Installation
+# Production
+dist/
+build/
 
-```bash
-npm install
-```
+# Environment
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-## Development
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+*.sublime-project
+*.sublime-workspace
+.DS_Store
 
-```bash
-npm run dev
-```
+# Vite
+.vite/
 
-The frontend will run on http://localhost:5173
-
-## Build
-
-```bash
-npm run build
-```
-
-## Project Structure
-
-- `/src/components` - Reusable React components
-- `/src/pages` - Page components
-- `/src/services` - API services
-- `/src/hooks` - Custom React hooks
-- `/src/context` - React Context for state management
-- `/src/utils` - Utility functions
-- `/public` - Static assets
-
-## Features
-
-- Order Management
-- Inventory Management
-- Accounting/Transaction Management
-- Notification System
-- Dashboard with real-time status updates
-- Responsive UI with Ant Design
+# Misc
+.cache/
+.parcel-cache/
+*.log

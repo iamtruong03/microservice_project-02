@@ -6,7 +6,7 @@ import {
   DollarOutlined,
   BellOutlined,
 } from '@ant-design/icons';
-import { orderService, inventoryService, accountingService } from '../../services';
+import { orderService, inventoryService, accountingService } from '../services';
 
 const Dashboard = () => {
   const [stats, setStats] = useState({

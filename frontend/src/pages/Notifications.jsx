@@ -15,7 +15,7 @@ import {
   Alert,
 } from 'antd';
 import { BellOutlined, CheckCircleOutlined, ClockCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
-import { notificationService } from '../../services';
+import { notificationService } from '../services';
 
 const Notifications = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);

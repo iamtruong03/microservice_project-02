@@ -14,7 +14,7 @@ import {
   Spin,
 } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { orderService } from '../../services';
+import { orderService } from '../services';
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);

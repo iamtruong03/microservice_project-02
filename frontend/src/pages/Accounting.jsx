@@ -24,7 +24,7 @@ import {
   DeleteOutlined,
   DollarOutlined,
 } from '@ant-design/icons';
-import { accountingService } from '../../services';
+import { accountingService } from '../services';
 
 const Accounting = () => {
   const [transactions, setTransactions] = useState([]);
