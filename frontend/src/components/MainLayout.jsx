@@ -12,6 +12,9 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   DashboardOutlined,
+  CreditCardOutlined,
+  SwapOutlined,
+  HistoryOutlined,
   DollarOutlined,
   BellOutlined,
   BarChartOutlined,
@@ -52,6 +55,33 @@ const MainLayout = ({ children }) => {
       label: 'Dashboard',
       onClick: () => {
         navigate('/');
+        setMobileDrawerOpen(false);
+      },
+    },
+    {
+      key: '/accounts',
+      icon: <CreditCardOutlined />,
+      label: 'My Accounts',
+      onClick: () => {
+        navigate('/accounts');
+        setMobileDrawerOpen(false);
+      },
+    },
+    {
+      key: '/transactions',
+      icon: <SwapOutlined />,
+      label: 'Transactions',
+      onClick: () => {
+        navigate('/transactions');
+        setMobileDrawerOpen(false);
+      },
+    },
+    {
+      key: '/transaction-history',
+      icon: <HistoryOutlined />,
+      label: 'History & Stats',
+      onClick: () => {
+        navigate('/transaction-history');
         setMobileDrawerOpen(false);
       },
     },
