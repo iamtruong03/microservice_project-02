@@ -23,9 +23,7 @@
 		<module>api-gateway</module>
 		<module>auth-service</module>
 		<module>eureka-server</module>
-		<module>inventory-service</module>
 		<module>notification-service</module>
-		<module>order-service</module>
 		<module>transaction-service</module>
 		<module>user-service</module>
 	</modules>

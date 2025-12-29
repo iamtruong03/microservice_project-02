@@ -12,8 +12,6 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   DashboardOutlined,
-  ShoppingCartOutlined,
-  InboxOutlined,
   DollarOutlined,
   BellOutlined,
   BarChartOutlined,
@@ -54,24 +52,6 @@ const MainLayout = ({ children }) => {
       label: 'Dashboard',
       onClick: () => {
         navigate('/');
-        setMobileDrawerOpen(false);
-      },
-    },
-    {
-      key: '/orders',
-      icon: <ShoppingCartOutlined />,
-      label: 'Orders',
-      onClick: () => {
-        navigate('/orders');
-        setMobileDrawerOpen(false);
-      },
-    },
-    {
-      key: '/inventory',
-      icon: <InboxOutlined />,
-      label: 'Inventory',
-      onClick: () => {
-        navigate('/inventory');
         setMobileDrawerOpen(false);
       },
     },

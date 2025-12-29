@@ -3,8 +3,6 @@ import { ConfigProvider } from 'antd';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import MainLayout from './components/MainLayout';
 import Dashboard from './pages/Dashboard';
-import Orders from './pages/Orders';
-import Inventory from './pages/Inventory';
 import Accounting from './pages/Accounting';
 import Notifications from './pages/Notifications';
 import Users from './pages/Users';
@@ -38,8 +36,6 @@ function App() {
               {/* Protected Routes */}
               <Route element={<PrivateRoute><MainLayout /></PrivateRoute>}>
                 <Route path="/" element={<Dashboard />} />
-                <Route path="/orders" element={<Orders />} />
-                <Route path="/inventory" element={<Inventory />} />
                 <Route path="/accounting" element={<Accounting />} />
                 <Route path="/notifications" element={<Notifications />} />
                 <Route path="/users" element={<Users />} />
