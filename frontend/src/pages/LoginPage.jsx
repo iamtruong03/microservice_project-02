@@ -25,11 +25,11 @@ const LoginPage = () => {
   return (
     <div className="auth-container">
       <Row justify="center" style={{ minHeight: '100vh', paddingTop: '60px', paddingBottom: '60px' }}>
-        <Col xs={24} sm={22} md={18} lg={12} xl={10}>
+        <Col xs={24} sm={24} md={20} lg={14} xl={12} xxl={10}>
           <Card
             title={
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
-                <LoginOutlined style={{ fontSize: '28px' }} />
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+                <LoginOutlined style={{ fontSize: '24px' }} />
                 <span>Đăng Nhập Hệ Thống</span>
               </div>
             }
@@ -87,14 +87,9 @@ const LoginPage = () => {
                 </Form.Item>
 
                 <Form.Item>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Form.Item name="remember" valuePropName="checked" noStyle>
-                      <Checkbox>Nhớ đăng nhập</Checkbox>
-                    </Form.Item>
-                    <Link to="/forgot-password" className="forgot-password-link">
-                      Quên mật khẩu?
-                    </Link>
-                  </div>
+                  <Form.Item name="remember" valuePropName="checked" noStyle>
+                    <Checkbox>Nhớ đăng nhập</Checkbox>
+                  </Form.Item>
                 </Form.Item>
 
                 <Form.Item style={{ marginBottom: 0 }}>

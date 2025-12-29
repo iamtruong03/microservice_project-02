@@ -58,11 +58,11 @@ const RegisterPage = () => {
   return (
     <div className="auth-container">
       <Row justify="center" style={{ minHeight: '100vh', paddingTop: '60px', paddingBottom: '60px' }}>
-        <Col xs={24} sm={22} md={18} lg={12} xl={10}>
+        <Col xs={24} sm={24} md={20} lg={14} xl={12} xxl={10}>
           <Card
             title={
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
-                <UserAddOutlined style={{ fontSize: '28px' }} />
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+                <UserAddOutlined style={{ fontSize: '24px' }} />
                 <span>Đăng Ký Tài Khoản</span>
               </div>
             }
