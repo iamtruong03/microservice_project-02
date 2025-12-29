@@ -24,9 +24,14 @@ public class UserEventListener {
      * Khi user đăng ký qua Auth Service, event được phát tới Kafka
      * User Service sẽ nhận và tạo user profile chi tiết
      */
-    @KafkaListener(topics = "user-events", groupId = "user-service-group", key = "user_registered")
+    @KafkaListener(topics = "user-events", groupId = "user-service-group")
     public void handleUserRegisteredEvent(Map<String, Object> event) {
         try {
+            String eventType = (String) event.get("eventType");
+            if (!"USER_REGISTERED".equals(eventType)) {
+                return;
+            }
+
             log.info("Received USER_REGISTERED event: {}", event);
 
             Long userId = ((Number) event.get("userId")).longValue();
@@ -83,9 +88,14 @@ public class UserEventListener {
      * Lắng nghe event "user:updated" từ User Service hoặc Auth Service
      * Khi có cập nhật thông tin, các service khác sẽ được thông báo
      */
-    @KafkaListener(topics = "user-events", groupId = "user-service-group", key = "user_updated")
+    @KafkaListener(topics = "user-events", groupId = "user-service-group")
     public void handleUserUpdatedEvent(Map<String, Object> event) {
         try {
+            String eventType = (String) event.get("eventType");
+            if (!"USER_UPDATED".equals(eventType)) {
+                return;
+            }
+
             log.info("Received USER_UPDATED event: {}", event);
 
             Long userId = ((Number) event.get("userId")).longValue();
@@ -116,9 +126,14 @@ public class UserEventListener {
      * Lắng nghe event "user:deleted" từ Auth Service
      * Khi user bị xóa, cập nhật trạng thái trong User Service
      */
-    @KafkaListener(topics = "user-events", groupId = "user-service-group", key = "user_deleted")
+    @KafkaListener(topics = "user-events", groupId = "user-service-group")
     public void handleUserDeletedEvent(Map<String, Object> event) {
         try {
+            String eventType = (String) event.get("eventType");
+            if (!"USER_DELETED".equals(eventType)) {
+                return;
+            }
+
             log.info("Received USER_DELETED event: {}", event);
 
             Long userId = ((Number) event.get("userId")).longValue();

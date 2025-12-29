@@ -21,9 +21,14 @@ public class AuthEventListener {
      * Lắng nghe event "user:profile_updated" từ User Service
      * Khi user cập nhật email hoặc thông tin, Auth Service được thông báo
      */
-    @KafkaListener(topics = "user-events", groupId = "auth-service-group", key = "user_profile_updated")
+    @KafkaListener(topics = "user-events", groupId = "auth-service-group")
     public void handleUserProfileUpdatedEvent(Map<String, Object> event) {
         try {
+            String eventType = (String) event.get("eventType");
+            if (!"USER_PROFILE_UPDATED".equals(eventType)) {
+                return;
+            }
+
             log.info("Received USER_PROFILE_UPDATED event in Auth Service: {}", event);
 
             Long userId = ((Number) event.get("userId")).longValue();
@@ -60,9 +65,14 @@ public class AuthEventListener {
      * Lắng nghe event "user:password_changed" từ User Service
      * Khi user đổi mật khẩu ở User Service, cập nhật lại ở Auth Service
      */
-    @KafkaListener(topics = "user-events", groupId = "auth-service-group", key = "user_password_changed")
+    @KafkaListener(topics = "user-events", groupId = "auth-service-group")
     public void handleUserPasswordChangedEvent(Map<String, Object> event) {
         try {
+            String eventType = (String) event.get("eventType");
+            if (!"USER_PASSWORD_CHANGED".equals(eventType)) {
+                return;
+            }
+
             log.info("Received USER_PASSWORD_CHANGED event in Auth Service: {}", event);
 
             Long userId = ((Number) event.get("userId")).longValue();
