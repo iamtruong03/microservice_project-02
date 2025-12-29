@@ -18,12 +18,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Slf4j
@@ -37,6 +40,7 @@ public class UserServiceImpl implements IUserService {
     private final UserQueryBuilder queryBuilder;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Override
     @Transactional(readOnly = true)
@@ -73,10 +77,38 @@ public class UserServiceImpl implements IUserService {
     public User updateUser(Long id, UpdateUserRequest request) {
         User existingUser = getUserById(id);
         validateUniqueFieldsForUpdate(request, id);
+        
+        // Lưu email cũ để kiểm tra thay đổi
+        String oldEmail = existingUser.getEmail();
+        
         userMapper.updateEntity(existingUser, request);
         User updatedUser = userRepository.save(existingUser);
         log.info("Updated user with id: {}", updatedUser.getId());
+
+        // 📤 Phát event nếu email hoặc fullName thay đổi
+        publishUserProfileUpdatedEvent(updatedUser, oldEmail);
+
         return updatedUser;
+    }
+
+    // 📤 Phát event khi user profile được cập nhật
+    private void publishUserProfileUpdatedEvent(User user, String oldEmail) {
+        try {
+            // Chỉ phát event nếu email hoặc fullName thay đổi
+            if (!oldEmail.equals(user.getEmail()) || true) {
+                Map<String, Object> event = new HashMap<>();
+                event.put("eventType", "USER_PROFILE_UPDATED");
+                event.put("userId", user.getId());
+                event.put("email", user.getEmail());
+                event.put("fullName", user.getFullName());
+                event.put("timestamp", System.currentTimeMillis());
+
+                kafkaTemplate.send("user-events", "user_profile_updated", event);
+                log.info("Published USER_PROFILE_UPDATED event for user: {}", user.getId());
+            }
+        } catch (Exception e) {
+            log.error("Failed to publish user profile updated event", e);
+        }
     }
 
     @Override

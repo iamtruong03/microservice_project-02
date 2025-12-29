@@ -7,6 +7,8 @@ import com.example.authservice.dto.RegisterRequest;
 import com.example.authservice.repository.UserRepository;
 import com.example.authservice.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,7 +16,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -22,6 +27,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider tokenProvider;
     private final PasswordEncoder passwordEncoder;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     public JwtResponse login(LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(
@@ -62,6 +68,9 @@ public class AuthService {
 
         userRepository.save(user);
 
+        // 📤 Phát event "user:registered" qua Kafka để User Service lắng nghe
+        publishUserRegisteredEvent(user);
+
         String token = tokenProvider.generateToken(user.getUsername());
         return JwtResponse.builder()
                 .token(token)
@@ -70,6 +79,26 @@ public class AuthService {
                 .email(user.getEmail())
                 .fullName(user.getFullName())
                 .build();
+    }
+
+    // 📤 Phát event khi user đăng ký
+    private void publishUserRegisteredEvent(User user) {
+        try {
+            Map<String, Object> event = new HashMap<>();
+            event.put("eventType", "USER_REGISTERED");
+            event.put("userId", user.getId());
+            event.put("username", user.getUsername());
+            event.put("email", user.getEmail());
+            event.put("fullName", user.getFullName());
+            event.put("timestamp", System.currentTimeMillis());
+
+            // Gửi event tới Kafka topic "user-events"
+            kafkaTemplate.send("user-events", "user_registered", event);
+            log.info("Published USER_REGISTERED event for user: {}", user.getUsername());
+        } catch (Exception e) {
+            log.error("Failed to publish user registered event", e);
+            // Không throw exception, chỉ log để không ảnh hưởng tới login flow
+        }
     }
 
     public User getUserByUsername(String username) {
