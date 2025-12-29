@@ -1,0 +1,147 @@
+.dashboard-container {
+  padding: 24px;
+  background: #f0f2f5;
+  min-height: 100vh;
+}
+
+.stat-card {
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Accounts List Styling */
+.accounts-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.account-item {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.account-item:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.account-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.account-number {
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.account-type {
+  font-size: 12px;
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.account-type.savings {
+  background: rgba(82, 196, 26, 0.3);
+}
+
+.account-type.checking {
+  background: rgba(24, 144, 255, 0.3);
+}
+
+.account-type.investment {
+  background: rgba(250, 173, 20, 0.3);
+}
+
+.account-balance {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+.account-status {
+  margin-top: 12px;
+}
+
+.account-status :global(.ant-progress) {
+  margin: 0;
+}
+
+/* Quick Actions */
+:global(.ant-btn) {
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+:global(.ant-btn:hover) {
+  transform: translateY(-2px);
+}
+
+/* Recent Transactions Table */
+:global(.ant-table) {
+  background: white;
+  border-radius: 8px;
+}
+
+:global(.ant-table-row:hover) {
+  background: #fafafa;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 12px;
+  }
+
+  .accounts-list {
+    grid-template-columns: 1fr;
+  }
+
+  .account-balance {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-container {
+    padding: 8px;
+  }
+
+  .stat-card {
+    margin-bottom: 12px;
+  }
+
+  .account-item {
+    padding: 16px;
+  }
+
+  .account-balance {
+    font-size: 20px;
+  }
+
+  .account-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .account-type {
+    margin-top: 8px;
+  }
+}
