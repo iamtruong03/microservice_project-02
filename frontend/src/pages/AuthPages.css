@@ -4,24 +4,36 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 20px;
 }
 
 .auth-card {
-  border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   background: white !important;
+  width: 100%;
+  max-width: 420px;
+  padding: 0 !important;
+  overflow: hidden;
 }
 
 .auth-card .ant-card-head {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border: none;
-  border-radius: 12px 12px 0 0 !important;
+  border-radius: 0 !important;
+  padding: 32px 28px !important;
 }
 
 .auth-card .ant-card-head .ant-card-head-title {
   color: white;
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 700;
+  letter-spacing: -0.5px;
+  padding: 0 !important;
+}
+
+.auth-card .ant-card-body {
+  padding: 32px 28px !important;
 }
 
 .auth-card .ant-input,
@@ -29,6 +41,11 @@
 .auth-card .ant-select-selector,
 .auth-card .ant-picker {
   border-radius: 8px !important;
+  font-size: 14px;
+}
+
+.auth-card .ant-input::placeholder {
+  color: #bfbfbf;
 }
 
 .auth-card .ant-btn-primary {
@@ -37,16 +54,33 @@
   border-radius: 8px;
   font-size: 16px;
   font-weight: 600;
-  height: 40px;
+  height: 44px;
+  margin-top: 8px;
 }
 
 .auth-card .ant-btn-primary:hover {
-  background: linear-gradient(135deg, #5568d3 0%, #6a3d8a 100%);
+  background: linear-gradient(135deg, #5568d3 0%, #6a3d8a 100%) !important;
+  opacity: 0.95;
 }
 
 .auth-card .ant-form-item-label > label {
   font-weight: 600;
   color: #333;
+  font-size: 14px !important;
+}
+
+.auth-card .ant-form-item {
+  margin-bottom: 20px !important;
+}
+
+.auth-card .ant-checkbox-wrapper {
+  font-size: 14px;
+  color: #333;
+}
+
+.auth-card .ant-alert {
+  margin-bottom: 20px !important;
+  border-radius: 8px;
 }
 
 .auth-card .ant-form-item {

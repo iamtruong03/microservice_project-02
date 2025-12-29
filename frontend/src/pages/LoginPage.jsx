@@ -24,13 +24,11 @@ const LoginPage = () => {
 
   return (
     <div className="auth-container">
-      <Row justify="center" align="middle" style={{ minHeight: '100vh' }}>
-        <Col xs={22} sm={20} md={12} lg={8}>
-          <Card
-            title="Đăng Nhập"
-            className="auth-card"
-            bordered={false}
-          >
+      <Card
+        title="Đăng Nhập"
+        className="auth-card"
+        bordered={false}
+      >
             {(error || localError) && (
               <Alert
                 message="Đăng nhập thất bại"
@@ -94,18 +92,16 @@ const LoginPage = () => {
                 </Form.Item>
               </Form>
 
-              <div style={{ textAlign: 'center', marginTop: '20px' }}>
-                <p>
+              <div style={{ textAlign: 'center', marginTop: '24px', color: '#666' }}>
+                <p style={{ margin: '0 0 8px 0', fontSize: '14px' }}>
                   Chưa có tài khoản?{' '}
-                  <Link to="/register" style={{ color: '#1890ff' }}>
+                  <Link to="/register" style={{ color: '#667eea', fontWeight: '600', textDecoration: 'none' }}>
                     Đăng ký ngay
                   </Link>
                 </p>
               </div>
             </Spin>
           </Card>
-        </Col>
-      </Row>
     </div>
   );
 };
