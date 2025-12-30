@@ -68,7 +68,6 @@ public class UserEventListener {
                     .isVerified(false)
                     .isLocked(false)
                     .kycStatus("PENDING")
-                    .riskLevel("MEDIUM")
                     .preferredLanguage("en")
                     .preferredCurrency("USD")
                     .notificationEnabled(true)

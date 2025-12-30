@@ -56,7 +56,6 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
   Page<User> findByIsActive(Boolean isActive, Pageable pageable);
   Page<User> findByIsVerified(Boolean isVerified, Pageable pageable);
   Page<User> findByKycStatus(String kycStatus, Pageable pageable);
-  Page<User> findByRiskLevel(String riskLevel, Pageable pageable);
   
   // Gender search
   Page<User> findByGender(String gender, Pageable pageable);
@@ -76,14 +75,12 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
          "(:isActive IS NULL OR u.isActive = :isActive) AND " +
          "(:isVerified IS NULL OR u.isVerified = :isVerified) AND " +
          "(:kycStatus IS NULL OR u.kycStatus = :kycStatus) AND " +
-         "(:riskLevel IS NULL OR u.riskLevel = :riskLevel) AND " +
          "(:gender IS NULL OR u.gender = :gender) AND " +
          "(:city IS NULL OR LOWER(u.city) LIKE LOWER(CONCAT('%', :city, '%'))) AND " +
          "(:country IS NULL OR LOWER(u.country) LIKE LOWER(CONCAT('%', :country, '%')))")
   Page<User> findByFilters(@Param("isActive") Boolean isActive,
                           @Param("isVerified") Boolean isVerified, 
                           @Param("kycStatus") String kycStatus,
-                          @Param("riskLevel") String riskLevel,
                           @Param("gender") String gender,
                           @Param("city") String city,
                           @Param("country") String country,
