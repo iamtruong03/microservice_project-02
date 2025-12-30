@@ -1,17 +1,17 @@
 package com.example.accountservice.service;
 
-import com.example.accountservice.dto.*;
+import com.example.accountservice.dto.AccountStatisticsDTO;
+import com.example.accountservice.dto.BankAccountDTO;
+import com.example.accountservice.dto.DepositWithdrawDTO;
 import com.example.accountservice.exception.ResourceNotFoundException;
 import com.example.accountservice.model.BankAccount;
-import com.example.accountservice.model.Transaction;
 import com.example.accountservice.repository.BankAccountRepository;
-import com.example.accountservice.repository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class BankAccountService {
 
     private final BankAccountRepository bankAccountRepository;
-    private final TransactionRepository transactionRepository;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     /**
      * Tạo tài khoản ngân hàng sau khi đăng ký
@@ -41,6 +41,10 @@ public class BankAccountService {
         bankAccount.setStatus("ACTIVE");
 
         BankAccount saved = bankAccountRepository.save(bankAccount);
+        
+        // Publish account created event
+        kafkaTemplate.send("account-events", "account_created", saved);
+        
         return convertToDTO(saved);
     }
 
@@ -73,11 +77,11 @@ public class BankAccountService {
      * Chuyển tiền nội bộ giữa các tài khoản
      */
     @Transactional
-    public TransactionDTO transferMoney(Long uid, TransferDTO transferDTO) {
-        BankAccount fromAccount = bankAccountRepository.findById(transferDTO.getFromAccountId())
+    public BankAccountDTO transferBetweenAccounts(Long uid, Long fromAccountId, Long toAccountId, BigDecimal amount, String description) {
+        BankAccount fromAccount = bankAccountRepository.findById(fromAccountId)
                 .orElseThrow(() -> new ResourceNotFoundException("From account not found"));
 
-        BankAccount toAccount = bankAccountRepository.findById(transferDTO.getToAccountId())
+        BankAccount toAccount = bankAccountRepository.findById(toAccountId)
                 .orElseThrow(() -> new ResourceNotFoundException("To account not found"));
 
         // Kiểm tra quyền truy cập
@@ -86,35 +90,29 @@ public class BankAccountService {
         }
 
         // Kiểm tra số dư
-        if (fromAccount.getBalance().compareTo(transferDTO.getAmount()) < 0) {
+        if (fromAccount.getBalance().compareTo(amount) < 0) {
             throw new RuntimeException("Insufficient balance");
         }
 
         // Thực hiện chuyển tiền
-        fromAccount.setBalance(fromAccount.getBalance().subtract(transferDTO.getAmount()));
-        toAccount.setBalance(toAccount.getBalance().add(transferDTO.getAmount()));
+        fromAccount.setBalance(fromAccount.getBalance().subtract(amount));
+        toAccount.setBalance(toAccount.getBalance().add(amount));
 
         bankAccountRepository.save(fromAccount);
-        bankAccountRepository.save(toAccount);
+        BankAccount updatedToAccount = bankAccountRepository.save(toAccount);
 
-        // Tạo transaction record
-        Transaction transaction = new Transaction();
-        transaction.setCustomerId(uid);
-        transaction.setAmount(transferDTO.getAmount());
-        transaction.setTransactionType("TRANSFER");
-        transaction.setStatus("COMPLETED");
-        transaction.setDescription(transferDTO.getDescription() != null ? 
-                transferDTO.getDescription() : "Transfer between accounts");
+        // Publish account updated events
+        kafkaTemplate.send("account-events", "account_updated", fromAccount);
+        kafkaTemplate.send("account-events", "account_updated", toAccount);
 
-        Transaction saved = transactionRepository.save(transaction);
-        return convertTransactionToDTO(saved);
+        return convertToDTO(updatedToAccount);
     }
 
     /**
      * Rút tiền / Nạp tiền
      */
     @Transactional
-    public TransactionDTO depositOrWithdraw(Long uid, DepositWithdrawDTO dto) {
+    public BankAccountDTO depositOrWithdraw(Long uid, DepositWithdrawDTO dto) {
         BankAccount account = bankAccountRepository.findById(dto.getAccountId())
                 .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
 
@@ -141,37 +139,70 @@ public class BankAccountService {
             account.setBalance(account.getBalance().subtract(dto.getAmount()));
         }
 
-        bankAccountRepository.save(account);
+        BankAccount updated = bankAccountRepository.save(account);
+        
+        // Publish account updated event
+        kafkaTemplate.send("account-events", "account_updated", updated);
 
-        // Tạo transaction record
-        Transaction transaction = new Transaction();
-        transaction.setCustomerId(uid);
-        transaction.setAmount(dto.getAmount());
-        transaction.setTransactionType(dto.getType());
-        transaction.setStatus("COMPLETED");
-        transaction.setDescription(dto.getDescription() != null ? 
-                dto.getDescription() : dto.getType().toLowerCase());
-
-        Transaction saved = transactionRepository.save(transaction);
-        return convertTransactionToDTO(saved);
+        return convertToDTO(updated);
     }
 
     /**
-     * Lịch sử giao dịch
+     * Cập nhật thông tin tài khoản
      */
-    public List<TransactionDTO> getTransactionHistory(Long uid) {
-        return transactionRepository.findByCustomerId(uid)
-                .stream()
-                .map(this::convertTransactionToDTO)
-                .collect(Collectors.toList());
+    @Transactional
+    public BankAccountDTO updateAccount(Long uid, Long accountId, String accountType) {
+        BankAccount account = bankAccountRepository.findById(accountId)
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
+
+        // Kiểm tra quyền truy cập
+        if (!account.getUserId().equals(uid)) {
+            throw new RuntimeException("Access denied");
+        }
+
+        if (accountType != null && !accountType.isBlank()) {
+            account.setAccountType(accountType);
+        }
+
+        BankAccount updated = bankAccountRepository.save(account);
+        
+        // Publish account updated event
+        kafkaTemplate.send("account-events", "account_updated", updated);
+
+        return convertToDTO(updated);
     }
 
     /**
-     * Thống kê tổng số dư và Transaction
+     * Khóa/Mở khóa tài khoản
+     */
+    @Transactional
+    public BankAccountDTO updateAccountStatus(Long uid, Long accountId, String status) {
+        BankAccount account = bankAccountRepository.findById(accountId)
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
+
+        // Kiểm tra quyền truy cập
+        if (!account.getUserId().equals(uid)) {
+            throw new RuntimeException("Access denied");
+        }
+
+        if (!"ACTIVE".equals(status) && !"INACTIVE".equals(status) && !"CLOSED".equals(status)) {
+            throw new RuntimeException("Invalid account status");
+        }
+
+        account.setStatus(status);
+        BankAccount updated = bankAccountRepository.save(account);
+        
+        // Publish account updated event
+        kafkaTemplate.send("account-events", "account_updated", updated);
+
+        return convertToDTO(updated);
+    }
+
+    /**
+     * Thống kê tài khoản
      */
     public AccountStatisticsDTO getAccountStatistics(Long uid) {
         List<BankAccount> accounts = bankAccountRepository.findAllByUserId(uid);
-        List<Transaction> transactions = transactionRepository.findByCustomerId(uid);
 
         BigDecimal totalBalance = accounts.stream()
                 .map(BankAccount::getBalance)
@@ -181,7 +212,7 @@ public class BankAccountService {
                 uid,
                 totalBalance,
                 (long) accounts.size(),
-                (long) transactions.size()
+                0L // Transaction count moved to transaction-service
         );
     }
 
@@ -198,23 +229,6 @@ public class BankAccountService {
                 account.getStatus(),
                 account.getCreatedAt(),
                 account.getUpdatedAt()
-        );
-    }
-
-    /**
-     * Helper: Convert Transaction to DTO
-     */
-    private TransactionDTO convertTransactionToDTO(Transaction transaction) {
-        return new TransactionDTO(
-                transaction.getId(),
-                transaction.getOrderId(),
-                transaction.getCustomerId(),
-                transaction.getAmount(),
-                transaction.getTransactionType(),
-                transaction.getStatus(),
-                transaction.getDescription(),
-                transaction.getCreatedAt(),
-                transaction.getUpdatedAt()
         );
     }
 

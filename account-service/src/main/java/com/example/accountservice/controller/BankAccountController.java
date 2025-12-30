@@ -64,16 +64,19 @@ public class BankAccountController {
     }
 
     /**
-     * Chuyển tiền nội bộ
+     * Chuyển tiền nội bộ giữa các tài khoản
      */
-    @PostMapping("/transfer")
-    public ResponseEntity<?> transferMoney(
+    @PostMapping("/transfer-between-accounts")
+    public ResponseEntity<?> transferBetweenAccounts(
             @RequestHeader(name = "uid", defaultValue = "") String uid,
-            @RequestBody TransferDTO transferDTO) {
+            @RequestParam Long fromAccountId,
+            @RequestParam Long toAccountId,
+            @RequestParam java.math.BigDecimal amount,
+            @RequestParam(required = false) String description) {
         try {
             Long uidLong = Long.parseLong(uid);
-            TransactionDTO transaction = bankAccountService.transferMoney(uidLong, transferDTO);
-            return ResponseUtils.handlerSuccess(transaction);
+            BankAccountDTO account = bankAccountService.transferBetweenAccounts(uidLong, fromAccountId, toAccountId, amount, description);
+            return ResponseUtils.handlerSuccess(account);
         } catch (Exception e) {
             return ResponseUtils.handlerException(e);
         }
@@ -88,23 +91,42 @@ public class BankAccountController {
             @RequestBody DepositWithdrawDTO dto) {
         try {
             Long uidLong = Long.parseLong(uid);
-            TransactionDTO transaction = bankAccountService.depositOrWithdraw(uidLong, dto);
-            return ResponseUtils.handlerSuccess(transaction);
+            BankAccountDTO account = bankAccountService.depositOrWithdraw(uidLong, dto);
+            return ResponseUtils.handlerSuccess(account);
         } catch (Exception e) {
             return ResponseUtils.handlerException(e);
         }
     }
 
     /**
-     * Lịch sử giao dịch
+     * Cập nhật thông tin tài khoản
      */
-    @GetMapping("/transactions/history")
-    public ResponseEntity<?> getTransactionHistory(
-            @RequestHeader(name = "uid", defaultValue = "") String uid) {
+    @PutMapping("/{accountId}")
+    public ResponseEntity<?> updateAccount(
+            @RequestHeader(name = "uid", defaultValue = "") String uid,
+            @PathVariable Long accountId,
+            @RequestParam(required = false) String accountType) {
         try {
             Long uidLong = Long.parseLong(uid);
-            List<TransactionDTO> transactions = bankAccountService.getTransactionHistory(uidLong);
-            return ResponseUtils.handlerSuccess(transactions);
+            BankAccountDTO account = bankAccountService.updateAccount(uidLong, accountId, accountType);
+            return ResponseUtils.handlerSuccess(account);
+        } catch (Exception e) {
+            return ResponseUtils.handlerException(e);
+        }
+    }
+
+    /**
+     * Khóa/Mở khóa tài khoản
+     */
+    @PutMapping("/{accountId}/status")
+    public ResponseEntity<?> updateAccountStatus(
+            @RequestHeader(name = "uid", defaultValue = "") String uid,
+            @PathVariable Long accountId,
+            @RequestParam String status) {
+        try {
+            Long uidLong = Long.parseLong(uid);
+            BankAccountDTO account = bankAccountService.updateAccountStatus(uidLong, accountId, status);
+            return ResponseUtils.handlerSuccess(account);
         } catch (Exception e) {
             return ResponseUtils.handlerException(e);
         }

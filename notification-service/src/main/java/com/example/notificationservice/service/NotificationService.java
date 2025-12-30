@@ -28,18 +28,18 @@ public class NotificationService {
         return notification;
     }
 
-    @KafkaListener(topics = "order-events", groupId = "notification-service-group")
-    public void handleOrderEvents(String message) {
-        log.info("Received order event: {}", message);
-        // Send notification about order event
-        sendNotification("customer@example.com", "Order Update", "Your order has been updated: " + message);
+    @KafkaListener(topics = "account-events", groupId = "notification-service-group")
+    public void handleAccountEvents(String message) {
+        log.info("Received account event: {}", message);
+        // Send notification about account event (account created, updated)
+        sendNotification("customer@example.com", "Account Update", "Your account has been updated: " + message);
     }
 
-    @KafkaListener(topics = "inventory-events", groupId = "notification-service-group")
-    public void handleInventoryEvents(String message) {
-        log.info("Received inventory event: {}", message);
-        // Send notification about inventory event
-        sendNotification("admin@example.com", "Inventory Update", "Inventory has been updated: " + message);
+    @KafkaListener(topics = "user-transfer-events", groupId = "notification-service-group")
+    public void handleTransferEvents(String message) {
+        log.info("Received transfer event: {}", message);
+        // Send notification about transfer event
+        sendNotification("customer@example.com", "Transfer Update", "Your transfer has been processed: " + message);
     }
 
     private void simulateSendEmail(Notification notification) {

@@ -1,4 +1,4 @@
-package com.example.accountservice.model;
+package com.example.transactionservice.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -17,17 +17,20 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "order_id", nullable = false)
-    private Long orderId;
+    @Column(name = "from_user_id", nullable = false)
+    private Long fromUserId;
 
-    @Column(name = "customer_id", nullable = false)
-    private Long customerId;
+    @Column(name = "to_user_id", nullable = false)
+    private Long toUserId;
+
+    @Column(name = "from_account_id", nullable = false)
+    private Long fromAccountId;
+
+    @Column(name = "to_account_id", nullable = false)
+    private Long toAccountId;
 
     @Column(name = "amount", nullable = false)
     private BigDecimal amount;
-
-    @Column(name = "transaction_type", nullable = false)
-    private String transactionType; // DEBIT, CREDIT
 
     @Column(name = "status", nullable = false)
     private String status; // PENDING, COMPLETED, FAILED
@@ -44,7 +47,9 @@ public class Transaction {
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
-        status = "PENDING";
+        if (status == null) {
+            status = "PENDING";
+        }
     }
 
     @PreUpdate
