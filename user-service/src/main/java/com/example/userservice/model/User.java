@@ -104,11 +104,6 @@ public class User {
   @Column(name = "kyc_completed_date")
   private LocalDateTime kycCompletedDate;
 
-  // Risk Assessment
-  @Builder.Default
-  @Column(name = "risk_level", nullable = false)
-  private String riskLevel = "MEDIUM";
-
   // Banking Preferences
   @Builder.Default
   @Column(name = "preferred_language", nullable = false)
