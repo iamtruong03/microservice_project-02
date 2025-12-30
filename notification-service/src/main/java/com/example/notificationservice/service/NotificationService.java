@@ -42,6 +42,13 @@ public class NotificationService {
         sendNotification("customer@example.com", "Transfer Update", "Your transfer has been processed: " + message);
     }
 
+    @KafkaListener(topics = "user-events", groupId = "notification-service-group")
+    public void handleUserEvents(String message) {
+        log.info("Received user event: {}", message);
+        // Send notification about user event (user created, profile updated, role changed)
+        sendNotification("customer@example.com", "User Event", "Your user account has been updated: " + message);
+    }
+
     private void simulateSendEmail(Notification notification) {
         try {
             // Simulate email sending delay

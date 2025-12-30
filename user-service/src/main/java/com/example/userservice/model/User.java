@@ -124,15 +124,10 @@ public class User {
   @Column(name = "is_locked", nullable = false)
   private Boolean isLocked = false;
 
-  // Roles and Permissions
-  @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-  @JoinTable(
-      name = "user_roles",
-      joinColumns = @JoinColumn(name = "user_id"),
-      inverseJoinColumns = @JoinColumn(name = "role_id")
-  )
+  // Roles and Permissions (không dùng relationship, chỉ lưu string)
+  @Column(name = "roles", nullable = false)
   @Builder.Default
-  private Set<Role> roles = new HashSet<>();
+  private String roles = "USER"; // e.g., "USER", "ADMIN", "CUSTOMER_SERVICE"
 
   // KYC Information
   @Pattern(regexp = "^(PENDING|IN_PROGRESS|APPROVED|REJECTED)$", message = "KYC status must be PENDING, IN_PROGRESS, APPROVED, or REJECTED")

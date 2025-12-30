@@ -70,6 +70,10 @@ public class UserServiceImpl implements IUserService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         User savedUser = userRepository.save(user);
         log.info("Created user with id: {}", savedUser.getId());
+        
+        // Publish user created event
+        publishUserCreatedEvent(savedUser);
+        
         return savedUser;
     }
 
@@ -204,42 +208,71 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public User assignRoleToUser(Long userId, Long roleId) {
+    public User assignRoleToUser(Long userId, String role) {
         User user = getUserById(userId);
-        Role role = roleRepository.findById(roleId)
-                .orElseThrow(() -> new RuntimeException("Role not found with id: " + roleId));
-        user.getRoles().add(role);
+        user.setRoles(role);
         User updated = userRepository.save(user);
-        log.info("Assigned role {} to user {}", roleId, userId);
+        log.info("Assigned role {} to user {}", role, userId);
+        
+        // Publish role assigned event
+        publishUserRoleUpdatedEvent(updated);
+        
         return updated;
     }
 
-    @Override
-    public User removeRoleFromUser(Long userId, Long roleId) {
-        User user = getUserById(userId);
-        Role role = roleRepository.findById(roleId)
-                .orElseThrow(() -> new RuntimeException("Role not found with id: " + roleId));
-        user.getRoles().remove(role);
-        User updated = userRepository.save(user);
-        log.info("Removed role {} from user {}", roleId, userId);
-        return updated;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Set<Role> getUserRoles(Long userId) {
-        User user = getUserById(userId);
-        return new HashSet<>(user.getRoles());
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Set<Permission> getUserPermissions(Long userId) {
-        User user = getUserById(userId);
-        Set<Permission> permissions = new HashSet<>();
-        for (Role role : user.getRoles()) {
-            permissions.addAll(role.getPermissions());
+    // ========== Kafka Events ==========
+    
+    private void publishUserCreatedEvent(User user) {
+        try {
+            Map<String, Object> event = new HashMap<>();
+            event.put("eventType", "USER_CREATED");
+            event.put("userId", user.getId());
+            event.put("email", user.getEmail());
+            event.put("firstName", user.getFirstName());
+            event.put("lastName", user.getLastName());
+            event.put("phoneNumber", user.getPhoneNumber());
+            event.put("roles", user.getRoles());
+            event.put("timestamp", System.currentTimeMillis());
+            
+            kafkaTemplate.send("user-events", "user_created", event);
+            log.info("Published USER_CREATED event for user: {}", user.getId());
+        } catch (Exception e) {
+            log.error("Failed to publish USER_CREATED event", e);
         }
-        return permissions;
+    }
+
+    private void publishUserRoleUpdatedEvent(User user) {
+        try {
+            Map<String, Object> event = new HashMap<>();
+            event.put("eventType", "USER_ROLE_UPDATED");
+            event.put("userId", user.getId());
+            event.put("email", user.getEmail());
+            event.put("roles", user.getRoles());
+            event.put("timestamp", System.currentTimeMillis());
+            
+            kafkaTemplate.send("user-events", "user_role_updated", event);
+            log.info("Published USER_ROLE_UPDATED event for user: {}", user.getId());
+        } catch (Exception e) {
+            log.error("Failed to publish USER_ROLE_UPDATED event", e);
+        }
+    }
+
+    private void publishUserProfileUpdatedEvent(User user) {
+        try {
+            Map<String, Object> event = new HashMap<>();
+            event.put("eventType", "USER_PROFILE_UPDATED");
+            event.put("userId", user.getId());
+            event.put("email", user.getEmail());
+            event.put("firstName", user.getFirstName());
+            event.put("lastName", user.getLastName());
+            event.put("kycStatus", user.getKycStatus());
+            event.put("isVerified", user.getIsVerified());
+            event.put("timestamp", System.currentTimeMillis());
+            
+            kafkaTemplate.send("user-events", "user_profile_updated", event);
+            log.info("Published USER_PROFILE_UPDATED event for user: {}", user.getId());
+        } catch (Exception e) {
+            log.error("Failed to publish USER_PROFILE_UPDATED event", e);
+        }
     }
 }
