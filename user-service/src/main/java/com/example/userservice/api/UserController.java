@@ -177,49 +177,14 @@ public class UserController {
     }
 
     // Role Management Endpoints
-    @PostMapping("/{userId}/roles/{roleId}")
+    @PostMapping("/{userId}/roles/{roleName}")
     public ResponseEntity<?> assignRoleToUser(
             @RequestHeader(name = "uid", defaultValue = "") String uid,
             @PathVariable Long userId,
-            @PathVariable Long roleId) {
+            @PathVariable String roleName) {
         try {
-            User updated = userService.assignRoleToUser(userId, roleId);
+            User updated = userService.assignRoleToUser(userId, roleName);
             return ResponseUtils.handlerSuccess(updated);
-        } catch (Exception e) {
-            return ResponseUtils.handlerException(e);
-        }
-    }
-
-    @DeleteMapping("/{userId}/roles/{roleId}")
-    public ResponseEntity<?> removeRoleFromUser(
-            @RequestHeader(name = "uid", defaultValue = "") String uid,
-            @PathVariable Long userId,
-            @PathVariable Long roleId) {
-        try {
-            User updated = userService.removeRoleFromUser(userId, roleId);
-            return ResponseUtils.handlerSuccess(updated);
-        } catch (Exception e) {
-            return ResponseUtils.handlerException(e);
-        }
-    }
-
-    @GetMapping("/{userId}/roles")
-    public ResponseEntity<?> getUserRoles(
-            @RequestHeader(name = "uid", defaultValue = "") String uid,
-            @PathVariable Long userId) {
-        try {
-            return ResponseUtils.handlerSuccess(userService.getUserRoles(userId));
-        } catch (Exception e) {
-            return ResponseUtils.handlerException(e);
-        }
-    }
-
-    @GetMapping("/{userId}/permissions")
-    public ResponseEntity<?> getUserPermissions(
-            @RequestHeader(name = "uid", defaultValue = "") String uid,
-            @PathVariable Long userId) {
-        try {
-            return ResponseUtils.handlerSuccess(userService.getUserPermissions(userId));
         } catch (Exception e) {
             return ResponseUtils.handlerException(e);
         }
