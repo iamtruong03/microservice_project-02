@@ -45,11 +45,46 @@ public class TransactionService {
     /**
      * Xem chi tiết giao dịch
      */
-    public TransactionDTO getTransactionById(Long transactionId) {
+    public TransactionDTO getTransactionById(Long userId, Long transactionId) {
         Transaction transaction = transactionRepository.findById(transactionId)
                 .orElseThrow(() -> new RuntimeException("Transaction not found"));
         
+        // Verify userId has access to this transaction
+        if (!transaction.getFromAccountId().equals(userId) && !transaction.getToAccountId().equals(userId)) {
+            throw new RuntimeException("Unauthorized access to transaction");
+        }
+        
         return convertToDTO(transaction);
+    }
+
+    /**
+     * Xem tất cả giao dịch của user (gửi hoặc nhận)
+     */
+    public List<TransactionDTO> getUserTransactions(Long userId) {
+        return transactionRepository.findByFromAccountIdOrToAccountId(userId, userId)
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Xem giao dịch gửi của user
+     */
+    public List<TransactionDTO> getSentTransactions(Long userId) {
+        return transactionRepository.findByFromAccountId(userId)
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Xem giao dịch nhận của user
+     */
+    public List<TransactionDTO> getReceivedTransactions(Long userId) {
+        return transactionRepository.findByToAccountId(userId)
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -66,9 +101,14 @@ public class TransactionService {
      * Cập nhật trạng thái giao dịch
      */
     @Transactional
-    public TransactionDTO updateTransactionStatus(Long transactionId, String status) {
+    public TransactionDTO updateTransactionStatus(Long userId, Long transactionId, String status) {
         Transaction transaction = transactionRepository.findById(transactionId)
                 .orElseThrow(() -> new RuntimeException("Transaction not found"));
+
+        // Verify userId has access to update this transaction
+        if (!transaction.getFromAccountId().equals(userId) && !transaction.getToAccountId().equals(userId)) {
+            throw new RuntimeException("Unauthorized access to transaction");
+        }
 
         transaction.setStatus(status);
         Transaction updatedTransaction = transactionRepository.save(transaction);
@@ -83,9 +123,14 @@ public class TransactionService {
      * Hủy giao dịch (chỉ có thể hủy giao dịch ở trạng thái PENDING)
      */
     @Transactional
-    public void cancelTransaction(Long transactionId) {
+    public void cancelTransaction(Long userId, Long transactionId) {
         Transaction transaction = transactionRepository.findById(transactionId)
                 .orElseThrow(() -> new RuntimeException("Transaction not found"));
+
+        // Verify userId is the one who initiated the transaction
+        if (!transaction.getFromAccountId().equals(userId)) {
+            throw new RuntimeException("Only the transaction initiator can cancel");
+        }
 
         if (!"PENDING".equals(transaction.getStatus())) {
             throw new RuntimeException("Cannot cancel completed or failed transaction");
