@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "roles")
@@ -26,14 +24,11 @@ public class Role {
   @Column(name = "description")
   private String description;
 
-  @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-  @JoinTable(
-      name = "role_permissions",
-      joinColumns = @JoinColumn(name = "role_id"),
-      inverseJoinColumns = @JoinColumn(name = "permission_id")
-  )
+  // Store permission IDs as comma-separated string for distributed architecture
+  // e.g., "1,2,3" instead of using @ManyToMany relationship
+  @Column(name = "permission_ids", columnDefinition = "TEXT")
   @Builder.Default
-  private Set<Permission> permissions = new HashSet<>();
+  private String permissionIds = ""; // Store permission IDs as string
 
   @Column(name = "is_active", nullable = false)
   @Builder.Default
