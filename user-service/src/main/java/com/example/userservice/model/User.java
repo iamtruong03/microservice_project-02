@@ -11,7 +11,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -32,9 +31,6 @@ public class User {
   @Column(name = "last_name", nullable = false)
   private String lastName;
 
-  @Column(name = "user_name", nullable = false)
-  private String userName;
-
   @Column(name = "email", nullable = false, unique = true)
   private String email;
 
@@ -54,8 +50,21 @@ public class User {
   @Column(name = "national_id", nullable = false, unique = true)
   private String nationalId;
 
-  // Address Information (distributed: only store address ids)
-  private List<Long> addressIds;
+  // Address Information
+  @Column(name = "address", nullable = false)
+  private String address;
+
+  @Column(name = "city", nullable = false)
+  private String city;
+
+  @Column(name = "state", nullable = false)
+  private String state;
+
+  @Column(name = "postal_code", nullable = false)
+  private String postalCode;
+
+  @Column(name = "country", nullable = false)
+  private String country;
 
   // Employment Information
   @Column(name = "occupation")
