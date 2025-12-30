@@ -208,11 +208,11 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public User assignRoleToUser(Long userId, String role) {
+    public User assignRoleToUser(Long userId, Long roleId) {
         User user = getUserById(userId);
-        user.setRoles(role);
+        user.setRoleId(roleId);
         User updated = userRepository.save(user);
-        log.info("Assigned role {} to user {}", role, userId);
+        log.info("Assigned role {} to user {}", roleId, userId);
         
         // Publish role assigned event
         publishUserRoleUpdatedEvent(updated);
@@ -231,7 +231,7 @@ public class UserServiceImpl implements IUserService {
             event.put("firstName", user.getFirstName());
             event.put("lastName", user.getLastName());
             event.put("phoneNumber", user.getPhoneNumber());
-            event.put("roles", user.getRoles());
+            event.put("roleId", user.getRoleId());
             event.put("timestamp", System.currentTimeMillis());
             
             kafkaTemplate.send("user-events", "user_created", event);
@@ -247,7 +247,7 @@ public class UserServiceImpl implements IUserService {
             event.put("eventType", "USER_ROLE_UPDATED");
             event.put("userId", user.getId());
             event.put("email", user.getEmail());
-            event.put("roles", user.getRoles());
+            event.put("roleId", user.getRoleId());
             event.put("timestamp", System.currentTimeMillis());
             
             kafkaTemplate.send("user-events", "user_role_updated", event);

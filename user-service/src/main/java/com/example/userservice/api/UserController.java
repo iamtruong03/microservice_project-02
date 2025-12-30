@@ -177,13 +177,13 @@ public class UserController {
     }
 
     // Role Management Endpoints
-    @PostMapping("/{userId}/roles/{roleName}")
+    @PostMapping("/{userId}/roles/{roleId}")
     public ResponseEntity<?> assignRoleToUser(
             @RequestHeader(name = "uid", defaultValue = "") String uid,
             @PathVariable Long userId,
-            @PathVariable String roleName) {
+            @PathVariable Long roleId) {
         try {
-            User updated = userService.assignRoleToUser(userId, roleName);
+            User updated = userService.assignRoleToUser(userId, roleId);
             return ResponseUtils.handlerSuccess(updated);
         } catch (Exception e) {
             return ResponseUtils.handlerException(e);

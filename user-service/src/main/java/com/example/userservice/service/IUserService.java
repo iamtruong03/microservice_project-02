@@ -34,5 +34,5 @@ public interface IUserService {
     PageResponse<User> advancedSearch(String name, String email, String city, String occupation, Pageable pageable);
 
     // Role and Permission Management
-    User assignRoleToUser(Long userId, String role);
+    User assignRoleToUser(Long userId, Long roleId);
 }

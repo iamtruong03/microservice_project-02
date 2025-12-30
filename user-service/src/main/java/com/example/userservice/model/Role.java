@@ -24,11 +24,9 @@ public class Role {
   @Column(name = "description")
   private String description;
 
-  // Store permission IDs as comma-separated string for distributed architecture
-  // e.g., "1,2,3" instead of using @ManyToMany relationship
   @Column(name = "permission_ids", columnDefinition = "TEXT")
   @Builder.Default
-  private String permissionIds = ""; // Store permission IDs as string
+  private String permissionIds = "";
 
   @Column(name = "is_active", nullable = false)
   @Builder.Default

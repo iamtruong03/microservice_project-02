@@ -122,10 +122,9 @@ public class User {
   @Column(name = "is_locked", nullable = false)
   private Boolean isLocked = false;
 
-  // Roles and Permissions (không dùng relationship, chỉ lưu string)
-  @Column(name = "roles", nullable = false)
-  @Builder.Default
-  private String roles = "USER"; // e.g., "USER", "ADMIN", "CUSTOMER_SERVICE"
+  // Roles (distributed architecture - store role ID instead of relationship)
+  @Column(name = "role_id")
+  private Long roleId;
 
   // KYC Information
   @Pattern(regexp = "^(PENDING|IN_PROGRESS|APPROVED|REJECTED)$", message = "KYC status must be PENDING, IN_PROGRESS, APPROVED, or REJECTED")
