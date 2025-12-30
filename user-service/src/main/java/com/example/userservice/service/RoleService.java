@@ -34,7 +34,6 @@ public class RoleService {
         Role role = new Role();
         role.setName(roleDTO.getName());
         role.setDescription(roleDTO.getDescription());
-        role.setPermissionIds(roleDTO.getPermissionIds());
         role.setIsActive(true);
 
         Role savedRole = roleRepository.save(role);
@@ -58,10 +57,6 @@ public class RoleService {
 
         if (roleDTO.getDescription() != null) {
             role.setDescription(roleDTO.getDescription());
-        }
-
-        if (roleDTO.getPermissionIds() != null) {
-            role.setPermissionIds(roleDTO.getPermissionIds());
         }
 
         Role updatedRole = roleRepository.save(role);
@@ -160,7 +155,6 @@ public class RoleService {
             .id(role.getId())
             .name(role.getName())
             .description(role.getDescription())
-            .permissionIds(role.getPermissionIds())
             .isActive(role.getIsActive())
             .build();
     }

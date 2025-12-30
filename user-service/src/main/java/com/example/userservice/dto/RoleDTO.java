@@ -13,6 +13,5 @@ public class RoleDTO {
     private Long id;
     private String name;
     private String description;
-    private String permissionIds; // e.g., "1,2,3"
     private Boolean isActive;
 }
