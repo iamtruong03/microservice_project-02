@@ -1,7 +1,7 @@
 package com.example.userservice.event;
 
 import com.example.userservice.model.User;
-import com.example.userservice.repo.UserRepository;
+import com.example.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;

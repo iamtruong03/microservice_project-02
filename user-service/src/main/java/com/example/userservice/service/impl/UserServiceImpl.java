@@ -8,7 +8,7 @@ import com.example.userservice.exception.UserNotFoundException;
 import com.example.userservice.model.User;
 import com.example.userservice.model.Role;
 import com.example.userservice.model.Permission;
-import com.example.userservice.repo.UserRepository;
+import com.example.userservice.repository.UserRepository;
 import com.example.userservice.repository.RoleRepository;
 import com.example.userservice.service.IUserService;
 import com.example.userservice.util.UserMapper;

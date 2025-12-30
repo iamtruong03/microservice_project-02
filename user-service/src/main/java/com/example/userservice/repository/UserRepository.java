@@ -1,4 +1,4 @@
-package com.example.userservice.repo;
+package com.example.userservice.repository;
 
 import com.example.userservice.model.User;
 import org.springframework.data.domain.Page;
@@ -89,5 +89,3 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
                           @Param("country") String country,
                           Pageable pageable);
 }
-
-
