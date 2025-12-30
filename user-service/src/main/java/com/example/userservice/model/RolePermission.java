@@ -7,24 +7,20 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "roles")
+@Table(name = "role_permissions")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Role {
+public class RolePermission {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "name", nullable = false, unique = true)
-  private String name;
+  @Column(name = "role_id")
+  private Long roleId;
 
-  @Column(name = "description")
-  private String description;
-
-  @Column(name = "is_active", nullable = false)
-  @Builder.Default
-  private Boolean isActive = true;
+  @Column(name = "permission_id")
+  private Long permissionId;
 }

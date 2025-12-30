@@ -5,13 +5,14 @@ import java.time.LocalDateTime;
 
 public record TransactionDTO(
     Long id,
-    Long fromUserId,
-    Long toUserId,
     Long fromAccountId,
     Long toAccountId,
     BigDecimal amount,
+    String currency,
+    String transactionType,
     String status,
+    String referenceCode,
     String description,
     LocalDateTime createdAt,
-    LocalDateTime updatedAt
+    LocalDateTime completedAt
 ) {}

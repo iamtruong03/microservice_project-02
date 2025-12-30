@@ -25,18 +25,19 @@ public class TransactionService {
     @Transactional
     public TransactionDTO createTransaction(TransactionDTO transactionDTO) {
         Transaction transaction = new Transaction();
-        transaction.setFromUserId(transactionDTO.fromUserId());
-        transaction.setToUserId(transactionDTO.toUserId());
         transaction.setFromAccountId(transactionDTO.fromAccountId());
         transaction.setToAccountId(transactionDTO.toAccountId());
         transaction.setAmount(transactionDTO.amount());
+        transaction.setCurrency(transactionDTO.currency() != null ? transactionDTO.currency() : "USD");
+        transaction.setTransactionType(transactionDTO.transactionType());
         transaction.setStatus("PENDING");
+        transaction.setReferenceCode(transactionDTO.referenceCode());
         transaction.setDescription(transactionDTO.description());
 
         Transaction savedTransaction = transactionRepository.save(transaction);
 
         // Publish transaction created event
-        kafkaTemplate.send("user-transfer-events", "transfer_initiated", savedTransaction);
+        kafkaTemplate.send("transaction-events", "transaction_created", savedTransaction);
 
         return convertToDTO(savedTransaction);
     }
@@ -44,43 +45,18 @@ public class TransactionService {
     /**
      * Xem chi tiết giao dịch
      */
-    public TransactionDTO getTransactionById(Long userId, Long transactionId) {
+    public TransactionDTO getTransactionById(Long transactionId) {
         Transaction transaction = transactionRepository.findById(transactionId)
                 .orElseThrow(() -> new RuntimeException("Transaction not found"));
-        
-        // Kiểm tra quyền truy cập
-        if (!transaction.getFromUserId().equals(userId) && !transaction.getToUserId().equals(userId)) {
-            throw new RuntimeException("Access denied");
-        }
         
         return convertToDTO(transaction);
     }
 
     /**
-     * Xem tất cả giao dịch của user (gửi hoặc nhận)
+     * Xem tất cả giao dịch theo trạng thái
      */
-    public List<TransactionDTO> getUserTransactions(Long userId) {
-        return transactionRepository.findByFromUserIdOrToUserId(userId, userId)
-                .stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Xem tất cả giao dịch gửi của user
-     */
-    public List<TransactionDTO> getSentTransactions(Long userId) {
-        return transactionRepository.findByFromUserId(userId)
-                .stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Xem tất cả giao dịch nhận của user
-     */
-    public List<TransactionDTO> getReceivedTransactions(Long userId) {
-        return transactionRepository.findByToUserId(userId)
+    public List<TransactionDTO> getTransactionsByStatus(String status) {
+        return transactionRepository.findByStatus(status)
                 .stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
@@ -90,20 +66,15 @@ public class TransactionService {
      * Cập nhật trạng thái giao dịch
      */
     @Transactional
-    public TransactionDTO updateTransactionStatus(Long userId, Long transactionId, String status) {
+    public TransactionDTO updateTransactionStatus(Long transactionId, String status) {
         Transaction transaction = transactionRepository.findById(transactionId)
                 .orElseThrow(() -> new RuntimeException("Transaction not found"));
-
-        if (!transaction.getFromUserId().equals(userId)) {
-            throw new RuntimeException("Access denied");
-        }
 
         transaction.setStatus(status);
         Transaction updatedTransaction = transactionRepository.save(transaction);
 
         // Publish transaction status updated event
-        String eventType = status.equals("COMPLETED") ? "transfer_completed" : "transfer_" + status.toLowerCase();
-        kafkaTemplate.send("user-transfer-events", eventType, updatedTransaction);
+        kafkaTemplate.send("transaction-events", "transaction_" + status.toLowerCase(), updatedTransaction);
 
         return convertToDTO(updatedTransaction);
     }
@@ -112,15 +83,11 @@ public class TransactionService {
      * Hủy giao dịch (chỉ có thể hủy giao dịch ở trạng thái PENDING)
      */
     @Transactional
-    public void cancelTransaction(Long userId, Long transactionId) {
+    public void cancelTransaction(Long transactionId) {
         Transaction transaction = transactionRepository.findById(transactionId)
                 .orElseThrow(() -> new RuntimeException("Transaction not found"));
 
-        if (!transaction.getFromUserId().equals(userId)) {
-            throw new RuntimeException("Access denied");
-        }
-
-        if (!transaction.getStatus().equals("PENDING")) {
+        if (!"PENDING".equals(transaction.getStatus())) {
             throw new RuntimeException("Cannot cancel completed or failed transaction");
         }
 
@@ -128,7 +95,7 @@ public class TransactionService {
         transactionRepository.save(transaction);
 
         // Publish transaction cancelled event
-        kafkaTemplate.send("user-transfer-events", "transfer_cancelled", transaction);
+        kafkaTemplate.send("transaction-events", "transaction_cancelled", transaction);
     }
 
     /**
@@ -137,15 +104,16 @@ public class TransactionService {
     private TransactionDTO convertToDTO(Transaction transaction) {
         return new TransactionDTO(
                 transaction.getId(),
-                transaction.getFromUserId(),
-                transaction.getToUserId(),
                 transaction.getFromAccountId(),
                 transaction.getToAccountId(),
                 transaction.getAmount(),
+                transaction.getCurrency(),
+                transaction.getTransactionType(),
                 transaction.getStatus(),
+                transaction.getReferenceCode(),
                 transaction.getDescription(),
                 transaction.getCreatedAt(),
-                transaction.getUpdatedAt()
+                transaction.getCompletedAt()
         );
     }
 }

@@ -17,23 +17,26 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "from_user_id", nullable = false)
-    private Long fromUserId;
-
-    @Column(name = "to_user_id", nullable = false)
-    private Long toUserId;
-
-    @Column(name = "from_account_id", nullable = false)
+    @Column(name = "from_account_id")
     private Long fromAccountId;
 
-    @Column(name = "to_account_id", nullable = false)
+    @Column(name = "to_account_id")
     private Long toAccountId;
 
     @Column(name = "amount", nullable = false)
     private BigDecimal amount;
 
+    @Column(name = "currency", nullable = false)
+    private String currency = "USD";
+
+    @Column(name = "transaction_type", nullable = false)
+    private String transactionType;
+
     @Column(name = "status", nullable = false)
-    private String status; // PENDING, COMPLETED, FAILED
+    private String status;
+
+    @Column(name = "reference_code", unique = true)
+    private String referenceCode;
 
     @Column(name = "description")
     private String description;
@@ -41,19 +44,18 @@ public class Transaction {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    @Column(name = "completed_at")
+    private LocalDateTime completedAt;
 
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
-        if (status == null) {
-            status = "PENDING";
-        }
     }
 
     @PreUpdate
     protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
+        if ("COMPLETED".equals(status) && completedAt == null) {
+            completedAt = LocalDateTime.now();
+        }
     }
 }

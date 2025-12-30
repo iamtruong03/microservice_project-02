@@ -8,8 +8,5 @@ import java.util.List;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
-    List<Transaction> findByFromUserId(Long fromUserId);
-    List<Transaction> findByToUserId(Long toUserId);
-    List<Transaction> findByFromUserIdOrToUserId(Long fromUserId, Long toUserId);
     List<Transaction> findByStatus(String status);
 }

@@ -17,14 +17,17 @@ public class BankAccount {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id", nullable = false, unique = true)
+    @Column(name = "user_id")
     private Long userId;
 
     @Column(name = "account_number", nullable = false, unique = true)
     private String accountNumber;
 
     @Column(name = "account_type", nullable = false)
-    private String accountType; // SAVINGS, CHECKING, etc.
+    private String accountType;
+
+    @Column(name = "currency", nullable = false)
+    private String currency = "USD";
 
     @Column(name = "balance", nullable = false)
     private BigDecimal balance;
