@@ -18,6 +18,10 @@ public class CreateUserRequest {
   @Size(max = 50, message = "Last name must not exceed 50 characters")
   private String lastName;
 
+  @NotBlank(message = "Username is required")
+  @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
+  private String userName;
+
   @NotBlank(message = "Email is required")
   @Email(message = "Email should be valid")
   @Size(max = 150, message = "Email must not exceed 150 characters")
@@ -80,6 +84,9 @@ public class CreateUserRequest {
   private String preferredLanguage = "en";
   private String preferredCurrency = "USD";
   private Boolean notificationEnabled = true;
+
+  // Role (optional - default null)
+  private Long roleId;
 
   // Emergency Contact (optional)
   @Size(max = 100, message = "Emergency contact name must not exceed 100 characters")
