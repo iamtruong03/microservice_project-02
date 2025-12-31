@@ -21,7 +21,7 @@ public class AuthEventListener {
      * Lắng nghe event "user:profile_updated" từ User Service
      * Khi user cập nhật email hoặc thông tin, Auth Service được thông báo
      */
-    @KafkaListener(topics = "user-events", groupId = "auth-service-group")
+    // @KafkaListener(topics = "user-events", groupId = "auth-service-group") // Tắt Kafka
     public void handleUserProfileUpdatedEvent(Map<String, Object> event) {
         try {
             String eventType = (String) event.get("eventType");
@@ -65,7 +65,7 @@ public class AuthEventListener {
      * Lắng nghe event "user:password_changed" từ User Service
      * Khi user đổi mật khẩu ở User Service, cập nhật lại ở Auth Service
      */
-    @KafkaListener(topics = "user-events", groupId = "auth-service-group")
+    // @KafkaListener(topics = "user-events", groupId = "auth-service-group") // Tắt Kafka
     public void handleUserPasswordChangedEvent(Map<String, Object> event) {
         try {
             String eventType = (String) event.get("eventType");
