@@ -17,6 +17,9 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
+  // Authentication
+  Optional<User> findByUserName(String userName);
+  
   // Unique constraints
   boolean existsByEmail(String email);
   boolean existsByEmailAndIdNot(String email, Long id);

@@ -3,6 +3,7 @@ package com.example.userservice.service;
 import com.example.userservice.dto.CreateUserRequest;
 import com.example.userservice.dto.UpdateUserRequest;
 import com.example.userservice.dto.PageResponse;
+import com.example.userservice.dto.UserDetail;
 import com.example.userservice.model.User;
 import com.example.userservice.model.Role;
 import com.example.userservice.model.Permission;
@@ -35,4 +36,7 @@ public interface IUserService {
 
     // Role and Permission Management
     User assignRoleToUser(Long userId, Long roleId);
+    
+    // Authentication
+    UserDetail authenticateUser(String userName, String password);
 }

@@ -1,8 +1,10 @@
 package com.example.userservice.api;
 
+import com.example.userservice.dto.AuthenticationRequest;
 import com.example.userservice.dto.CreateUserRequest;
 import com.example.userservice.dto.PageResponse;
 import com.example.userservice.dto.UpdateUserRequest;
+import com.example.userservice.dto.UserDetail;
 import com.example.userservice.model.User;
 import com.example.userservice.service.IUserService;
 import com.example.userservice.util.ResponseUtils;
@@ -35,6 +37,19 @@ public class UserController {
             User created = userService.createUser(request);
             return ResponseUtils.handlerCreated(created);
         } catch (Exception e) {
+            return ResponseUtils.handlerException(e);
+        }
+    }
+
+    @PostMapping("/authenticate")
+    public ResponseEntity<?> authenticate(
+            @Valid @RequestBody AuthenticationRequest request) {
+        try {
+            log.info("Authenticating user: {}", request.getUserName());
+            UserDetail user = userService.authenticateUser(request.getUserName(), request.getPassword());
+            return ResponseUtils.handlerSuccess(user);
+        } catch (Exception e) {
+            log.error("Authentication failed for user: {}", request.getUserName(), e);
             return ResponseUtils.handlerException(e);
         }
     }

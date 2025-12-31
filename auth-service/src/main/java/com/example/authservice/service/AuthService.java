@@ -1,107 +1,86 @@
 package com.example.authservice.service;
 
+import com.example.authservice.client.UserServiceClient;
 import com.example.authservice.domain.User;
 import com.example.authservice.dto.JwtResponse;
 import com.example.authservice.dto.LoginRequest;
 import com.example.authservice.dto.RegisterRequest;
+import com.example.authservice.dto.UserDetail;
 import com.example.authservice.repository.UserRepository;
 import com.example.authservice.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-// import org.springframework.kafka.core.KafkaTemplate; // Tắt Kafka
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
     private final UserRepository userRepository;
-    private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider tokenProvider;
-    private final PasswordEncoder passwordEncoder;
-    // private final KafkaTemplate<String, Object> kafkaTemplate; // Tắt Kafka
+    private final UserServiceClient userServiceClient;
 
     public JwtResponse login(LoginRequest request) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
-        );
-
+        log.info("User login attempt: {}", request.getUsername());
+        
+        UserDetail userDetail = userServiceClient.authenticate(request.getUsername(), request.getPassword());
+        
         User user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseGet(() -> {
+                    log.info("Creating new user cache in Auth-Service: {}", request.getUsername());
+                    User newUser = User.builder()
+                            .username(request.getUsername())
+                            .email(userDetail.getEmail())
+                            .fullName(userDetail.getFirstName() + " " + userDetail.getLastName())
+                            .enabled(true)
+                            .createdAt(LocalDateTime.now().toString())
+                            .updatedAt(LocalDateTime.now().toString())
+                            .build();
+                    return userRepository.save(newUser);
+                });
 
-        String token = tokenProvider.generateToken(authentication.getName(), user.getId());
-
+        String token = tokenProvider.generateToken(user.getUsername(), userDetail.getId());
+        
+        log.info("User {} logged in successfully", request.getUsername());
         return JwtResponse.builder()
                 .token(token)
-                .id(user.getId())
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .fullName(user.getFullName())
+                .id(userDetail.getId())
+                .username(userDetail.getUserName())
+                .email(userDetail.getEmail())
+                .fullName(userDetail.getFirstName() + " " + userDetail.getLastName())
                 .build();
     }
 
     public JwtResponse register(RegisterRequest request) {
-        if (userRepository.existsByUsername(request.getUsername())) {
-            throw new RuntimeException("Username already exists");
-        }
+        log.info("User registration attempt: {}", request.getUsername());
+        
+        UserDetail userDetail = userServiceClient.authenticate(request.getUsername(), request.getPassword());
+        
+        User user = userRepository.findByUsername(request.getUsername())
+                .orElseGet(() -> {
+                    log.info("Creating new user cache in Auth-Service: {}", request.getUsername());
+                    User newUser = User.builder()
+                            .username(request.getUsername())
+                            .email(userDetail.getEmail())
+                            .fullName(userDetail.getFirstName() + " " + userDetail.getLastName())
+                            .enabled(true)
+                            .createdAt(LocalDateTime.now().toString())
+                            .updatedAt(LocalDateTime.now().toString())
+                            .build();
+                    return userRepository.save(newUser);
+                });
 
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already exists");
-        }
-
-        User user = User.builder()
-                .username(request.getUsername())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .fullName(request.getFullName())
-                .enabled(true)
-                .createdAt(LocalDateTime.now().toString())
-                .updatedAt(LocalDateTime.now().toString())
-                .build();
-
-        userRepository.save(user);
-
-        // 📤 Phát event "user:registered" qua Kafka để User Service lắng nghe
-        // publishUserRegisteredEvent(user); // Tắt Kafka
-
-        String token = tokenProvider.generateToken(user.getUsername(), user.getId());
+        String token = tokenProvider.generateToken(user.getUsername(), userDetail.getId());
+        log.info("User {} registered successfully", request.getUsername());
         return JwtResponse.builder()
                 .token(token)
-                .id(user.getId())
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .fullName(user.getFullName())
+                .id(userDetail.getId())
+                .username(userDetail.getUserName())
+                .email(userDetail.getEmail())
+                .fullName(userDetail.getFirstName() + " " + userDetail.getLastName())
                 .build();
-    }
-
-    // 📤 Phát event khi user đăng ký
-    private void publishUserRegisteredEvent(User user) {
-        /*
-        try {
-            Map<String, Object> event = new HashMap<>();
-            event.put("eventType", "USER_REGISTERED");
-            event.put("userId", user.getId());
-            event.put("username", user.getUsername());
-            event.put("email", user.getEmail());
-            event.put("fullName", user.getFullName());
-            event.put("timestamp", System.currentTimeMillis());
-
-            // Gửi event tới Kafka topic "user-events"
-            kafkaTemplate.send("user-events", "user_registered", event);
-            log.info("Published USER_REGISTERED event for user: {}", user.getUsername());
-        } catch (Exception e) {
-            log.error("Failed to publish user registered event", e);
-            // Không throw exception, chỉ log để không ảnh hưởng tới login flow
-        }
-        */
     }
 
     public User getUserByUsername(String username) {

@@ -3,6 +3,7 @@ package com.example.userservice.service.impl;
 import com.example.userservice.dto.CreateUserRequest;
 import com.example.userservice.dto.UpdateUserRequest;
 import com.example.userservice.dto.PageResponse;
+import com.example.userservice.dto.UserDetail;
 import com.example.userservice.exception.DuplicateEmailException;
 import com.example.userservice.exception.UserNotFoundException;
 import com.example.userservice.model.User;
@@ -282,5 +283,49 @@ public class UserServiceImpl implements IUserService {
             log.error("Failed to publish USER_PROFILE_UPDATED event", e);
         }
         */
+    }
+
+    /**
+     * Xác thực user dựa vào username và password
+     * Được gọi từ Auth-Service
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public UserDetail authenticateUser(String userName, String password) {
+        User user = userRepository.findByUserName(userName)
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + userName));
+
+        // Kiểm tra password
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            log.warn("Invalid password for user: {}", userName);
+            throw new RuntimeException("Invalid credentials");
+        }
+
+        // Check user status
+        if (!user.getIsActive()) {
+            log.warn("User account is inactive: {}", userName);
+            throw new RuntimeException("User account is inactive");
+        }
+
+        if (user.getIsLocked()) {
+            log.warn("User account is locked: {}", userName);
+            throw new RuntimeException("User account is locked");
+        }
+
+        log.info("User authenticated successfully: {}", userName);
+
+        // Return user detail
+        return UserDetail.builder()
+                .id(user.getId())
+                .userName(user.getUserName())
+                .email(user.getEmail())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .phoneNumber(user.getPhoneNumber())
+                .isVerified(user.getIsVerified())
+                .isActive(user.getIsActive())
+                .isLocked(user.getIsLocked())
+                .kycStatus(user.getKycStatus())
+                .build();
     }
 }
