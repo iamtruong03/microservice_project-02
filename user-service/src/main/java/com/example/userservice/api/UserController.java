@@ -44,14 +44,9 @@ public class UserController {
     @PostMapping("/authenticate")
     public ResponseEntity<?> authenticate(
             @Valid @RequestBody AuthenticationRequest request) {
-        try {
-            log.info("Authenticating user: {}", request.getUserName());
-            UserDetail user = userService.authenticateUser(request.getUserName(), request.getPassword());
-            return ResponseUtils.handlerSuccess(user);
-        } catch (Exception e) {
-            log.error("Authentication failed for user: {}", request.getUserName(), e);
-            return ResponseUtils.handlerException(e);
-        }
+        log.info("Authenticating user: {}", request.getUserName());
+        UserDetail user = userService.authenticateUser(request.getUserName(), request.getPassword());
+        return ResponseUtils.handlerSuccess(user);
     }
 
     @GetMapping

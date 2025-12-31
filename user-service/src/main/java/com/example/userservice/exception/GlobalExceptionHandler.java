@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
         body.put("timestamp", Instant.now().toString());
         body.put("status", HttpStatus.UNAUTHORIZED.value());
         body.put("message", ex.getMessage());
-        body.put("error", "User Not Found");
+        body.put("error", "Unauthorized");
         log.warn("User not found: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
     }

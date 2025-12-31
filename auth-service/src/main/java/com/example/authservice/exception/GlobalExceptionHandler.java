@@ -52,6 +52,26 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException ex, WebRequest request) {
         log.error("Runtime exception occurred", ex);
+        
+        // Check if it's an authentication error
+        if (ex.getMessage() != null && (
+                ex.getMessage().contains("Invalid") || 
+                ex.getMessage().contains("invalid") ||
+                ex.getMessage().contains("password") ||
+                ex.getMessage().contains("credentials") ||
+                ex.getMessage().contains("not found") ||
+                ex.getMessage().contains("User-Service error: 401"))) {
+            
+            ErrorResponse errorResponse = new ErrorResponse(
+                    HttpStatus.UNAUTHORIZED.value(),
+                    ex.getMessage(),
+                    "Unauthorized",
+                    LocalDateTime.now(),
+                    request.getDescription(false).replace("uri=", "")
+            );
+            return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+        }
+        
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 ex.getMessage(),
