@@ -89,13 +89,13 @@ public class UserServiceImpl implements IUserService {
         User updatedUser = userRepository.save(existingUser);
         log.info("Updated user with id: {}", updatedUser.getId());
 
-        // 📤 Phát event nếu email hoặc fullName thay đổi
+        // Phát event nếu email hoặc fullName thay đổi
         // publishUserProfileUpdatedEvent(updatedUser, oldEmail); // Tắt Kafka
 
         return updatedUser;
     }
 
-    // 📤 Phát event khi user profile được cập nhật
+    // Phát event khi user profile được cập nhật
     private void publishUserProfileUpdatedEvent(User user, String oldEmail) {
         /*
         try {
