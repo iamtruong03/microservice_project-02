@@ -4,7 +4,7 @@ import com.example.transactionservice.dto.TransactionDTO;
 import com.example.transactionservice.model.Transaction;
 import com.example.transactionservice.repository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.kafka.core.KafkaTemplate;
+// import org.springframework.kafka.core.KafkaTemplate; // Tắt Kafka
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class TransactionService {
 
     private final TransactionRepository transactionRepository;
-    private final KafkaTemplate<String, Object> kafkaTemplate;
+    // private final KafkaTemplate<String, Object> kafkaTemplate; // Tắt Kafka
 
     /**
      * Tạo giao dịch chuyển tiền giữa hai user
@@ -37,7 +37,7 @@ public class TransactionService {
         Transaction savedTransaction = transactionRepository.save(transaction);
 
         // Publish transaction created event
-        kafkaTemplate.send("transaction-events", "transaction_created", savedTransaction);
+        // kafkaTemplate.send("transaction-events", "transaction_created", savedTransaction); // Tắt Kafka
 
         return convertToDTO(savedTransaction);
     }
@@ -114,7 +114,7 @@ public class TransactionService {
         Transaction updatedTransaction = transactionRepository.save(transaction);
 
         // Publish transaction status updated event
-        kafkaTemplate.send("transaction-events", "transaction_" + status.toLowerCase(), updatedTransaction);
+        // kafkaTemplate.send("transaction-events", "transaction_" + status.toLowerCase(), updatedTransaction); // Tắt Kafka
 
         return convertToDTO(updatedTransaction);
     }
@@ -140,7 +140,7 @@ public class TransactionService {
         transactionRepository.save(transaction);
 
         // Publish transaction cancelled event
-        kafkaTemplate.send("transaction-events", "transaction_cancelled", transaction);
+        // kafkaTemplate.send("transaction-events", "transaction_cancelled", transaction); // Tắt Kafka
     }
 
     /**

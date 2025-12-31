@@ -28,21 +28,21 @@ public class NotificationService {
         return notification;
     }
 
-    @KafkaListener(topics = "account-events", groupId = "notification-service-group")
+    // @KafkaListener(topics = "account-events", groupId = "notification-service-group") // Tắt Kafka
     public void handleAccountEvents(String message) {
         log.info("Received account event: {}", message);
         // Send notification about account event (account created, updated)
         sendNotification("customer@example.com", "Account Update", "Your account has been updated: " + message);
     }
 
-    @KafkaListener(topics = "user-transfer-events", groupId = "notification-service-group")
+    // @KafkaListener(topics = "user-transfer-events", groupId = "notification-service-group") // Tắt Kafka
     public void handleTransferEvents(String message) {
         log.info("Received transfer event: {}", message);
         // Send notification about transfer event
         sendNotification("customer@example.com", "Transfer Update", "Your transfer has been processed: " + message);
     }
 
-    @KafkaListener(topics = "user-events", groupId = "notification-service-group")
+    // @KafkaListener(topics = "user-events", groupId = "notification-service-group") // Tắt Kafka
     public void handleUserEvents(String message) {
         log.info("Received user event: {}", message);
         // Send notification about user event (user created, profile updated, role changed)

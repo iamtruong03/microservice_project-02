@@ -8,7 +8,7 @@ import com.example.authservice.repository.UserRepository;
 import com.example.authservice.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.kafka.core.KafkaTemplate;
+// import org.springframework.kafka.core.KafkaTemplate; // Tắt Kafka
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,7 +27,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider tokenProvider;
     private final PasswordEncoder passwordEncoder;
-    private final KafkaTemplate<String, Object> kafkaTemplate;
+    // private final KafkaTemplate<String, Object> kafkaTemplate; // Tắt Kafka
 
     public JwtResponse login(LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(
@@ -70,7 +70,7 @@ public class AuthService {
         userRepository.save(user);
 
         // 📤 Phát event "user:registered" qua Kafka để User Service lắng nghe
-        publishUserRegisteredEvent(user);
+        // publishUserRegisteredEvent(user); // Tắt Kafka
 
         String token = tokenProvider.generateToken(user.getUsername(), user.getId());
         return JwtResponse.builder()
@@ -84,6 +84,7 @@ public class AuthService {
 
     // 📤 Phát event khi user đăng ký
     private void publishUserRegisteredEvent(User user) {
+        /*
         try {
             Map<String, Object> event = new HashMap<>();
             event.put("eventType", "USER_REGISTERED");
@@ -100,6 +101,7 @@ public class AuthService {
             log.error("Failed to publish user registered event", e);
             // Không throw exception, chỉ log để không ảnh hưởng tới login flow
         }
+        */
     }
 
     public User getUserByUsername(String username) {

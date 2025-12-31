@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.kafka.core.KafkaTemplate;
+// import org.springframework.kafka.core.KafkaTemplate; // Tắt Kafka
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,7 +40,7 @@ public class UserServiceImpl implements IUserService {
     private final UserQueryBuilder queryBuilder;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final KafkaTemplate<String, Object> kafkaTemplate;
+    // private final KafkaTemplate<String, Object> kafkaTemplate; // Tắt Kafka
 
     @Override
     @Transactional(readOnly = true)
@@ -72,7 +72,7 @@ public class UserServiceImpl implements IUserService {
         log.info("Created user with id: {}", savedUser.getId());
         
         // Publish user created event
-        publishUserCreatedEvent(savedUser);
+        // publishUserCreatedEvent(savedUser); // Tắt Kafka
         
         return savedUser;
     }
@@ -90,13 +90,14 @@ public class UserServiceImpl implements IUserService {
         log.info("Updated user with id: {}", updatedUser.getId());
 
         // 📤 Phát event nếu email hoặc fullName thay đổi
-        publishUserProfileUpdatedEvent(updatedUser, oldEmail);
+        // publishUserProfileUpdatedEvent(updatedUser, oldEmail); // Tắt Kafka
 
         return updatedUser;
     }
 
     // 📤 Phát event khi user profile được cập nhật
     private void publishUserProfileUpdatedEvent(User user, String oldEmail) {
+        /*
         try {
             // Chỉ phát event nếu email hoặc fullName thay đổi
             if (!oldEmail.equals(user.getEmail()) || true) {
@@ -113,6 +114,7 @@ public class UserServiceImpl implements IUserService {
         } catch (Exception e) {
             log.error("Failed to publish user profile updated event", e);
         }
+        */
     }
 
     @Override
@@ -215,7 +217,7 @@ public class UserServiceImpl implements IUserService {
         log.info("Assigned role {} to user {}", roleId, userId);
         
         // Publish role assigned event
-        publishUserRoleUpdatedEvent(updated);
+        // publishUserRoleUpdatedEvent(updated); // Tắt Kafka
         
         return updated;
     }
@@ -223,6 +225,7 @@ public class UserServiceImpl implements IUserService {
     // ========== Kafka Events ==========
     
     private void publishUserCreatedEvent(User user) {
+        /*
         try {
             Map<String, Object> event = new HashMap<>();
             event.put("eventType", "USER_CREATED");
@@ -239,9 +242,11 @@ public class UserServiceImpl implements IUserService {
         } catch (Exception e) {
             log.error("Failed to publish USER_CREATED event", e);
         }
+        */
     }
 
     private void publishUserRoleUpdatedEvent(User user) {
+        /*
         try {
             Map<String, Object> event = new HashMap<>();
             event.put("eventType", "USER_ROLE_UPDATED");
@@ -255,9 +260,11 @@ public class UserServiceImpl implements IUserService {
         } catch (Exception e) {
             log.error("Failed to publish USER_ROLE_UPDATED event", e);
         }
+        */
     }
 
     private void publishUserProfileUpdatedEvent(User user) {
+        /*
         try {
             Map<String, Object> event = new HashMap<>();
             event.put("eventType", "USER_PROFILE_UPDATED");
@@ -274,5 +281,6 @@ public class UserServiceImpl implements IUserService {
         } catch (Exception e) {
             log.error("Failed to publish USER_PROFILE_UPDATED event", e);
         }
+        */
     }
 }
