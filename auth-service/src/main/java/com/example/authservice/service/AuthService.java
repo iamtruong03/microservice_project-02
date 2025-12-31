@@ -43,13 +43,17 @@ public class AuthService {
 
         String token = tokenProvider.generateToken(user.getUsername(), userDetail.getId());
         
+        String fullName = (userDetail.getFirstName() != null ? userDetail.getFirstName() : "") + " " + 
+                         (userDetail.getLastName() != null ? userDetail.getLastName() : "");
+        
         log.info("User {} logged in successfully", request.getUsername());
         return JwtResponse.builder()
                 .token(token)
+                .type("Bearer")
                 .id(userDetail.getId())
                 .username(userDetail.getUserName())
                 .email(userDetail.getEmail())
-                .fullName(userDetail.getFirstName() + " " + userDetail.getLastName())
+                .fullName(fullName.trim())
                 .build();
     }
 
@@ -73,13 +77,18 @@ public class AuthService {
                 });
 
         String token = tokenProvider.generateToken(user.getUsername(), userDetail.getId());
+        
+        String fullName = (userDetail.getFirstName() != null ? userDetail.getFirstName() : "") + " " + 
+                         (userDetail.getLastName() != null ? userDetail.getLastName() : "");
+        
         log.info("User {} registered successfully", request.getUsername());
         return JwtResponse.builder()
                 .token(token)
+                .type("Bearer")
                 .id(userDetail.getId())
                 .username(userDetail.getUserName())
                 .email(userDetail.getEmail())
-                .fullName(userDetail.getFirstName() + " " + userDetail.getLastName())
+                .fullName(fullName.trim())
                 .build();
     }
 
