@@ -265,27 +265,6 @@ const Dashboard = () => {
         </Col>
       </Row>
 
-      {/* System Info */}
-      <Row gutter={16} style={{ marginTop: '24px' }}>
-        <Col xs={24}>
-          <Card title="System Information" style={{ backgroundColor: '#fafafa' }}>
-            <Row gutter={16}>
-              <Col xs={24} sm={12} md={6}>
-                <p><strong>API Gateway:</strong> Port 8080</p>
-              </Col>
-              <Col xs={24} sm={12} md={6}>
-                <p><strong>Auth Service:</strong> Port 8086</p>
-              </Col>
-              <Col xs={24} sm={12} md={6}>
-                <p><strong>Account Service:</strong> Port 8083</p>
-              </Col>
-              <Col xs={24} sm={12} md={6}>
-                <p><strong>Eureka Server:</strong> Port 8761</p>
-              </Col>
-            </Row>
-          </Card>
-        </Col>
-      </Row>
     </div>
   );
 };

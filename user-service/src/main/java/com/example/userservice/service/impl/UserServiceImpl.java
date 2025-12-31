@@ -4,6 +4,8 @@ import com.example.userservice.dto.CreateUserRequest;
 import com.example.userservice.dto.UpdateUserRequest;
 import com.example.userservice.dto.PageResponse;
 import com.example.userservice.dto.UserDetail;
+import com.example.userservice.exception.AccountInactiveException;
+import com.example.userservice.exception.AccountLockedException;
 import com.example.userservice.exception.DuplicateEmailException;
 import com.example.userservice.exception.UserNotFoundException;
 import com.example.userservice.model.User;
@@ -290,11 +292,11 @@ public class UserServiceImpl implements IUserService {
         }
 
         if (!user.getIsActive()) {
-            throw new RuntimeException("User account is inactive");
+            throw new AccountInactiveException("User account is inactive");
         }
 
         if (user.getIsLocked()) {
-            throw new RuntimeException("User account is locked");
+            throw new AccountLockedException("User account is locked");
         }
 
 

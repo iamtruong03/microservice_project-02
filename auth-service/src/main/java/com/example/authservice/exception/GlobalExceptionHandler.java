@@ -17,14 +17,35 @@ import java.util.Map;
 @Slf4j
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(AccountInactiveException.class)
+    public ResponseEntity<ErrorResponse> handleAccountInactive(AccountInactiveException ex, WebRequest request) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.FORBIDDEN.value(),
+                ex.getMessage(),
+                "Forbidden",
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(AccountLockedException.class)
+    public ResponseEntity<ErrorResponse> handleAccountLocked(AccountLockedException ex, WebRequest request) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.FORBIDDEN.value(),
+                ex.getMessage(),
+                "Forbidden",
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+    }
+
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleResourceNotFound(ResourceNotFoundException ex, WebRequest request) {
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
                 ex.getMessage(),
                 "Resource Not Found",
-                LocalDateTime.now(),
-                request.getDescription(false).replace("uri=", "")
+                LocalDateTime.now()
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
@@ -44,7 +65,6 @@ public class GlobalExceptionHandler {
         response.put("message", "Validation failed");
         response.put("errors", errors);
         response.put("timestamp", LocalDateTime.now());
-        response.put("path", request.getDescription(false).replace("uri=", ""));
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
@@ -56,16 +76,13 @@ public class GlobalExceptionHandler {
                 ex.getMessage().contains("Invalid") || 
                 ex.getMessage().contains("invalid") ||
                 ex.getMessage().contains("password") ||
-                ex.getMessage().contains("credentials") ||
-                ex.getMessage().contains("not found") ||
-                ex.getMessage().contains("User-Service error: 401"))) {
+                ex.getMessage().contains("credentials"))) {
             
             ErrorResponse errorResponse = new ErrorResponse(
                     HttpStatus.UNAUTHORIZED.value(),
                     ex.getMessage(),
                     "Unauthorized",
-                    LocalDateTime.now(),
-                    request.getDescription(false).replace("uri=", "")
+                    LocalDateTime.now()
             );
             return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
         }
@@ -74,8 +91,7 @@ public class GlobalExceptionHandler {
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 ex.getMessage(),
                 "Internal Server Error",
-                LocalDateTime.now(),
-                request.getDescription(false).replace("uri=", "")
+                LocalDateTime.now()
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -86,8 +102,7 @@ public class GlobalExceptionHandler {
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "An unexpected error occurred",
                 ex.getClass().getSimpleName(),
-                LocalDateTime.now(),
-                request.getDescription(false).replace("uri=", "")
+                LocalDateTime.now()
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }

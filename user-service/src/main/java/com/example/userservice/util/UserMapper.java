@@ -87,6 +87,9 @@ public class UserMapper {
         if (request.getMonthlyIncome() != null) {
             existingUser.setMonthlyIncome(request.getMonthlyIncome());
         }
+        if (request.getIsActive() != null) {
+            existingUser.setIsActive(request.getIsActive());
+        }
         if (request.getPreferredLanguage() != null) {
             existingUser.setPreferredLanguage(request.getPreferredLanguage());
         }

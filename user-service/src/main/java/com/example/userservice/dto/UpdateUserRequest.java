@@ -57,6 +57,9 @@ public class UpdateUserRequest {
   @Digits(integer = 10, fraction = 2, message = "Monthly income must be a valid amount")
   private BigDecimal monthlyIncome;
 
+  // Account Status
+  private Boolean isActive;
+
   // Banking Preferences
   private String preferredLanguage;
   private String preferredCurrency;

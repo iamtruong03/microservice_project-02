@@ -81,8 +81,8 @@ const UsersContent = () => {
       // Update stats
       setStats({
         total: response.data?.data?.totalElements || response.totalElements || usersArray.length || 0,
-        active: usersArray?.filter(u => u.status === 'ACTIVE').length || 0,
-        inactive: usersArray?.filter(u => u.status === 'INACTIVE').length || 0,
+        active: usersArray?.filter(u => u.isActive === true).length || 0,
+        inactive: usersArray?.filter(u => u.isActive === false).length || 0,
       });
     } catch (error) {
       messageApi.error('Failed to load users');
@@ -140,7 +140,7 @@ const UsersContent = () => {
         phoneNumber: values.phoneNumber,
         city: values.city,
         occupation: values.occupation,
-        status: values.status || 'ACTIVE',
+        isActive: values.status === 'ACTIVE',
       };
       
       if (selectedUser) {
@@ -177,7 +177,7 @@ const UsersContent = () => {
       phoneNumber: user.phoneNumber,
       city: user.city,
       occupation: user.occupation,
-      status: user.status || 'ACTIVE',
+      status: user.isActive === false ? 'INACTIVE' : 'ACTIVE',
     });
     setIsModalVisible(true);
   };
@@ -230,11 +230,11 @@ const UsersContent = () => {
     },
     {
       title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      render: (status) => (
-        <Tag color={status === 'ACTIVE' ? 'green' : 'red'}>
-          {status || 'ACTIVE'}
+      dataIndex: 'isActive',
+      key: 'isActive',
+      render: (isActive) => (
+        <Tag color={isActive === true ? 'green' : 'red'}>
+          {isActive === true ? 'Active' : 'Inactive'}
         </Tag>
       ),
     },
@@ -329,7 +329,7 @@ const UsersContent = () => {
                   fetchUsers(1, pagination.pageSize);
                 }}
               >
-                Reset
+                Refresh
               </Button>
               <Button
                 type="primary"
@@ -339,35 +339,6 @@ const UsersContent = () => {
                 Add User
               </Button>
             </Space>
-          </Col>
-        </Row>
-
-        {/* Sort Options */}
-        <Row gutter={16}>
-          <Col xs={24} sm={12}>
-            <Select
-              style={{ width: '100%' }}
-              placeholder="Sort by..."
-              value={sortBy}
-              onChange={setSortBy}
-              options={[
-                { label: 'ID', value: 'id' },
-                { label: 'Name', value: 'name' },
-                { label: 'Email', value: 'email' },
-              ]}
-            />
-          </Col>
-          <Col xs={24} sm={12}>
-            <Select
-              style={{ width: '100%' }}
-              placeholder="Sort direction..."
-              value={sortDir}
-              onChange={setSortDir}
-              options={[
-                { label: 'Ascending', value: 'asc' },
-                { label: 'Descending', value: 'desc' },
-              ]}
-            />
           </Col>
         </Row>
       </Card>

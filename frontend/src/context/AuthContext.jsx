@@ -44,9 +44,18 @@ export const AuthProvider = ({ children }) => {
 
       return { success: true, user };
     } catch (err) {
-      const message = err.response?.data?.message || 'Login failed';
-      setError(message);
-      return { success: false, error: message };
+      let errorMessage = 'Login failed';
+      
+      // Handle different error response formats
+      if (err.response?.data) {
+        const data = err.response.data;
+        errorMessage = data.message || data.error || errorMessage;
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
     } finally {
       setLoading(false);
     }
