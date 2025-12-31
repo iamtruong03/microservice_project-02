@@ -23,31 +23,6 @@ public class JwtTokenProvider {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(Authentication authentication) {
-        String username = authentication.getName();
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + jwtExpirationMs);
-
-        return Jwts.builder()
-                .subject(username)
-                .issuedAt(now)
-                .expiration(expiryDate)
-                .signWith(getSigningKey())
-                .compact();
-    }
-
-    public String generateToken(String username) {
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + jwtExpirationMs);
-
-        return Jwts.builder()
-                .subject(username)
-                .issuedAt(now)
-                .expiration(expiryDate)
-                .signWith(getSigningKey())
-                .compact();
-    }
-
     public String generateToken(String username, Long userId) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationMs);
