@@ -147,4 +147,19 @@ public class BankAccountController {
             return ResponseUtils.handlerException(e);
         }
     }
+
+    /**
+     * Lịch sử giao dịch
+     */
+    @GetMapping("/transactions/history")
+    public ResponseEntity<?> getTransactionHistory(
+            @RequestHeader(name = "uid", defaultValue = "") String uid) {
+        try {
+            Long uidLong = Long.parseLong(uid);
+            AccountStatisticsDTO stats = bankAccountService.getAccountStatistics(uidLong);
+            return ResponseUtils.handlerSuccess(stats);
+        } catch (Exception e) {
+            return ResponseUtils.handlerException(e);
+        }
+    }
 }
