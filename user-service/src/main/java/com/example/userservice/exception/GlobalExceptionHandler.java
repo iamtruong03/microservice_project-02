@@ -22,7 +22,6 @@ public class GlobalExceptionHandler {
         body.put("status", HttpStatus.UNAUTHORIZED.value());
         body.put("message", ex.getMessage());
         body.put("error", "Unauthorized");
-        log.warn("User not found: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
     }
 
@@ -43,7 +42,6 @@ public class GlobalExceptionHandler {
         body.put("status", HttpStatus.NOT_FOUND.value());
         body.put("message", ex.getMessage());
         body.put("error", "Resource Not Found");
-        log.warn("Resource not found: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
     }
 
@@ -76,7 +74,6 @@ public class GlobalExceptionHandler {
             body.put("status", HttpStatus.UNAUTHORIZED.value());
             body.put("error", "Unauthorized");
             body.put("message", ex.getMessage());
-            log.warn("Authentication failed: {}", ex.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
         }
         

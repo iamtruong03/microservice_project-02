@@ -282,22 +282,18 @@ public class UserServiceImpl implements IUserService {
     public UserDetail authenticateUser(String userName, String password) {
         User user = userRepository.findByUserName(userName)
                 .orElseThrow(() -> {
-                    log.warn("User not found: {}", userName);
                     return new UserNotFoundException("Invalid username or password");
                 });
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            log.warn("Invalid password for user: {}", userName);
             throw new RuntimeException("Invalid username or password");
         }
 
         if (!user.getIsActive()) {
-            log.warn("User account is inactive: {}", userName);
             throw new RuntimeException("User account is inactive");
         }
 
         if (user.getIsLocked()) {
-            log.warn("User account is locked: {}", userName);
             throw new RuntimeException("User account is locked");
         }
 

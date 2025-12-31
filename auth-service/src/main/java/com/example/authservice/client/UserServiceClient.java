@@ -50,10 +50,8 @@ public class UserServiceClient {
                 throw new RuntimeException("Invalid response from User-Service");
             }
         } catch (HttpClientErrorException.Unauthorized e) {
-            log.debug("Authentication failed - user credentials invalid or user not found");
             throw new RuntimeException("Invalid username or password", e);
         } catch (HttpClientErrorException.NotFound e) {
-            log.warn("User not found: {}", userName);
             throw new RuntimeException("User not found: " + userName, e);
         } catch (HttpClientErrorException e) {
             throw new RuntimeException("Authentication failed: " + e.getStatusCode() + " - " + e.getMessage(), e);

@@ -35,7 +35,6 @@ public class RateLimitInterceptor implements HandlerInterceptor {
         );
 
         if (!rateLimiter.acquirePermission()) {
-            log.warn("Rate limit exceeded for client: {}", clientId);
             response.setStatus(429); // Too Many Requests
             response.getWriter().write("Rate limit exceeded");
             return false;

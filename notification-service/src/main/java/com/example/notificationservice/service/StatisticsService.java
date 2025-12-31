@@ -100,7 +100,6 @@ public class StatisticsService {
             StatisticsReport report = generateReport();
             webSocketHandler.broadcastStatistics(report);
 
-            log.debug("Statistics updated and broadcasted");
         } catch (Exception e) {
         }
     }

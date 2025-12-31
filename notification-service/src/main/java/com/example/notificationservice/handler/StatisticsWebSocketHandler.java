@@ -42,7 +42,6 @@ public class StatisticsWebSocketHandler extends TextWebSocketHandler {
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         try {
             String payload = message.getPayload();
-            log.debug("Received message: {}", payload);
 
             WebSocketMessage wsMessage = objectMapper.readValue(payload, WebSocketMessage.class);
 

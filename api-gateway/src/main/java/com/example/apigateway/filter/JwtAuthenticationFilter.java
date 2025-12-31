@@ -68,7 +68,6 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
                     .parseSignedClaims(token);
             return true;
         } catch (Exception e) {
-            log.warn("JWT validation failed: {}", e.getMessage());
             return false;
         }
     }

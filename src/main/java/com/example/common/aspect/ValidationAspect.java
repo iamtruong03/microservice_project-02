@@ -27,7 +27,6 @@ public class ValidationAspect {
         boolean hasAccess = Arrays.asList(allowedRoles).contains(currentUserRole);
         
         if (!hasAccess) {
-            log.warn("❌ UNAUTHORIZED ACCESS: User role {} not in allowed roles {}", 
                     currentUserRole, Arrays.toString(allowedRoles));
             throw new RuntimeException("User is not authorized to access this resource");
         }

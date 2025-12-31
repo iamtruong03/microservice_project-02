@@ -40,7 +40,6 @@ public class UserEventListener {
 
             // Kiểm tra user đã tồn tại chưa
             if (userRepository.existsById(userId)) {
-                log.warn("User {} already exists in User Service", userId);
                 return;
             }
 

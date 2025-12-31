@@ -60,7 +60,6 @@ public class GlobalExceptionHandler {
                 ex.getMessage().contains("not found") ||
                 ex.getMessage().contains("User-Service error: 401"))) {
             
-            log.warn("Authentication failed: {}", ex.getMessage());
             ErrorResponse errorResponse = new ErrorResponse(
                     HttpStatus.UNAUTHORIZED.value(),
                     ex.getMessage(),
