@@ -53,7 +53,7 @@ public class AuthService {
                 .token(token)
                 .type("Bearer")
                 .id(userDetail.getId())
-                .username(userDetail.getUserName())
+                .userName(userDetail.getUserName())
                 .email(userDetail.getEmail())
                 .fullName(fullName.trim())
                 .build();
@@ -90,7 +90,7 @@ public class AuthService {
                 .token(token)
                 .type("Bearer")
                 .id(userDetail.getId())
-                .username(userDetail.getUserName())
+                .userName(userDetail.getUserName())
                 .email(userDetail.getEmail())
                 .fullName(fullName.trim())
                 .build();
