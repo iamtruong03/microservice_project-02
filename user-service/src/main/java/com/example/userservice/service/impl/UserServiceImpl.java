@@ -293,15 +293,16 @@ public class UserServiceImpl implements IUserService {
     @Transactional(readOnly = true)
     public UserDetail authenticateUser(String userName, String password) {
         User user = userRepository.findByUserName(userName)
-                .orElseThrow(() -> new UserNotFoundException("User not found: " + userName));
+                .orElseThrow(() -> {
+                    log.warn("User not found: {}", userName);
+                    return new UserNotFoundException("Invalid username or password");
+                });
 
-        // Kiểm tra password
         if (!passwordEncoder.matches(password, user.getPassword())) {
             log.warn("Invalid password for user: {}", userName);
-            throw new RuntimeException("Invalid credentials");
+            throw new RuntimeException("Invalid username or password");
         }
 
-        // Check user status
         if (!user.getIsActive()) {
             log.warn("User account is inactive: {}", userName);
             throw new RuntimeException("User account is inactive");
@@ -314,7 +315,6 @@ public class UserServiceImpl implements IUserService {
 
         log.info("User authenticated successfully: {}", userName);
 
-        // Return user detail
         return UserDetail.builder()
                 .id(user.getId())
                 .userName(user.getUserName())
