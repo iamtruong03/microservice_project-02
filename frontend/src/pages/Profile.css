@@ -1,0 +1,67 @@
+/* Profile Page Styles */
+
+.profile-container {
+  padding: 24px;
+}
+
+.profile-header {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.profile-avatar {
+  display: flex;
+  justify-content: center;
+}
+
+.profile-info h1 {
+  margin: 0 0 8px 0;
+}
+
+.profile-info p {
+  margin: 0 0 16px 0;
+  color: #666;
+}
+
+.profile-details {
+  margin-bottom: 24px;
+}
+
+.profile-stat {
+  text-align: center;
+  padding: 16px;
+}
+
+.profile-stat-label {
+  color: #999;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.profile-stat-value {
+  font-size: 24px;
+  font-weight: bold;
+  color: #1890ff;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .profile-avatar {
+    width: 100%;
+  }
+
+  .profile-info {
+    width: 100%;
+  }
+
+  .profile-stat {
+    margin-bottom: 16px;
+  }
+}

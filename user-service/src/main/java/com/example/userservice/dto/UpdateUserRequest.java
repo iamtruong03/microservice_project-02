@@ -20,17 +20,14 @@ public class UpdateUserRequest {
   @Size(max = 150, message = "Email must not exceed 150 characters")
   private String email;
 
-  @Pattern(regexp = "^\\+?[1-9]\\d{1,14}$", message = "Phone number should be valid")
   private String phoneNumber;
 
   // Personal Information
   @Past(message = "Date of birth must be in the past")
   private LocalDate dateOfBirth;
 
-  @Pattern(regexp = "^(MALE|FEMALE|OTHER)$", message = "Gender must be MALE, FEMALE, or OTHER")
   private String gender;
 
-  @Size(min = 9, max = 12, message = "National ID must be between 9 and 12 characters")
   private String nationalId;
 
   // Address Information

@@ -26,7 +26,6 @@ public class CreateUserRequest {
   @Size(min = 6, max = 255, message = "Password must be between 6 and 255 characters")
   private String password;
 
-  @Pattern(regexp = "^\\+?[1-9]\\d{1,14}$", message = "Phone number should be valid")
   private String phoneNumber;
 
   // Personal Information
@@ -35,7 +34,6 @@ public class CreateUserRequest {
   @Pattern(regexp = "^(MALE|FEMALE|OTHER)$", message = "Gender must be MALE, FEMALE, or OTHER")
   private String gender;
 
-  @Size(min = 9, max = 12, message = "National ID must be between 9 and 12 characters")
   private String nationalId;
 
   // Address Information
