@@ -23,25 +23,14 @@ public class JwtTokenProvider {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes());
     }
 
-    public String generateToken(String username) {
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + jwtExpirationMs);
-
-        return Jwts.builder()
-                .subject(username)
-                .issuedAt(now)
-                .expiration(expiryDate)
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
-                .compact();
-    }
-
-    public String generateToken(String username, Long userId) {
+    public String generateToken(String username, Long userId, Boolean isAdmin) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationMs);
 
         return Jwts.builder()
                 .subject(username)
                 .claim("uid", userId)
+                .claim("isAdmin", isAdmin != null ? isAdmin : false)
                 .issuedAt(now)
                 .expiration(expiryDate)
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
@@ -86,6 +75,22 @@ public class JwtTokenProvider {
             return ((Integer) uid).longValue();
         }
         return Long.parseLong(uid.toString());
+    }
+
+    public Boolean getIsAdminFromToken(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        Object isAdmin = claims.get("isAdmin");
+        if (isAdmin == null) {
+            return false;
+        }
+        if (isAdmin instanceof Boolean) {
+            return (Boolean) isAdmin;
+        }
+        return Boolean.parseBoolean(isAdmin.toString());
     }
 }
 

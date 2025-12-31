@@ -39,6 +39,20 @@ public class JwtTokenProvider {
                 .compact();
     }
 
+    public String generateToken(String username, Long userId, Boolean isAdmin) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + jwtExpirationMs);
+
+        return Jwts.builder()
+                .subject(username)
+                .claim("uid", userId)
+                .claim("isAdmin", isAdmin != null ? isAdmin : false)
+                .issuedAt(now)
+                .expiration(expiryDate)
+                .signWith(getSigningKey())
+                .compact();
+    }
+
     public String generateRefreshToken(String username, Long userId) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtRefreshExpirationMs);
@@ -91,6 +105,26 @@ public class JwtTokenProvider {
                     .parseSignedClaims(token)
                     .getPayload();
             return "refresh".equals(claims.get("type", String.class));
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public Boolean getIsAdminFromToken(String token) {
+        try {
+            Claims claims = Jwts.parser()
+                    .verifyWith(getSigningKey())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+            Object isAdmin = claims.get("isAdmin");
+            if (isAdmin == null) {
+                return false;
+            }
+            if (isAdmin instanceof Boolean) {
+                return (Boolean) isAdmin;
+            }
+            return Boolean.parseBoolean(isAdmin.toString());
         } catch (Exception e) {
             return false;
         }

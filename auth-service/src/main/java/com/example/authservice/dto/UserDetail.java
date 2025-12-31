@@ -15,6 +15,7 @@ public class UserDetail {
     private String phoneNumber;
     private Boolean isVerified;
     private Boolean isActive;
+    private Boolean isAdmin;
     private Boolean isLocked;
     private String kycStatus;
 }

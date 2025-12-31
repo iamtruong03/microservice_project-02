@@ -307,6 +307,7 @@ public class UserServiceImpl implements IUserService {
                 .phoneNumber(user.getPhoneNumber())
                 .isVerified(user.getIsVerified())
                 .isActive(user.getIsActive())
+                .isAdmin(user.getIsAdmin())
                 .isLocked(user.getIsLocked())
                 .kycStatus(user.getKycStatus())
                 .build();

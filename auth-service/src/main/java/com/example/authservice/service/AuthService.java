@@ -42,7 +42,7 @@ public class AuthService {
                     return userRepository.save(newUser);
                 });
 
-        String token = tokenProvider.generateToken(user.getUsername(), userDetail.getId());
+        String token = tokenProvider.generateToken(user.getUsername(), userDetail.getId(), userDetail.getIsAdmin());
         String refreshToken = tokenProvider.generateRefreshToken(user.getUsername(), userDetail.getId());
         
         String fullName = (userDetail.getFirstName() != null ? userDetail.getFirstName() : "") + " " + 
@@ -78,7 +78,7 @@ public class AuthService {
                     return userRepository.save(newUser);
                 });
 
-        String token = tokenProvider.generateToken(user.getUsername(), userDetail.getId());
+        String token = tokenProvider.generateToken(user.getUsername(), userDetail.getId(), userDetail.getIsAdmin());
         String refreshToken = tokenProvider.generateRefreshToken(user.getUsername(), userDetail.getId());
         
         String fullName = (userDetail.getFirstName() != null ? userDetail.getFirstName() : "") + " " + 
@@ -134,9 +134,10 @@ public class AuthService {
 
             String username = tokenProvider.getUsernameFromToken(refreshToken);
             Long userId = tokenProvider.getUserIdFromToken(refreshToken);
+            Boolean isAdmin = tokenProvider.getIsAdminFromToken(refreshToken);
 
             // Generate new tokens
-            String newAccessToken = tokenProvider.generateToken(username, userId);
+            String newAccessToken = tokenProvider.generateToken(username, userId, isAdmin);
             String newRefreshToken = tokenProvider.generateRefreshToken(username, userId);
 
             // Blacklist old refresh token

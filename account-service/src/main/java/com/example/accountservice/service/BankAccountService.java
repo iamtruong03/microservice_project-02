@@ -7,7 +7,7 @@ import com.example.accountservice.exception.ResourceNotFoundException;
 import com.example.accountservice.model.BankAccount;
 import com.example.accountservice.repository.BankAccountRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.kafka.core.KafkaTemplate;
+// import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class BankAccountService {
 
     private final BankAccountRepository bankAccountRepository;
-    private final KafkaTemplate<String, Object> kafkaTemplate;
+    // private final KafkaTemplate<String, Object> kafkaTemplate;
 
     /**
      * Tạo tài khoản ngân hàng sau khi đăng ký
@@ -43,7 +43,7 @@ public class BankAccountService {
         BankAccount saved = bankAccountRepository.save(bankAccount);
         
         // Publish account created event
-        kafkaTemplate.send("account-events", "account_created", saved);
+        // kafkaTemplate.send("account-events", "account_created", saved);
         
         return convertToDTO(saved);
     }
@@ -102,8 +102,8 @@ public class BankAccountService {
         BankAccount updatedToAccount = bankAccountRepository.save(toAccount);
 
         // Publish account updated events
-        kafkaTemplate.send("account-events", "account_updated", fromAccount);
-        kafkaTemplate.send("account-events", "account_updated", toAccount);
+        // kafkaTemplate.send("account-events", "account_updated", fromAccount);
+        // kafkaTemplate.send("account-events", "account_updated", toAccount);
 
         return convertToDTO(updatedToAccount);
     }
@@ -142,7 +142,7 @@ public class BankAccountService {
         BankAccount updated = bankAccountRepository.save(account);
         
         // Publish account updated event
-        kafkaTemplate.send("account-events", "account_updated", updated);
+        // kafkaTemplate.send("account-events", "account_updated", updated);
 
         return convertToDTO(updated);
     }
@@ -167,7 +167,7 @@ public class BankAccountService {
         BankAccount updated = bankAccountRepository.save(account);
         
         // Publish account updated event
-        kafkaTemplate.send("account-events", "account_updated", updated);
+        // kafkaTemplate.send("account-events", "account_updated", updated);
 
         return convertToDTO(updated);
     }
@@ -193,7 +193,7 @@ public class BankAccountService {
         BankAccount updated = bankAccountRepository.save(account);
         
         // Publish account updated event
-        kafkaTemplate.send("account-events", "account_updated", updated);
+        // kafkaTemplate.send("account-events", "account_updated", updated);
 
         return convertToDTO(updated);
     }

@@ -85,6 +85,10 @@ public class User {
   private Boolean isActive = true;
 
   @Builder.Default
+  @Column(name = "is_admin", nullable = false)
+  private Boolean isAdmin = false;
+
+  @Builder.Default
   @Column(name = "is_verified", nullable = false)
   private Boolean isVerified = false;
 
