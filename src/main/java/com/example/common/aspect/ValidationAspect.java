@@ -32,6 +32,5 @@ public class ValidationAspect {
             throw new RuntimeException("User is not authorized to access this resource");
         }
         
-        log.info("✅ USER AUTHORIZED: User role {} has access", currentUserRole);
     }
 }

@@ -19,13 +19,11 @@ public class StatisticsController {
 
     @GetMapping("/report")
     public ResponseEntity<StatisticsReport> getCurrentReport() {
-        log.info("Getting current statistics report");
         return ResponseEntity.ok(statisticsService.getCurrentReport());
     }
 
     @GetMapping("/{type}")
     public ResponseEntity<RealTimeStatistics> getStatisticsByType(@PathVariable String type) {
-        log.info("Getting statistics for type: {}", type);
         RealTimeStatistics stats = statisticsService.getStatsByType(type);
         if (stats != null) {
             return ResponseEntity.ok(stats);

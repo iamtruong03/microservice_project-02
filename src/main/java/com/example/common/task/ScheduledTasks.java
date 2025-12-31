@@ -22,10 +22,8 @@ public class ScheduledTasks {
      */
     @Scheduled(fixedRate = 300000)
     public void healthCheck() {
-        log.info("=== HEALTH CHECK === {}", LocalDateTime.now().format(formatter));
         try {
             // Implement health check logic
-            log.info("✓ Application is healthy");
         } catch (Exception e) {
             log.error("✗ Health check failed", e);
         }
@@ -36,12 +34,10 @@ public class ScheduledTasks {
      */
     @Scheduled(fixedRate = 600000)
     public void cleanupExpiredData() {
-        log.info("=== CLEANUP EXPIRED DATA === {}", LocalDateTime.now().format(formatter));
         try {
             // Clean expired tokens
             // Clean old logs
             // Clean cache if needed
-            log.info("✓ Cleanup completed successfully");
         } catch (Exception e) {
             log.error("✗ Cleanup failed", e);
         }
@@ -52,11 +48,9 @@ public class ScheduledTasks {
      */
     @Scheduled(fixedRate = 3600000)
     public void generateReports() {
-        log.info("=== GENERATE REPORTS === {}", LocalDateTime.now().format(formatter));
         try {
             // Generate daily/hourly reports
             // Log statistics
-            log.info("✓ Reports generated successfully");
         } catch (Exception e) {
             log.error("✗ Report generation failed", e);
         }
@@ -67,12 +61,10 @@ public class ScheduledTasks {
      */
     @Scheduled(cron = "0 0 2 * * ?")
     public void databaseMaintenance() {
-        log.info("=== DATABASE MAINTENANCE === {}", LocalDateTime.now().format(formatter));
         try {
             // Run vacuum/optimize queries
             // Backup database
             // Archive old data
-            log.info("✓ Database maintenance completed");
         } catch (Exception e) {
             log.error("✗ Database maintenance failed", e);
         }
@@ -83,12 +75,10 @@ public class ScheduledTasks {
      */
     @Scheduled(cron = "0 0 3 * * ?")
     public void syncWithExternalServices() {
-        log.info("=== SYNC WITH EXTERNAL SERVICES === {}", LocalDateTime.now().format(formatter));
         try {
             // Sync data with external APIs
             // Update exchange rates
             // Fetch latest configuration
-            log.info("✓ Sync with external services completed");
         } catch (Exception e) {
             log.error("✗ Sync with external services failed", e);
         }
@@ -99,12 +89,10 @@ public class ScheduledTasks {
      */
     @Scheduled(cron = "0 0 1 ? * MON")
     public void weeklyMaintenance() {
-        log.info("=== WEEKLY MAINTENANCE === {}", LocalDateTime.now().format(formatter));
         try {
             // Weekly database optimization
             // Weekly report generation
             // Weekly backup verification
-            log.info("✓ Weekly maintenance completed");
         } catch (Exception e) {
             log.error("✗ Weekly maintenance failed", e);
         }

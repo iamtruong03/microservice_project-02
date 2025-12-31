@@ -35,7 +35,6 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
             String email = oauth2User.getAttribute("email");
             String name = oauth2User.getAttribute("name");
             
-            log.info("OAuth2 Login successful for email: {}", email);
             
             Optional<User> existingUser = userRepository.findByEmail(email);
             
@@ -45,7 +44,6 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
                 user.setFullName(name);
                 user.setUpdatedAt(LocalDateTime.now().toString());
                 userRepository.save(user);
-                log.info("OAuth2 user updated: {}", email);
             } else {
                 user = new User();
                 user.setEmail(email);
@@ -55,7 +53,6 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
                 user.setCreatedAt(LocalDateTime.now().toString());
                 user.setUpdatedAt(LocalDateTime.now().toString());
                 userRepository.save(user);
-                log.info("New OAuth2 user created: {}", email);
             }
             
             String token = jwtTokenProvider.generateToken(user.getUsername(), user.getId());

@@ -21,7 +21,6 @@ public class DataInitializationConfig {
         return args -> {
             // Check if admin user already exists
             if (userRepository.findByUserName("admin").isEmpty()) {
-                log.info("Creating default admin user...");
                 
                 User adminUser = User.builder()
                         .userName("admin")
@@ -32,11 +31,7 @@ public class DataInitializationConfig {
                         .build();
                 
                 userRepository.save(adminUser);
-                log.info("Default admin user created successfully");
-                log.info("Username: admin");
-                log.info("Password: admin123");
             } else {
-                log.info("Admin user already exists, skipping initialization");
             }
         };
     }

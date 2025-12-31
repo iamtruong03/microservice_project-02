@@ -1,103 +1,103 @@
-import axios from 'axios';
+import { userApi } from './api';
 
-const API_BASE_URL = 'http://localhost:8082/api';
+const API_BASE_URL = '/api';
 
 export const roleService = {
   // Create role
   createRole: (roleData) =>
-    axios.post(`${API_BASE_URL}/roles`, roleData, {
-      headers: { 'uid': localStorage.getItem('userId') || '' }
-    }),
+    userApi.post(`${API_BASE_URL}/roles`, roleData),
 
   // Update role
   updateRole: (roleId, roleData) =>
-    axios.put(`${API_BASE_URL}/roles/${roleId}`, roleData, {
-      headers: { 'uid': localStorage.getItem('userId') || '' }
-    }),
+    userApi.put(`${API_BASE_URL}/roles/${roleId}`, roleData),
 
   // Get role by id
   getRoleById: (roleId) =>
-    axios.get(`${API_BASE_URL}/roles/${roleId}`, {
-      headers: { 'uid': localStorage.getItem('userId') || '' }
-    }),
+    userApi.get(`${API_BASE_URL}/roles/${roleId}`),
 
   // Get all roles
   getAllRoles: (page = 0, size = 10) =>
-    axios.get(`${API_BASE_URL}/roles?page=${page}&size=${size}`, {
-      headers: { 'uid': localStorage.getItem('userId') || '' }
-    }),
+    userApi.get(`${API_BASE_URL}/roles?page=${page}&size=${size}`),
 
   // Search roles
   searchRoles: (keyword, page = 0, size = 10) =>
-    axios.get(`${API_BASE_URL}/roles/search?keyword=${keyword}&page=${page}&size=${size}`, {
-      headers: { 'uid': localStorage.getItem('userId') || '' }
-    }),
+    userApi.get(`${API_BASE_URL}/roles/search?keyword=${keyword}&page=${page}&size=${size}`),
 
   // Delete role
   deleteRole: (roleId) =>
-    axios.delete(`${API_BASE_URL}/roles/${roleId}`, {
-      headers: { 'uid': localStorage.getItem('userId') || '' }
-    }),
+    userApi.delete(`${API_BASE_URL}/roles/${roleId}`),
 
-  // Deactivate role
-  deactivateRole: (roleId) =>
-    axios.patch(`${API_BASE_URL}/roles/${roleId}/deactivate`, {}, {
-      headers: { 'uid': localStorage.getItem('userId') || '' }
-    }),
+  // Assign permission to role
+  assignPermissionToRole: (roleId, permissionId) =>
+    userApi.post(`${API_BASE_URL}/roles/${roleId}/permissions/${permissionId}`),
 
-  // Activate role
-  activateRole: (roleId) =>
-    axios.patch(`${API_BASE_URL}/roles/${roleId}/activate`, {}, {
-      headers: { 'uid': localStorage.getItem('userId') || '' }
-    })
+  // Remove permission from role
+  removePermissionFromRole: (roleId, permissionId) =>
+    userApi.delete(`${API_BASE_URL}/roles/${roleId}/permissions/${permissionId}`),
 };
 
 export const permissionService = {
-  // Create permission
-  createPermission: (permissionData) =>
-    axios.post(`${API_BASE_URL}/permissions`, permissionData, {
-      headers: { 'uid': localStorage.getItem('userId') || '' }
-    }),
-
-  // Update permission
-  updatePermission: (permissionId, permissionData) =>
-    axios.put(`${API_BASE_URL}/permissions/${permissionId}`, permissionData, {
-      headers: { 'uid': localStorage.getItem('userId') || '' }
-    }),
-
-  // Get permission by id
-  getPermissionById: (permissionId) =>
-    axios.get(`${API_BASE_URL}/permissions/${permissionId}`, {
-      headers: { 'uid': localStorage.getItem('userId') || '' }
-    }),
-
   // Get all permissions
   getAllPermissions: (page = 0, size = 10) =>
-    axios.get(`${API_BASE_URL}/permissions?page=${page}&size=${size}`, {
-      headers: { 'uid': localStorage.getItem('userId') || '' }
-    }),
+    userApi.get(`${API_BASE_URL}/permissions?page=${page}&size=${size}`),
 
   // Search permissions
   searchPermissions: (keyword, page = 0, size = 10) =>
-    axios.get(`${API_BASE_URL}/permissions/search?keyword=${keyword}&page=${page}&size=${size}`, {
-      headers: { 'uid': localStorage.getItem('userId') || '' }
-    }),
+    userApi.get(`${API_BASE_URL}/permissions/search?keyword=${keyword}&page=${page}&size=${size}`),
+
+  // Get permission by id
+  getPermissionById: (permissionId) =>
+    userApi.get(`${API_BASE_URL}/permissions/${permissionId}`),
+
+  // Create permission
+  createPermission: (permissionData) =>
+    userApi.post(`${API_BASE_URL}/permissions`, permissionData),
+
+  // Update permission
+  updatePermission: (permissionId, permissionData) =>
+    userApi.put(`${API_BASE_URL}/permissions/${permissionId}`, permissionData),
 
   // Delete permission
   deletePermission: (permissionId) =>
-    axios.delete(`${API_BASE_URL}/permissions/${permissionId}`, {
-      headers: { 'uid': localStorage.getItem('userId') || '' }
-    }),
+    userApi.delete(`${API_BASE_URL}/permissions/${permissionId}`),
+};
 
-  // Deactivate permission
-  deactivatePermission: (permissionId) =>
-    axios.patch(`${API_BASE_URL}/permissions/${permissionId}/deactivate`, {}, {
-      headers: { 'uid': localStorage.getItem('userId') || '' }
-    }),
+export const userService = {
+  // Get all users
+  getAllUsers: (page = 0, size = 10) =>
+    userApi.get(`${API_BASE_URL}/users?page=${page}&size=${size}`),
 
-  // Activate permission
-  activatePermission: (permissionId) =>
-    axios.patch(`${API_BASE_URL}/permissions/${permissionId}/activate`, {}, {
-      headers: { 'uid': localStorage.getItem('userId') || '' }
-    })
+  // Search users
+  searchUsers: (keyword, page = 0, size = 10) =>
+    userApi.get(`${API_BASE_URL}/users/search?keyword=${keyword}&page=${page}&size=${size}`),
+
+  // Advanced search
+  advancedSearch: (params, page = 0, size = 10) => {
+    const searchParams = new URLSearchParams({
+      page,
+      size,
+      ...params
+    });
+    return userApi.get(`${API_BASE_URL}/users/advanced-search?${searchParams}`);
+  },
+
+  // Get user by id
+  getUserById: (userId) =>
+    userApi.get(`${API_BASE_URL}/users/${userId}`),
+
+  // Create user
+  createUser: (userData) =>
+    userApi.post(`${API_BASE_URL}/users`, userData),
+
+  // Update user
+  updateUser: (userId, userData) =>
+    userApi.put(`${API_BASE_URL}/users/${userId}`, userData),
+
+  // Delete user
+  deleteUser: (userId) =>
+    userApi.delete(`${API_BASE_URL}/users/${userId}`),
+
+  // Assign role to user
+  assignRoleToUser: (userId, roleId) =>
+    userApi.post(`${API_BASE_URL}/users/${userId}/roles/${roleId}`),
 };

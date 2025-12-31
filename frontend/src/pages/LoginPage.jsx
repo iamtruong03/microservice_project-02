@@ -33,7 +33,7 @@ const LoginPage = () => {
 
   const onFinish = async (values) => {
     setLocalError(null);
-    const result = await login(values.username, values.password);
+    const result = await login(values.userName, values.password);
 
     if (result.success) {
       navigate('/');
@@ -78,7 +78,7 @@ const LoginPage = () => {
                 initialValues={{ remember: true }}
               >
                 <Form.Item
-                  name="username"
+                  name="userName"
                   label={<><UserOutlined style={{ marginRight: 6 }} /> Username</>}
                   rules={[
                     { required: true, message: 'Vui lòng nhập username' },

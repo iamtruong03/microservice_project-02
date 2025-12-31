@@ -21,23 +21,22 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  const login = useCallback(async (username, password) => {
+  const login = useCallback(async (userName, password) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await authService.login(username, password);
-      const { token, id, username: resUsername, email, fullName, type } = response.data;
+      const response = await authService.login(userName, password);
+      const authData = response.data;
+
+      // Use the new setAuthData method
+      authService.setAuthData(authData);
 
       const user = {
-        id,
-        username: resUsername,
-        email,
-        fullName,
-        type,
+        id: authData.id,
+        userName: authData.userName,
+        email: authData.email,
+        fullName: authData.fullName,
       };
-
-      authService.setToken(token);
-      authService.setUser(user);
 
       setUser(user);
       setIsAuthenticated(true);
@@ -84,11 +83,18 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const logout = useCallback(() => {
-    authService.logout();
-    setUser(null);
-    setIsAuthenticated(false);
-    setError(null);
+  const logout = useCallback(async () => {
+    setLoading(true);
+    try {
+      await authService.logout();
+    } catch (err) {
+      console.error('Logout error:', err);
+    } finally {
+      setUser(null);
+      setIsAuthenticated(false);
+      setError(null);
+      setLoading(false);
+    }
   }, []);
 
   const value = {

@@ -44,7 +44,6 @@ public class UserController {
     @PostMapping("/authenticate")
     public ResponseEntity<?> authenticate(
             @Valid @RequestBody AuthenticationRequest request) {
-        log.info("Authenticating user: {}", request.getUserName());
         UserDetail user = userService.authenticateUser(request.getUserName(), request.getPassword());
         return ResponseUtils.handlerSuccess(user);
     }

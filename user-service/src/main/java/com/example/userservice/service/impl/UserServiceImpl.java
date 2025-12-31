@@ -70,7 +70,6 @@ public class UserServiceImpl implements IUserService {
         // Encode password
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         User savedUser = userRepository.save(user);
-        log.info("Created user with id: {}", savedUser.getId());
         
         // Publish user created event
         // publishUserCreatedEvent(savedUser); // Tắt Kafka
@@ -88,7 +87,6 @@ public class UserServiceImpl implements IUserService {
         
         userMapper.updateEntity(existingUser, request);
         User updatedUser = userRepository.save(existingUser);
-        log.info("Updated user with id: {}", updatedUser.getId());
 
         // Phát event nếu email hoặc fullName thay đổi
         // publishUserProfileUpdatedEvent(updatedUser, oldEmail); // Tắt Kafka
@@ -110,7 +108,6 @@ public class UserServiceImpl implements IUserService {
                 event.put("timestamp", System.currentTimeMillis());
 
                 kafkaTemplate.send("user-events", "user_profile_updated", event);
-                log.info("Published USER_PROFILE_UPDATED event for user: {}", user.getId());
             }
         } catch (Exception e) {
             log.error("Failed to publish user profile updated event", e);
@@ -124,7 +121,6 @@ public class UserServiceImpl implements IUserService {
             throw new UserNotFoundException("User not found with id: " + id);
         }
         userRepository.deleteById(id);
-        log.info("Deleted user with id: {}", id);
     }
 
     @Override
@@ -215,7 +211,6 @@ public class UserServiceImpl implements IUserService {
         User user = getUserById(userId);
         user.setRoleId(roleId);
         User updated = userRepository.save(user);
-        log.info("Assigned role {} to user {}", roleId, userId);
         
         // Publish role assigned event
         // publishUserRoleUpdatedEvent(updated); // Tắt Kafka
@@ -239,7 +234,6 @@ public class UserServiceImpl implements IUserService {
             event.put("timestamp", System.currentTimeMillis());
             
             kafkaTemplate.send("user-events", "user_created", event);
-            log.info("Published USER_CREATED event for user: {}", user.getId());
         } catch (Exception e) {
             log.error("Failed to publish USER_CREATED event", e);
         }
@@ -257,7 +251,6 @@ public class UserServiceImpl implements IUserService {
             event.put("timestamp", System.currentTimeMillis());
             
             kafkaTemplate.send("user-events", "user_role_updated", event);
-            log.info("Published USER_ROLE_UPDATED event for user: {}", user.getId());
         } catch (Exception e) {
             log.error("Failed to publish USER_ROLE_UPDATED event", e);
         }
@@ -278,7 +271,6 @@ public class UserServiceImpl implements IUserService {
             event.put("timestamp", System.currentTimeMillis());
             
             kafkaTemplate.send("user-events", "user_profile_updated", event);
-            log.info("Published USER_PROFILE_UPDATED event for user: {}", user.getId());
         } catch (Exception e) {
             log.error("Failed to publish USER_PROFILE_UPDATED event", e);
         }
@@ -313,7 +305,6 @@ public class UserServiceImpl implements IUserService {
             throw new RuntimeException("User account is locked");
         }
 
-        log.info("User authenticated successfully: {}", userName);
 
         return UserDetail.builder()
                 .id(user.getId())

@@ -33,7 +33,6 @@ public class UserServiceClient {
                     .password(password)
                     .build();
 
-            log.info("Calling User-Service for authentication: {}", url);
             
             // Use ParameterizedTypeReference to properly parse ApiResponse<UserDetail>
             ResponseEntity<ApiResponse<UserDetail>> response = restTemplate.exchange(
@@ -46,7 +45,6 @@ public class UserServiceClient {
             ApiResponse<UserDetail> apiResponse = response.getBody();
             if (apiResponse != null && apiResponse.isSuccess() && apiResponse.getData() != null) {
                 UserDetail userDetail = apiResponse.getData();
-                log.info("User authenticated successfully: {} with id: {}", userDetail.getUserName(), userDetail.getId());
                 return userDetail;
             } else {
                 log.error("Invalid response from User-Service: {}", apiResponse);

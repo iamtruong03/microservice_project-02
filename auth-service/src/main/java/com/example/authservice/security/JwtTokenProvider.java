@@ -19,6 +19,9 @@ public class JwtTokenProvider {
     @Value("${app.jwtExpirationMs:86400000}")
     private long jwtExpirationMs;
 
+    @Value("${app.jwtRefreshExpirationMs:604800000}")
+    private long jwtRefreshExpirationMs; // 7 days
+
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
@@ -30,6 +33,20 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .subject(username)
                 .claim("uid", userId)
+                .issuedAt(now)
+                .expiration(expiryDate)
+                .signWith(getSigningKey())
+                .compact();
+    }
+
+    public String generateRefreshToken(String username, Long userId) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + jwtRefreshExpirationMs);
+
+        return Jwts.builder()
+                .subject(username)
+                .claim("uid", userId)
+                .claim("type", "refresh")
                 .issuedAt(now)
                 .expiration(expiryDate)
                 .signWith(getSigningKey())
@@ -61,6 +78,19 @@ public class JwtTokenProvider {
                     .build()
                     .parseSignedClaims(token);
             return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean isRefreshToken(String token) {
+        try {
+            Claims claims = Jwts.parser()
+                    .verifyWith(getSigningKey())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+            return "refresh".equals(claims.get("type", String.class));
         } catch (Exception e) {
             return false;
         }

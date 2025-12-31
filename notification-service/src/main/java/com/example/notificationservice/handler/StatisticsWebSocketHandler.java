@@ -27,7 +27,6 @@ public class StatisticsWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         sessions.add(session);
-        log.info("WebSocket connection established: {}", session.getId());
 
         // Send initial statistics
         WebSocketMessage response = WebSocketMessage.builder()
@@ -48,7 +47,6 @@ public class StatisticsWebSocketHandler extends TextWebSocketHandler {
             WebSocketMessage wsMessage = objectMapper.readValue(payload, WebSocketMessage.class);
 
             if ("SUBSCRIBE".equalsIgnoreCase(wsMessage.getType())) {
-                log.info("Client subscribed to channel: {}", wsMessage.getChannel());
                 // The subscription is tracked per session; broadcasting happens elsewhere
             } else if ("PING".equalsIgnoreCase(wsMessage.getType())) {
                 WebSocketMessage pong = WebSocketMessage.builder()
@@ -71,7 +69,6 @@ public class StatisticsWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, org.springframework.web.socket.CloseStatus status) throws Exception {
         sessions.remove(session);
-        log.info("WebSocket connection closed: {}", session.getId());
     }
 
     public void broadcastStatistics(Object statistics) {

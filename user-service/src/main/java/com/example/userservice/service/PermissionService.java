@@ -25,7 +25,6 @@ public class PermissionService {
 
     // Create new permission
     public PermissionDTO createPermission(PermissionDTO permissionDTO) {
-        log.info("Creating new permission: {}", permissionDTO.getName());
         
         if (permissionRepository.existsByName(permissionDTO.getName())) {
             throw new IllegalArgumentException("Permission name already exists: " + permissionDTO.getName());
@@ -39,13 +38,11 @@ public class PermissionService {
         permission.setIsActive(true);
 
         Permission savedPermission = permissionRepository.save(permission);
-        log.info("Permission created successfully with id: {}", savedPermission.getId());
         return convertToDTO(savedPermission);
     }
 
     // Update existing permission
     public PermissionDTO updatePermission(Long permissionId, PermissionDTO permissionDTO) {
-        log.info("Updating permission with id: {}", permissionId);
         
         Permission permission = permissionRepository.findById(permissionId)
             .orElseThrow(() -> new ResourceNotFoundException("Permission not found with id: " + permissionId));
@@ -70,7 +67,6 @@ public class PermissionService {
         }
 
         Permission updatedPermission = permissionRepository.save(permission);
-        log.info("Permission updated successfully");
         return convertToDTO(updatedPermission);
     }
 
@@ -126,19 +122,16 @@ public class PermissionService {
 
     // Delete permission
     public void deletePermission(Long permissionId) {
-        log.info("Deleting permission with id: {}", permissionId);
         
         if (!permissionRepository.existsById(permissionId)) {
             throw new ResourceNotFoundException("Permission not found with id: " + permissionId);
         }
         
         permissionRepository.deleteById(permissionId);
-        log.info("Permission deleted successfully");
     }
 
     // Deactivate permission
     public PermissionDTO deactivatePermission(Long permissionId) {
-        log.info("Deactivating permission with id: {}", permissionId);
         
         Permission permission = permissionRepository.findById(permissionId)
             .orElseThrow(() -> new ResourceNotFoundException("Permission not found with id: " + permissionId));
@@ -150,7 +143,6 @@ public class PermissionService {
 
     // Activate permission
     public PermissionDTO activatePermission(Long permissionId) {
-        log.info("Activating permission with id: {}", permissionId);
         
         Permission permission = permissionRepository.findById(permissionId)
             .orElseThrow(() -> new ResourceNotFoundException("Permission not found with id: " + permissionId));

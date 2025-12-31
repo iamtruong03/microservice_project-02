@@ -2,6 +2,8 @@ package com.example.authservice.controller;
 
 import com.example.authservice.dto.JwtResponse;
 import com.example.authservice.dto.LoginRequest;
+import com.example.authservice.dto.LogoutRequest;
+import com.example.authservice.dto.RefreshTokenRequest;
 import com.example.authservice.dto.RegisterRequest;
 import com.example.authservice.service.AuthService;
 import jakarta.validation.Valid;
@@ -31,5 +33,17 @@ public class AuthController {
     @GetMapping("/validate")
     public ResponseEntity<String> validate() {
         return ResponseEntity.ok("Token is valid");
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@Valid @RequestBody LogoutRequest request) {
+        authService.logout(request.getToken());
+        return ResponseEntity.ok("Logged out successfully");
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<JwtResponse> refresh(@Valid @RequestBody RefreshTokenRequest request) {
+        JwtResponse response = authService.refreshToken(request.getRefreshToken());
+        return ResponseEntity.ok(response);
     }
 }

@@ -25,7 +25,6 @@ public class RoleService {
 
     // Create new role
     public RoleDTO createRole(RoleDTO roleDTO) {
-        log.info("Creating new role: {}", roleDTO.getName());
         
         if (roleRepository.existsByName(roleDTO.getName())) {
             throw new IllegalArgumentException("Role name already exists: " + roleDTO.getName());
@@ -37,13 +36,11 @@ public class RoleService {
         role.setIsActive(true);
 
         Role savedRole = roleRepository.save(role);
-        log.info("Role created successfully with id: {}", savedRole.getId());
         return convertToDTO(savedRole);
     }
 
     // Update existing role
     public RoleDTO updateRole(Long roleId, RoleDTO roleDTO) {
-        log.info("Updating role with id: {}", roleId);
         
         Role role = roleRepository.findById(roleId)
             .orElseThrow(() -> new ResourceNotFoundException("Role not found with id: " + roleId));
@@ -60,7 +57,6 @@ public class RoleService {
         }
 
         Role updatedRole = roleRepository.save(role);
-        log.info("Role updated successfully");
         return convertToDTO(updatedRole);
     }
 
@@ -116,19 +112,16 @@ public class RoleService {
 
     // Delete role
     public void deleteRole(Long roleId) {
-        log.info("Deleting role with id: {}", roleId);
         
         if (!roleRepository.existsById(roleId)) {
             throw new ResourceNotFoundException("Role not found with id: " + roleId);
         }
         
         roleRepository.deleteById(roleId);
-        log.info("Role deleted successfully");
     }
 
     // Deactivate role
     public RoleDTO deactivateRole(Long roleId) {
-        log.info("Deactivating role with id: {}", roleId);
         
         Role role = roleRepository.findById(roleId)
             .orElseThrow(() -> new ResourceNotFoundException("Role not found with id: " + roleId));
@@ -140,7 +133,6 @@ public class RoleService {
 
     // Activate role
     public RoleDTO activateRole(Long roleId) {
-        log.info("Activating role with id: {}", roleId);
         
         Role role = roleRepository.findById(roleId)
             .orElseThrow(() -> new ResourceNotFoundException("Role not found with id: " + roleId));

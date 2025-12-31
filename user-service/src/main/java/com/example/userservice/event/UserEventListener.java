@@ -32,7 +32,6 @@ public class UserEventListener {
                 return;
             }
 
-            log.info("Received USER_REGISTERED event: {}", event);
 
             Long userId = ((Number) event.get("userId")).longValue();
             String username = (String) event.get("username");
@@ -76,7 +75,6 @@ public class UserEventListener {
                     .build();
 
             userRepository.save(user);
-            log.info("Successfully created user profile for user: {}", username);
 
         } catch (Exception e) {
             log.error("Error processing USER_REGISTERED event", e);
@@ -95,7 +93,6 @@ public class UserEventListener {
                 return;
             }
 
-            log.info("Received USER_UPDATED event: {}", event);
 
             Long userId = ((Number) event.get("userId")).longValue();
             User user = userRepository.findById(userId)
@@ -114,7 +111,6 @@ public class UserEventListener {
             user.setUpdatedAt(LocalDateTime.now());
             userRepository.save(user);
 
-            log.info("Successfully updated user: {}", userId);
 
         } catch (Exception e) {
             log.error("Error processing USER_UPDATED event", e);
@@ -133,7 +129,6 @@ public class UserEventListener {
                 return;
             }
 
-            log.info("Received USER_DELETED event: {}", event);
 
             Long userId = ((Number) event.get("userId")).longValue();
             User user = userRepository.findById(userId)
@@ -144,7 +139,6 @@ public class UserEventListener {
             user.setUpdatedAt(LocalDateTime.now());
             userRepository.save(user);
 
-            log.info("Successfully deactivated user: {}", userId);
 
         } catch (Exception e) {
             log.error("Error processing USER_DELETED event", e);

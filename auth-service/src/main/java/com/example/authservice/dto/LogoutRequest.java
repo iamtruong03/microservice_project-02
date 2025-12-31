@@ -1,5 +1,6 @@
 package com.example.authservice.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,12 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class JwtResponse {
+public class LogoutRequest {
+    @NotBlank(message = "Token is required")
     private String token;
-    private String refreshToken;
-    private String type = "Bearer";
-    private Long id;
-    private String userName;
-    private String email;
-    private String fullName;
 }

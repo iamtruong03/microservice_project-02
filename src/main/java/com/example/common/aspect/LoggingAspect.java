@@ -26,8 +26,6 @@ public class LoggingAspect {
         String className = joinPoint.getTarget().getClass().getSimpleName();
         Object[] args = joinPoint.getArgs();
 
-        log.info("🔵 ENTERING METHOD: {}.{}", className, methodName);
-        log.info("   Parameters: {}", Arrays.toString(args));
     }
 
     /**
@@ -38,8 +36,6 @@ public class LoggingAspect {
         String methodName = joinPoint.getSignature().getName();
         String className = joinPoint.getTarget().getClass().getSimpleName();
 
-        log.info("✅ METHOD EXECUTED: {}.{}", className, methodName);
-        log.info("   Return value: {}", result);
     }
 
     /**
@@ -68,7 +64,6 @@ public class LoggingAspect {
             String methodName = pjp.getSignature().getName();
             String className = pjp.getTarget().getClass().getSimpleName();
             
-            log.info("⏱️  EXECUTION TIME: {}.{} took {} ms", className, methodName, duration);
             
             return result;
         } catch (Throwable ex) {

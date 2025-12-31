@@ -21,15 +21,14 @@ public class AuthService {
     private final UserRepository userRepository;
     private final JwtTokenProvider tokenProvider;
     private final UserServiceClient userServiceClient;
+    private final TokenBlacklistService tokenBlacklistService;
 
     public JwtResponse login(LoginRequest request) {
-        log.info("User login attempt: {}", request.getUserName());
         
         UserDetail userDetail = userServiceClient.authenticate(request.getUserName(), request.getPassword());
         
         User user = userRepository.findByUsername(request.getUserName())
                 .orElseGet(() -> {
-                    log.info("Creating new user cache in Auth-Service: {}", request.getUserName());
                     String cachedFullName = (userDetail.getFirstName() != null ? userDetail.getFirstName() : "") + " " + 
                                            (userDetail.getLastName() != null ? userDetail.getLastName() : "");
                     User newUser = User.builder()
@@ -44,13 +43,14 @@ public class AuthService {
                 });
 
         String token = tokenProvider.generateToken(user.getUsername(), userDetail.getId());
+        String refreshToken = tokenProvider.generateRefreshToken(user.getUsername(), userDetail.getId());
         
         String fullName = (userDetail.getFirstName() != null ? userDetail.getFirstName() : "") + " " + 
                          (userDetail.getLastName() != null ? userDetail.getLastName() : "");
         
-        log.info("User {} logged in successfully", request.getUserName());
         return JwtResponse.builder()
                 .token(token)
+                .refreshToken(refreshToken)
                 .type("Bearer")
                 .id(userDetail.getId())
                 .userName(userDetail.getUserName())
@@ -60,13 +60,11 @@ public class AuthService {
     }
 
     public JwtResponse register(RegisterRequest request) {
-        log.info("User registration attempt: {}", request.getUserName());
         
         UserDetail userDetail = userServiceClient.authenticate(request.getUserName(), request.getPassword());
         
         User user = userRepository.findByUsername(request.getUserName())
                 .orElseGet(() -> {
-                    log.info("Creating new user cache in Auth-Service: {}", request.getUserName());
                     String cachedFullName = (userDetail.getFirstName() != null ? userDetail.getFirstName() : "") + " " + 
                                            (userDetail.getLastName() != null ? userDetail.getLastName() : "");
                     User newUser = User.builder()
@@ -81,13 +79,14 @@ public class AuthService {
                 });
 
         String token = tokenProvider.generateToken(user.getUsername(), userDetail.getId());
+        String refreshToken = tokenProvider.generateRefreshToken(user.getUsername(), userDetail.getId());
         
         String fullName = (userDetail.getFirstName() != null ? userDetail.getFirstName() : "") + " " + 
                          (userDetail.getLastName() != null ? userDetail.getLastName() : "");
         
-        log.info("User {} registered successfully", request.getUserName());
         return JwtResponse.builder()
                 .token(token)
+                .refreshToken(refreshToken)
                 .type("Bearer")
                 .id(userDetail.getId())
                 .userName(userDetail.getUserName())
@@ -104,5 +103,63 @@ public class AuthService {
     public User getUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    public void logout(String token) {
+        try {
+            if (tokenProvider.validateToken(token)) {
+                tokenBlacklistService.blacklistToken(token);
+                String username = tokenProvider.getUsernameFromToken(token);
+            } else {
+                throw new RuntimeException("Invalid token");
+            }
+        } catch (Exception e) {
+            log.error("Logout failed: {}", e.getMessage());
+            throw new RuntimeException("Logout failed: " + e.getMessage());
+        }
+    }
+
+    public JwtResponse refreshToken(String refreshToken) {
+        try {
+            if (!tokenProvider.validateToken(refreshToken)) {
+                throw new RuntimeException("Invalid refresh token");
+            }
+
+            if (!tokenProvider.isRefreshToken(refreshToken)) {
+                throw new RuntimeException("Token is not a refresh token");
+            }
+
+            if (tokenBlacklistService.isTokenBlacklisted(refreshToken)) {
+                throw new RuntimeException("Refresh token is blacklisted");
+            }
+
+            String username = tokenProvider.getUsernameFromToken(refreshToken);
+            Long userId = tokenProvider.getUserIdFromToken(refreshToken);
+
+            // Generate new tokens
+            String newAccessToken = tokenProvider.generateToken(username, userId);
+            String newRefreshToken = tokenProvider.generateRefreshToken(username, userId);
+
+            // Blacklist old refresh token
+            tokenBlacklistService.blacklistToken(refreshToken);
+
+            // Get user details from cache or user service
+            User user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            
+            return JwtResponse.builder()
+                    .token(newAccessToken)
+                    .refreshToken(newRefreshToken)
+                    .type("Bearer")
+                    .id(userId)
+                    .userName(username)
+                    .email(user.getEmail())
+                    .fullName(user.getFullName())
+                    .build();
+        } catch (Exception e) {
+            log.error("Token refresh failed: {}", e.getMessage());
+            throw new RuntimeException("Token refresh failed: " + e.getMessage());
+        }
     }
 }
