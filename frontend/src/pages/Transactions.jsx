@@ -19,7 +19,7 @@ const TransactionOperations = () => {
       const response = await accountService.getUserAccounts();
       setAccounts(response.data.data || []);
     } catch (error) {
-      message.error('Failed to fetch accounts');
+      showErrorNotification('Lỗi tải dữ liệu', 'Không thể tải danh sách tài khoản');
       console.error(error);
     }
   };

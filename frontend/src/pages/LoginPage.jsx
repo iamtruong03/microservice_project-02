@@ -1,15 +1,15 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Form, Input, Button, Card, Row, Col, Alert, Spin, Checkbox, Divider } from 'antd';
+import { Form, Input, Button, Card, Row, Col, Spin, Checkbox, Divider } from 'antd';
 import { UserOutlined, LockOutlined, LoginOutlined, GoogleOutlined } from '@ant-design/icons';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { showErrorNotification } from '../utils/notifications';
 import './AuthPages.css';
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { login, loading, error, setToken } = useContext(AuthContext);
+  const { login, loading, setToken } = useContext(AuthContext);
   const [form] = Form.useForm();
-  const [localError, setLocalError] = useState(null);
   const [searchParams] = useSearchParams();
 
   // Handle OAuth2 callback
@@ -27,18 +27,17 @@ const LoginPage = () => {
       }
       navigate('/');
     } else if (errorParam) {
-      setLocalError('Google login failed. Please try again.');
+      showErrorNotification('Google đăng nhập thất bại', 'Vui lòng thử lại.');
     }
   }, [searchParams, navigate, setToken]);
 
   const onFinish = async (values) => {
-    setLocalError(null);
     const result = await login(values.userName, values.password);
 
     if (result.success) {
       navigate('/');
     } else {
-      setLocalError(result.error);
+      showErrorNotification('Đăng nhập thất bại', result.error);
     }
   };
 
@@ -56,18 +55,6 @@ const LoginPage = () => {
             className="auth-card"
             bordered={false}
           >
-            {(error || localError) && (
-              <Alert
-                message="Đăng nhập thất bại"
-                description={error || localError}
-                type="error"
-                showIcon
-                closable
-                onClose={() => setLocalError(null)}
-                className="auth-alert"
-              />
-            )}
-
             <Spin spinning={loading} tip="Đang xác thực...">
               <Form
                 form={form}

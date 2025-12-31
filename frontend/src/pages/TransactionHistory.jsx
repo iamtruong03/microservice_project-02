@@ -24,7 +24,7 @@ const TransactionHistory = () => {
       setTransactions(historyRes.data.data || []);
       setStatistics(statsRes.data.data || {});
     } catch (error) {
-      message.error('Failed to fetch data');
+      showErrorNotification('Lỗi tải dữ liệu', 'Không thể tải lịch sử giao dịch');
       console.error(error);
     } finally {
       setLoading(false);

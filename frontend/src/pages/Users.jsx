@@ -6,7 +6,6 @@ import {
   Form,
   Input,
   Space,
-  message,
   Card,
   Row,
   Col,
@@ -22,6 +21,7 @@ import {
   Empty,
   App,
 } from 'antd';
+import { showErrorNotification, showSuccessNotification } from '../utils/notifications';
 import {
   PlusOutlined,
   EditOutlined,
@@ -85,7 +85,7 @@ const UsersContent = () => {
         inactive: usersArray?.filter(u => u.isActive === false).length || 0,
       });
     } catch (error) {
-      messageApi.error('Failed to load users');
+      showErrorNotification('Lỗi tải dữ liệu', 'Không thể tải danh sách người dùng');
       console.error(error);
     } finally {
       setLoading(false);
@@ -122,7 +122,7 @@ const UsersContent = () => {
         total: response.data?.data?.totalElements || response.totalElements || usersArray.length || 0,
       });
     } catch (error) {
-      messageApi.error('Search failed');
+      showErrorNotification('Tìm kiếm thất bại', 'Không thể tìm kiếm người dùng');
     } finally {
       setLoading(false);
     }
@@ -145,17 +145,17 @@ const UsersContent = () => {
       
       if (selectedUser) {
         await userService.updateUser(selectedUser.id, userData);
-        messageApi.success('User updated successfully');
+        showSuccessNotification('Thành công', 'Cập nhật người dùng thành công');
       } else {
         await userService.createUser(userData);
-        messageApi.success('User created successfully');
+        showSuccessNotification('Thành công', 'Tạo người dùng thành công');
       }
       setIsModalVisible(false);
       form.resetFields();
       setSelectedUser(null);
       fetchUsers(1, pagination.pageSize);
     } catch (error) {
-      messageApi.error(selectedUser ? 'Failed to update user' : 'Failed to create user');
+      showErrorNotification('Lỗi thao tác', selectedUser ? 'Không thể cập nhật người dùng' : 'Không thể tạo người dùng mới');
     }
   };
 
@@ -192,10 +192,10 @@ const UsersContent = () => {
   const handleDeleteUser = async (id) => {
     try {
       await userService.deleteUser(id);
-      messageApi.success('User deleted successfully');
+      showSuccessNotification('Thành công', 'Xóa người dùng thành công');
       fetchUsers(pagination.current, pagination.pageSize);
     } catch (error) {
-      messageApi.error('Failed to delete user');
+      showErrorNotification('Lỗi xóa người dùng', 'Không thể xóa người dùng này');
     }
   };
 
