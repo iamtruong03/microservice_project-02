@@ -15,6 +15,38 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleUserNotFound(UserNotFoundException ex) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("timestamp", Instant.now().toString());
+        body.put("status", HttpStatus.UNAUTHORIZED.value());
+        body.put("message", ex.getMessage());
+        body.put("error", "User Not Found");
+        log.warn("User not found: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
+    }
+
+    @ExceptionHandler(DuplicateEmailException.class)
+    public ResponseEntity<Map<String, Object>> handleDuplicate(DuplicateEmailException ex) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("timestamp", Instant.now().toString());
+        body.put("status", HttpStatus.CONFLICT.value());
+        body.put("message", ex.getMessage());
+        body.put("error", "Duplicate Email");
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleResourceNotFound(ResourceNotFoundException ex) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("timestamp", Instant.now().toString());
+        body.put("status", HttpStatus.NOT_FOUND.value());
+        body.put("message", ex.getMessage());
+        body.put("error", "Resource Not Found");
+        log.warn("Resource not found: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidation(MethodArgumentNotValidException ex) {
         Map<String, Object> body = new HashMap<>();
@@ -28,27 +60,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(body);
     }
 
-    @ExceptionHandler(DuplicateEmailException.class)
-    public ResponseEntity<Map<String, Object>> handleDuplicate(DuplicateEmailException ex) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("timestamp", Instant.now().toString());
-        body.put("status", HttpStatus.CONFLICT.value());
-        body.put("message", ex.getMessage());
-        body.put("error", "Duplicate Email");
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
-    }
-
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleUserNotFound(UserNotFoundException ex) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("timestamp", Instant.now().toString());
-        body.put("status", HttpStatus.UNAUTHORIZED.value());
-        body.put("message", ex.getMessage());
-        body.put("error", "User Not Found");
-        log.warn("User not found: {}", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
-    }
-
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, Object>> handleRuntimeException(RuntimeException ex) {
         Map<String, Object> body = new HashMap<>();
@@ -59,9 +70,12 @@ public class GlobalExceptionHandler {
                 ex.getMessage().contains("Invalid") || 
                 ex.getMessage().contains("invalid") ||
                 ex.getMessage().contains("password") ||
-                ex.getMessage().contains("credentials"))) {
+                ex.getMessage().contains("credentials") ||
+                ex.getMessage().contains("locked") ||
+                ex.getMessage().contains("inactive"))) {
             body.put("status", HttpStatus.UNAUTHORIZED.value());
             body.put("error", "Unauthorized");
+            body.put("message", ex.getMessage());
             log.warn("Authentication failed: {}", ex.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
         }

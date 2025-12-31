@@ -37,20 +37,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
             .authorizeHttpRequests()
-                // Public endpoints
-                .requestMatchers("/api/public/**").permitAll()
-                .requestMatchers("/api/auth/login").permitAll()
-                .requestMatchers("/api/auth/register").permitAll()
-                .requestMatchers("/health").permitAll()
-                .requestMatchers("/actuator/**").permitAll()
-                // Admin endpoints
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                // User endpoints
-                .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
-                // Order endpoints
-                .requestMatchers("/api/orders/**").hasAnyRole("USER", "ADMIN")
-                // All other endpoints require authentication
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
                 .and()
             .httpBasic();
 
