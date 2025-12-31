@@ -9,8 +9,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.time.LocalDate;
-
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
@@ -29,15 +27,6 @@ public class DataInitializationConfig {
                         .userName("admin")
                         .password(passwordEncoder.encode("admin123"))
                         .email("admin@system.local")
-                        .firstName("System")
-                        .lastName("Administrator")
-                        .dateOfBirth(LocalDate.of(2000, 1, 1))
-                        .gender("MALE")
-                        .address("System")
-                        .city("System")
-                        .state("System")
-                        .postalCode("000000")
-                        .country("System")
                         .isActive(true)
                         .isLocked(false)
                         .build();

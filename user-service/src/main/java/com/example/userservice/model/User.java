@@ -25,10 +25,10 @@ public class User {
   private Long id;
 
   // Basic Information
-  @Column(name = "first_name", nullable = false)
+  @Column(name = "first_name")
   private String firstName;
 
-  @Column(name = "last_name", nullable = false)
+  @Column(name = "last_name")
   private String lastName;
 
   @Column(name = "user_name", nullable = false, unique = true)
@@ -40,33 +40,33 @@ public class User {
   @Column(name = "password", nullable = false)
   private String password;
 
-  @Column(name = "phone_number", nullable = false)
+  @Column(name = "phone_number")
   private String phoneNumber;
 
   // Personal Information
-  @Column(name = "date_of_birth", nullable = false)
+  @Column(name = "date_of_birth")
   private LocalDate dateOfBirth;
 
-  @Column(name = "gender", nullable = false)
+  @Column(name = "gender")
   private String gender;
 
-  @Column(name = "national_id", nullable = false, unique = true)
+  @Column(name = "national_id", unique = true)
   private String nationalId;
 
   // Address Information
-  @Column(name = "address", nullable = false)
+  @Column(name = "address")
   private String address;
 
-  @Column(name = "city", nullable = false)
+  @Column(name = "city")
   private String city;
 
-  @Column(name = "state", nullable = false)
+  @Column(name = "state")
   private String state;
 
-  @Column(name = "postal_code", nullable = false)
+  @Column(name = "postal_code")
   private String postalCode;
 
-  @Column(name = "country", nullable = false)
+  @Column(name = "country")
   private String country;
 
   // Employment Information
