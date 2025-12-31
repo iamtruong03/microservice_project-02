@@ -25,7 +25,6 @@ public class AsyncService {
                 Thread.sleep(2000);
                 return true;
             } catch (InterruptedException e) {
-                log.error("✗ Failed to send email", e);
                 Thread.currentThread().interrupt();
                 return false;
             }
@@ -43,7 +42,6 @@ public class AsyncService {
                 Thread.sleep(1000);
                 return true;
             } catch (InterruptedException e) {
-                log.error("✗ Failed to send notification", e);
                 Thread.currentThread().interrupt();
                 return false;
             }
@@ -62,7 +60,6 @@ public class AsyncService {
                 String result = "Processed: " + data.toUpperCase();
                 return result;
             } catch (InterruptedException e) {
-                log.error("✗ Failed to process data", e);
                 Thread.currentThread().interrupt();
                 return null;
             }
@@ -84,7 +81,6 @@ public class AsyncService {
                 }
                 return batchSize;
             } catch (InterruptedException e) {
-                log.error("✗ Batch processing interrupted", e);
                 Thread.currentThread().interrupt();
                 return 0;
             }

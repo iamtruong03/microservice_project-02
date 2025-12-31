@@ -25,7 +25,6 @@ public class ScheduledTasks {
         try {
             // Implement health check logic
         } catch (Exception e) {
-            log.error("✗ Health check failed", e);
         }
     }
 
@@ -39,7 +38,6 @@ public class ScheduledTasks {
             // Clean old logs
             // Clean cache if needed
         } catch (Exception e) {
-            log.error("✗ Cleanup failed", e);
         }
     }
 
@@ -52,7 +50,6 @@ public class ScheduledTasks {
             // Generate daily/hourly reports
             // Log statistics
         } catch (Exception e) {
-            log.error("✗ Report generation failed", e);
         }
     }
 
@@ -66,7 +63,6 @@ public class ScheduledTasks {
             // Backup database
             // Archive old data
         } catch (Exception e) {
-            log.error("✗ Database maintenance failed", e);
         }
     }
 
@@ -80,7 +76,6 @@ public class ScheduledTasks {
             // Update exchange rates
             // Fetch latest configuration
         } catch (Exception e) {
-            log.error("✗ Sync with external services failed", e);
         }
     }
 
@@ -94,7 +89,6 @@ public class ScheduledTasks {
             // Weekly report generation
             // Weekly backup verification
         } catch (Exception e) {
-            log.error("✗ Weekly maintenance failed", e);
         }
     }
 }

@@ -40,7 +40,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGlobalException(Exception ex, WebRequest request) {
-        log.error("Global exception occurred: {}", ex.getMessage(), ex);
         ApiError apiError = ApiError.builder()
                 .message(ex.getMessage())
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())

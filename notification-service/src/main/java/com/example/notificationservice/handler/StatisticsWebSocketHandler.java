@@ -56,7 +56,6 @@ public class StatisticsWebSocketHandler extends TextWebSocketHandler {
                 session.sendMessage(new TextMessage(objectMapper.writeValueAsString(pong)));
             }
         } catch (Exception e) {
-            log.error("Error handling WebSocket message", e);
             WebSocketMessage error = WebSocketMessage.builder()
                     .type("ERROR")
                     .message("Error processing message: " + e.getMessage())
@@ -83,7 +82,6 @@ public class StatisticsWebSocketHandler extends TextWebSocketHandler {
         try {
             json = objectMapper.writeValueAsString(message);
         } catch (Exception e) {
-            log.error("Error serializing statistics", e);
             return;
         }
 
@@ -92,7 +90,6 @@ public class StatisticsWebSocketHandler extends TextWebSocketHandler {
                 try {
                     session.sendMessage(new TextMessage(json));
                 } catch (IOException e) {
-                    log.error("Error sending message to session: {}", session.getId(), e);
                 }
             }
         }

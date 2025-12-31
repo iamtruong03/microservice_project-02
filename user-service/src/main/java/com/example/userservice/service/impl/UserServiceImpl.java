@@ -110,7 +110,6 @@ public class UserServiceImpl implements IUserService {
                 kafkaTemplate.send("user-events", "user_profile_updated", event);
             }
         } catch (Exception e) {
-            log.error("Failed to publish user profile updated event", e);
         }
         */
     }
@@ -235,7 +234,6 @@ public class UserServiceImpl implements IUserService {
             
             kafkaTemplate.send("user-events", "user_created", event);
         } catch (Exception e) {
-            log.error("Failed to publish USER_CREATED event", e);
         }
         */
     }
@@ -252,7 +250,6 @@ public class UserServiceImpl implements IUserService {
             
             kafkaTemplate.send("user-events", "user_role_updated", event);
         } catch (Exception e) {
-            log.error("Failed to publish USER_ROLE_UPDATED event", e);
         }
         */
     }
@@ -272,7 +269,6 @@ public class UserServiceImpl implements IUserService {
             
             kafkaTemplate.send("user-events", "user_profile_updated", event);
         } catch (Exception e) {
-            log.error("Failed to publish USER_PROFILE_UPDATED event", e);
         }
         */
     }

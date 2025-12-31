@@ -71,7 +71,6 @@ public class GlobalExceptionHandler {
             return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
         }
         
-        log.error("Runtime exception occurred", ex);
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 ex.getMessage(),
@@ -84,7 +83,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex, WebRequest request) {
-        log.error("Unexpected exception occurred", ex);
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "An unexpected error occurred",

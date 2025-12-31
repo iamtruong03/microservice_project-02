@@ -60,7 +60,6 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
             response.sendRedirect(redirectUrl);
             
         } catch (Exception e) {
-            log.error("Error during OAuth2 authentication: ", e);
             response.sendRedirect("http://localhost:3000/login?error=authentication_failed");
         }
     }

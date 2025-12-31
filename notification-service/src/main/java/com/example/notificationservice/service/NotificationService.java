@@ -54,7 +54,6 @@ public class NotificationService {
             notification.setSentAt(LocalDateTime.now());
         } catch (InterruptedException e) {
             notification.setStatus("FAILED");
-            log.error("Failed to send email to: {}", notification.getRecipientEmail(), e);
         }
     }
 }

@@ -46,7 +46,6 @@ public class JwtFilter extends AbstractGatewayFilterFactory<JwtFilter.Config> {
                 
                 return chain.filter(exchange);
             } catch (Exception e) {
-                log.error("JWT validation failed: {}", e.getMessage());
                 exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
                 return exchange.getResponse().setComplete();
             }

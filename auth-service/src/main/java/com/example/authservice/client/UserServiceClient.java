@@ -47,7 +47,6 @@ public class UserServiceClient {
                 UserDetail userDetail = apiResponse.getData();
                 return userDetail;
             } else {
-                log.error("Invalid response from User-Service: {}", apiResponse);
                 throw new RuntimeException("Invalid response from User-Service");
             }
         } catch (HttpClientErrorException.Unauthorized e) {
@@ -57,16 +56,12 @@ public class UserServiceClient {
             log.warn("User not found: {}", userName);
             throw new RuntimeException("User not found: " + userName, e);
         } catch (HttpClientErrorException e) {
-            log.error("HTTP Client error during authentication - status: {}, message: {}", e.getStatusCode(), e.getMessage());
             throw new RuntimeException("Authentication failed: " + e.getStatusCode() + " - " + e.getMessage(), e);
         } catch (HttpServerErrorException e) {
-            log.error("HTTP Server error in User-Service - status: {}, message: {}", e.getStatusCode(), e.getMessage());
             throw new RuntimeException("User-Service error: " + e.getStatusCode(), e);
         } catch (RestClientException e) {
-            log.error("Failed to connect to User-Service: {}", e.getMessage(), e);
             throw new RuntimeException("Unable to connect to User-Service: " + e.getMessage(), e);
         } catch (Exception e) {
-            log.error("Unexpected error during authentication - username: {}, error: {}", userName, e.getMessage(), e);
             throw new RuntimeException("Unexpected error during authentication: " + e.getMessage(), e);
         }
     }

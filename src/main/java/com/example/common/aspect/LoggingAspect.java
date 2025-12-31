@@ -46,8 +46,6 @@ public class LoggingAspect {
         String methodName = joinPoint.getSignature().getName();
         String className = joinPoint.getTarget().getClass().getSimpleName();
 
-        log.error("❌ EXCEPTION in {}.{}: {}", className, methodName, exception.getMessage());
-        log.error("   Exception details: ", exception);
     }
 
     /**
@@ -71,7 +69,6 @@ public class LoggingAspect {
             String methodName = pjp.getSignature().getName();
             String className = pjp.getTarget().getClass().getSimpleName();
             
-            log.error("⏱️  EXECUTION TIME (FAILED): {}.{} took {} ms", className, methodName, duration);
             throw ex;
         }
     }

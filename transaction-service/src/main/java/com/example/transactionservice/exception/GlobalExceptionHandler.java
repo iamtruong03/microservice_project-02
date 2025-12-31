@@ -12,7 +12,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<?> handleResourceNotFound(ResourceNotFoundException e) {
-        log.error("Resource not found: {}", e.getMessage());
         ApiError error = new ApiError(
                 e.getMessage(),
                 HttpStatus.NOT_FOUND.value(),
@@ -23,7 +22,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<?> handleIllegalArgument(IllegalArgumentException e) {
-        log.error("Invalid argument: {}", e.getMessage());
         ApiError error = new ApiError(
                 e.getMessage(),
                 HttpStatus.BAD_REQUEST.value(),
@@ -34,7 +32,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<?> handleRuntimeException(RuntimeException e) {
-        log.error("Runtime error: {}", e.getMessage());
         ApiError error = new ApiError(
                 e.getMessage(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),

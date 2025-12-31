@@ -77,7 +77,6 @@ public class UserEventListener {
             userRepository.save(user);
 
         } catch (Exception e) {
-            log.error("Error processing USER_REGISTERED event", e);
         }
     }
 
@@ -113,7 +112,6 @@ public class UserEventListener {
 
 
         } catch (Exception e) {
-            log.error("Error processing USER_UPDATED event", e);
         }
     }
 
@@ -141,7 +139,6 @@ public class UserEventListener {
 
 
         } catch (Exception e) {
-            log.error("Error processing USER_DELETED event", e);
         }
     }
 

@@ -114,7 +114,6 @@ public class AuthService {
                 throw new RuntimeException("Invalid token");
             }
         } catch (Exception e) {
-            log.error("Logout failed: {}", e.getMessage());
             throw new RuntimeException("Logout failed: " + e.getMessage());
         }
     }
@@ -158,7 +157,6 @@ public class AuthService {
                     .fullName(user.getFullName())
                     .build();
         } catch (Exception e) {
-            log.error("Token refresh failed: {}", e.getMessage());
             throw new RuntimeException("Token refresh failed: " + e.getMessage());
         }
     }

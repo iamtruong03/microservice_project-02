@@ -102,7 +102,6 @@ public class StatisticsService {
 
             log.debug("Statistics updated and broadcasted");
         } catch (Exception e) {
-            log.error("Error updating statistics", e);
         }
     }
 
