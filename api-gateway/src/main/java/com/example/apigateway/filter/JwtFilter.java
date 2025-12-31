@@ -37,10 +37,11 @@ public class JwtFilter extends AbstractGatewayFilterFactory<JwtFilter.Config> {
             try {
                 String token = authHeader.substring(7);
                 String username = extractUsernameFromToken(token);
+                Long userId = extractUserIdFromToken(token);
                 
                 // Thêm uid vào header cho các service
                 exchange.getRequest().mutate()
-                        .header("uid", username)
+                        .header("uid", userId != null ? userId.toString() : username)
                         .build();
                 
                 return chain.filter(exchange);
@@ -60,6 +61,26 @@ public class JwtFilter extends AbstractGatewayFilterFactory<JwtFilter.Config> {
                 .parseSignedClaims(token)
                 .getPayload();
         return claims.getSubject();
+    }
+
+    private Long extractUserIdFromToken(String token) {
+        SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+        Claims claims = Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+        Object uid = claims.get("uid");
+        if (uid == null) {
+            return null;
+        }
+        if (uid instanceof Long) {
+            return (Long) uid;
+        }
+        if (uid instanceof Integer) {
+            return ((Integer) uid).longValue();
+        }
+        return Long.parseLong(uid.toString());
     }
 
     public static class Config {

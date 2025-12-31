@@ -35,6 +35,19 @@ public class JwtTokenProvider {
                 .compact();
     }
 
+    public String generateToken(String username, Long userId) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + jwtExpirationMs);
+
+        return Jwts.builder()
+                .subject(username)
+                .claim("uid", userId)
+                .issuedAt(now)
+                .expiration(expiryDate)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()
@@ -55,4 +68,24 @@ public class JwtTokenProvider {
                 .getBody();
         return claims.getSubject();
     }
+
+    public Long getUserIdFromToken(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        Object uid = claims.get("uid");
+        if (uid == null) {
+            return null;
+        }
+        if (uid instanceof Long) {
+            return (Long) uid;
+        }
+        if (uid instanceof Integer) {
+            return ((Integer) uid).longValue();
+        }
+        return Long.parseLong(uid.toString());
+    }
 }
+

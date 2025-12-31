@@ -34,9 +34,10 @@ public class AuthService {
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
 
-        String token = tokenProvider.generateToken(authentication);
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
+        String token = tokenProvider.generateToken(authentication.getName(), user.getId());
 
         return JwtResponse.builder()
                 .token(token)
@@ -71,7 +72,7 @@ public class AuthService {
         // 📤 Phát event "user:registered" qua Kafka để User Service lắng nghe
         publishUserRegisteredEvent(user);
 
-        String token = tokenProvider.generateToken(user.getUsername());
+        String token = tokenProvider.generateToken(user.getUsername(), user.getId());
         return JwtResponse.builder()
                 .token(token)
                 .id(user.getId())
