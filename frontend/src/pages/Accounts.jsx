@@ -114,7 +114,7 @@ const Accounts = () => {
       {/* Create Account Modal */}
       <Modal
         title="Create New Bank Account"
-        visible={isModalVisible}
+        open={isModalVisible}
         onOk={() => form.submit()}
         onCancel={() => {
           setIsModalVisible(false);
