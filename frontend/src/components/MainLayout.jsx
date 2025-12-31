@@ -177,7 +177,7 @@ const MainLayout = ({ children }) => {
         placement="left"
         onClose={() => setMobileDrawerOpen(false)}
         open={mobileDrawerOpen}
-        bodyStyle={{ padding: 0 }}
+        styles={{ body: { padding: 0 } }}
       >
         <Menu theme="light" mode="inline" items={menuItems} />
       </Drawer>

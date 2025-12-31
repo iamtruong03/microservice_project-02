@@ -1,7 +1,7 @@
 // WebSocket service for real-time statistics
 class StatisticsWebSocketService {
   constructor(url) {
-    this.url = url || 'ws://localhost:8080/ws/statistics';
+    this.url = url || 'ws://localhost:8083/ws/statistics';
     this.ws = null;
     this.messageHandlers = new Map();
     this.isConnected = false;

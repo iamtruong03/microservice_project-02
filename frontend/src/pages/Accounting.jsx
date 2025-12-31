@@ -24,7 +24,7 @@ import {
   DeleteOutlined,
   DollarOutlined,
 } from '@ant-design/icons';
-import { accountingService } from '../services';
+import { transactionService } from '../services';
 
 const Accounting = () => {
   const [transactions, setTransactions] = useState([]);
@@ -41,7 +41,7 @@ const Accounting = () => {
   const fetchTransactions = async () => {
     setLoading(true);
     try {
-      const response = await accountingService.getAllTransactions();
+      const response = await transactionService.getAllTransactions();
       const data = response.data;
       setTransactions(data);
 
@@ -84,7 +84,7 @@ const Accounting = () => {
 
   const handleDelete = async (transactionId) => {
     try {
-      await accountingService.deleteTransaction(transactionId);
+      await transactionService.deleteTransaction(transactionId);
       message.success('Transaction deleted successfully');
       fetchTransactions();
     } catch (error) {
@@ -95,10 +95,10 @@ const Accounting = () => {
   const handleSubmit = async (values) => {
     try {
       if (editingTransaction) {
-        await accountingService.updateTransaction(editingTransaction.id, values);
+        await transactionService.updateTransaction(editingTransaction.id, values);
         message.success('Transaction updated successfully');
       } else {
-        await accountingService.createTransaction(values);
+        await transactionService.createTransaction(values);
         message.success('Transaction created successfully');
       }
       setIsModalVisible(false);

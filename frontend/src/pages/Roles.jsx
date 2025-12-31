@@ -14,6 +14,9 @@ import {
   Tag,
   Popconfirm,
   Empty,
+  Spin,
+  Checkbox,
+  App,
 } from 'antd';
 import {
   PlusOutlined,
@@ -22,9 +25,11 @@ import {
   SafetyOutlined,
   ReloadOutlined,
 } from '@ant-design/icons';
+import { roleService, permissionService } from '../services/index';
 import './Roles.css';
 
-const Roles = () => {
+const RolesContent = () => {
+  const { message: messageApi } = App.useApp();
   const [roles, setRoles] = useState([]);
   const [permissions, setPermissions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -33,42 +38,37 @@ const Roles = () => {
   const [form] = Form.useForm();
   const [selectedPermissions, setSelectedPermissions] = useState([]);
 
-  // Mock data - Replace with API calls
-  const mockRoles = [
-    {
-      id: 1,
-      name: 'ADMIN',
-      description: 'Administrator with full access',
-      permissionIds: [1, 2, 3, 4, 5],
-      isActive: true,
-    },
-    {
-      id: 2,
-      name: 'USER',
-      description: 'Regular user with limited access',
-      permissionIds: [1, 2],
-      isActive: true,
-    },
-    {
-      id: 3,
-      name: 'MODERATOR',
-      description: 'Moderator with content management',
-      permissionIds: [1, 2, 3, 4],
-      isActive: true,
-    },
-  ];
+  // Fetch roles and permissions
+  const fetchRoles = async () => {
+    setLoading(true);
+    try {
+      const response = await roleService.getAllRoles();
+      // API returns paginated response with content array
+      const rolesArray = response.data?.data?.content || response.data?.data || [];
+      setRoles(Array.isArray(rolesArray) ? rolesArray : []);
+    } catch (error) {
+      messageApi.error('Failed to fetch roles');
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const mockPermissions = [
-    { id: 1, name: 'VIEW_USERS', resource: 'users', action: 'view' },
-    { id: 2, name: 'CREATE_USER', resource: 'users', action: 'create' },
-    { id: 3, name: 'EDIT_USER', resource: 'users', action: 'edit' },
-    { id: 4, name: 'DELETE_USER', resource: 'users', action: 'delete' },
-    { id: 5, name: 'MANAGE_ROLES', resource: 'roles', action: 'manage' },
-  ];
+  const fetchPermissions = async () => {
+    try {
+      const response = await permissionService.getAllPermissions();
+      // API returns paginated response with content array
+      const permissionsArray = response.data?.data?.content || response.data?.data || [];
+      setPermissions(Array.isArray(permissionsArray) ? permissionsArray : []);
+    } catch (error) {
+      messageApi.error('Failed to fetch permissions');
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
-    setRoles(mockRoles);
-    setPermissions(mockPermissions);
+    fetchRoles();
+    fetchPermissions();
   }, []);
 
   const handleCreateRole = () => {
@@ -89,28 +89,41 @@ const Roles = () => {
     setIsModalVisible(true);
   };
 
-  const handleSaveRole = (values) => {
+  const handleSaveRole = async (values) => {
     try {
+      const roleData = {
+        name: values.name,
+        description: values.description,
+        isActive: values.isActive !== false,
+      };
+
       if (selectedRole) {
-        message.success('Role updated successfully');
+        await roleService.updateRole(selectedRole.id, roleData);
+        messageApi.success('Role updated successfully');
       } else {
-        message.success('Role created successfully');
+        await roleService.createRole(roleData);
+        messageApi.success('Role created successfully');
       }
+      
       setIsModalVisible(false);
       form.resetFields();
       setSelectedRole(null);
       setSelectedPermissions([]);
+      fetchRoles();
     } catch (error) {
-      message.error(selectedRole ? 'Failed to update role' : 'Failed to create role');
+      messageApi.error(selectedRole ? 'Failed to update role' : 'Failed to create role');
+      console.error(error);
     }
   };
 
-  const handleDeleteRole = (id) => {
+  const handleDeleteRole = async (id) => {
     try {
-      setRoles(roles.filter(r => r.id !== id));
-      message.success('Role deleted successfully');
+      await roleService.deleteRole(id);
+      messageApi.success('Role deleted successfully');
+      fetchRoles();
     } catch (error) {
-      message.error('Failed to delete role');
+      messageApi.error('Failed to delete role');
+      console.error(error);
     }
   };
 
@@ -286,6 +299,14 @@ const Roles = () => {
         </Form>
       </Modal>
     </div>
+  );
+};
+
+const Roles = () => {
+  return (
+    <App>
+      <RolesContent />
+    </App>
   );
 };
 
