@@ -36,6 +36,7 @@ export const AuthProvider = ({ children }) => {
         userName: authData.userName,
         email: authData.email,
         fullName: authData.fullName,
+        isAdmin: authData.isAdmin || false,
       };
 
       setUser(user);

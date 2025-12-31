@@ -17,4 +17,5 @@ public class JwtResponse {
     private String userName;
     private String email;
     private String fullName;
+    private Boolean isAdmin;
 }

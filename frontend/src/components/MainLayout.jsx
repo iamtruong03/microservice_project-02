@@ -114,24 +114,26 @@ const MainLayout = ({ children }) => {
         setMobileDrawerOpen(false);
       },
     },
-    {
-      key: '/users',
-      icon: <TeamOutlined />,
-      label: 'Users',
-      onClick: () => {
-        navigate('/users');
-        setMobileDrawerOpen(false);
+    ...(user?.isAdmin ? [
+      {
+        key: '/users',
+        icon: <TeamOutlined />,
+        label: 'Users',
+        onClick: () => {
+          navigate('/users');
+          setMobileDrawerOpen(false);
+        },
       },
-    },
-    {
-      key: '/roles',
-      icon: <SafetyOutlined />,
-      label: 'Roles',
-      onClick: () => {
-        navigate('/roles');
-        setMobileDrawerOpen(false);
+      {
+        key: '/roles',
+        icon: <SafetyOutlined />,
+        label: 'Roles',
+        onClick: () => {
+          navigate('/roles');
+          setMobileDrawerOpen(false);
+        },
       },
-    },
+    ] : []),
     {
       key: '/statistics',
       icon: <BarChartOutlined />,

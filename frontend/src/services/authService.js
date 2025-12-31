@@ -47,7 +47,8 @@ export const authService = {
         id: authResponse.id,
         userName: authResponse.userName,
         email: authResponse.email,
-        fullName: authResponse.fullName
+        fullName: authResponse.fullName,
+        isAdmin: authResponse.isAdmin || false
       };
       localStorage.setItem('user', JSON.stringify(user));
     }

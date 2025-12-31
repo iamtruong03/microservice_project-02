@@ -56,6 +56,7 @@ public class AuthService {
                 .userName(userDetail.getUserName())
                 .email(userDetail.getEmail())
                 .fullName(fullName.trim())
+                .isAdmin(userDetail.getIsAdmin())
                 .build();
     }
 
@@ -92,6 +93,7 @@ public class AuthService {
                 .userName(userDetail.getUserName())
                 .email(userDetail.getEmail())
                 .fullName(fullName.trim())
+                .isAdmin(userDetail.getIsAdmin())
                 .build();
     }
 

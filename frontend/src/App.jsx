@@ -15,6 +15,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import RealTimeDashboard from './components/RealTimeDashboard';
 import PrivateRoute from './components/PrivateRoute';
+import AdminRoute from './components/AdminRoute';
 import { StatisticsProvider } from './context/StatisticsContext';
 import { AuthProvider } from './context/AuthContext';
 import './App.css';
@@ -46,8 +47,8 @@ function App() {
                 <Route path="/transaction-history" element={<TransactionHistory />} />
                 <Route path="/accounting" element={<Accounting />} />
                 <Route path="/notifications" element={<Notifications />} />
-                <Route path="/users" element={<Users />} />
-                <Route path="/roles" element={<Roles />} />
+                <Route path="/users" element={<AdminRoute><Users /></AdminRoute>} />
+                <Route path="/roles" element={<AdminRoute><Roles /></AdminRoute>} />
                 <Route path="/statistics" element={<RealTimeDashboard />} />
               </Route>
 
