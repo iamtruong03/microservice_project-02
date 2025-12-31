@@ -131,11 +131,23 @@ const UsersContent = () => {
   // Create or update user
   const handleSaveUser = async (values) => {
     try {
+      const userData = {
+        userName: values.userName,
+        email: values.email,
+        password: values.password,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        phoneNumber: values.phoneNumber,
+        city: values.city,
+        occupation: values.occupation,
+        status: values.status || 'ACTIVE',
+      };
+      
       if (selectedUser) {
-        await userService.updateUser(selectedUser.id, values);
+        await userService.updateUser(selectedUser.id, userData);
         messageApi.success('User updated successfully');
       } else {
-        await userService.createUser(values);
+        await userService.createUser(userData);
         messageApi.success('User created successfully');
       }
       setIsModalVisible(false);
@@ -158,9 +170,11 @@ const UsersContent = () => {
   const handleEditUser = (user) => {
     setSelectedUser(user);
     form.setFieldsValue({
-      name: user.name,
+      userName: user.userName,
+      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
-      phone: user.phone,
+      phoneNumber: user.phoneNumber,
       city: user.city,
       occupation: user.occupation,
       status: user.status || 'ACTIVE',
@@ -195,9 +209,9 @@ const UsersContent = () => {
       sorter: true,
     },
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: 'User Name',
+      dataIndex: 'userName',
+      key: 'userName',
       render: (text, record) => (
         <span style={{ fontWeight: 500, cursor: 'pointer' }} onClick={() => handleViewUser(record)}>
           {text}
@@ -213,24 +227,6 @@ const UsersContent = () => {
           <span>{email.length > 25 ? email.substring(0, 25) + '...' : email}</span>
         </Tooltip>
       ),
-    },
-    {
-      title: 'Phone',
-      dataIndex: 'phone',
-      key: 'phone',
-      render: (phone) => phone || '-',
-    },
-    {
-      title: 'City',
-      dataIndex: 'city',
-      key: 'city',
-      render: (city) => city || '-',
-    },
-    {
-      title: 'Occupation',
-      dataIndex: 'occupation',
-      key: 'occupation',
-      render: (occupation) => occupation || '-',
     },
     {
       title: 'Status',
@@ -425,11 +421,25 @@ const UsersContent = () => {
           onFinish={handleSaveUser}
         >
           <Form.Item
-            label="Name"
-            name="name"
-            rules={[{ required: true, message: 'Please enter name' }]}
+            label="Username"
+            name="userName"
+            rules={[{ required: true, message: 'Please enter username' }]}
           >
-            <Input placeholder="Enter full name" />
+            <Input placeholder="Enter username" />
+          </Form.Item>
+
+          <Form.Item
+            label="First Name"
+            name="firstName"
+          >
+            <Input placeholder="Enter first name" />
+          </Form.Item>
+
+          <Form.Item
+            label="Last Name"
+            name="lastName"
+          >
+            <Input placeholder="Enter last name" />
           </Form.Item>
 
           <Form.Item
@@ -455,8 +465,8 @@ const UsersContent = () => {
           </Form.Item>
 
           <Form.Item
-            label="Phone"
-            name="phone"
+            label="Phone Number"
+            name="phoneNumber"
           >
             <Input placeholder="Enter phone number" />
           </Form.Item>

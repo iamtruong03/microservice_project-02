@@ -63,13 +63,17 @@ export const permissionService = {
 };
 
 export const userService = {
-  // Get all users
+  // Get all users with pagination
   getAllUsers: (page = 0, size = 10) =>
     userApi.get(`${API_BASE_URL}/users?page=${page}&size=${size}`),
 
+  // Get users with pagination and sorting
+  getUsersPaged: (page = 0, size = 10, sortBy = 'id', sortDir = 'asc') =>
+    userApi.get(`${API_BASE_URL}/users?page=${page}&size=${size}&sort=${sortBy},${sortDir}`),
+
   // Search users
-  searchUsers: (keyword, page = 0, size = 10) =>
-    userApi.get(`${API_BASE_URL}/users/search?keyword=${keyword}&page=${page}&size=${size}`),
+  searchUsers: (keyword, page = 0, size = 10, sortBy = 'id', sortDir = 'asc') =>
+    userApi.get(`${API_BASE_URL}/users/search?keyword=${keyword}&page=${page}&size=${size}&sort=${sortBy},${sortDir}`),
 
   // Advanced search
   advancedSearch: (params, page = 0, size = 10) => {
