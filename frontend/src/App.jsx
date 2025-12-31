@@ -10,6 +10,7 @@ import Accounting from './pages/Accounting';
 import Notifications from './pages/Notifications';
 import Users from './pages/Users';
 import Roles from './pages/Roles';
+import Permissions from './pages/Permissions';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import RealTimeDashboard from './components/RealTimeDashboard';
@@ -46,6 +47,7 @@ function App() {
                 <Route path="/notifications" element={<Notifications />} />
                 <Route path="/users" element={<Users />} />
                 <Route path="/roles" element={<Roles />} />
+                <Route path="/permissions" element={<Permissions />} />
                 <Route path="/statistics" element={<RealTimeDashboard />} />
               </Route>
 

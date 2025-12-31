@@ -10,7 +10,7 @@ import {
   Card,
   Row,
   Col,
-  Transfer,
+  Select,
   Tag,
   Popconfirm,
   Empty,
@@ -95,6 +95,7 @@ const RolesContent = () => {
         name: values.name,
         description: values.description,
         isActive: values.isActive !== false,
+        permissionIds: selectedPermissions,
       };
 
       if (selectedRole) {
@@ -151,7 +152,7 @@ const RolesContent = () => {
       key: 'permissionIds',
       render: (permIds) => (
         <Space size="small" wrap>
-          {permIds.map(id => {
+          {(permIds || []).map(id => {
             const perm = permissions.find(p => p.id === id);
             return perm ? (
               <Tag key={id} color="blue">
@@ -276,15 +277,17 @@ const RolesContent = () => {
           <Form.Item
             label="Permissions"
           >
-            <Transfer
-              dataSource={permissions.map(p => ({
-                key: p.id.toString(),
-                title: `${p.name} (${p.resource})`,
+            <Select
+              mode="multiple"
+              placeholder="Select permissions"
+              value={selectedPermissions}
+              onChange={setSelectedPermissions}
+              style={{ width: '100%' }}
+              options={permissions.map(p => ({
+                label: `${p.name} (${p.resource})`,
+                value: p.id,
               }))}
-              selectedKeys={selectedPermissions.map(id => id.toString())}
-              onChange={(selected) => setSelectedPermissions(selected.map(id => parseInt(id)))}
-              render={(item) => item.title}
-              titles={['Available Permissions', 'Selected Permissions']}
+              optionLabelProp="label"
             />
           </Form.Item>
 

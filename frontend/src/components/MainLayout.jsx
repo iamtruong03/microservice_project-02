@@ -22,6 +22,7 @@ import {
   UserOutlined,
   TeamOutlined,
   SafetyOutlined,
+  LockOutlined,
 } from '@ant-design/icons';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
@@ -118,6 +119,15 @@ const MainLayout = ({ children }) => {
       label: 'Roles',
       onClick: () => {
         navigate('/roles');
+        setMobileDrawerOpen(false);
+      },
+    },
+    {
+      key: '/permissions',
+      icon: <LockOutlined />,
+      label: 'Permissions',
+      onClick: () => {
+        navigate('/permissions');
         setMobileDrawerOpen(false);
       },
     },

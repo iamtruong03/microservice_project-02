@@ -20,6 +20,7 @@ import {
   Divider,
   Statistic,
   Empty,
+  App,
 } from 'antd';
 import {
   PlusOutlined,
@@ -36,7 +37,8 @@ import {
 import { userService } from '../services/index';
 import './Users.css';
 
-const Users = () => {
+const UsersContent = () => {
+  const { message: messageApi } = App.useApp();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState({
@@ -68,20 +70,22 @@ const Users = () => {
         sortBy,
         sortDir
       );
-      setUsers(response.content || response.data);
+      // Handle paginated response
+      const usersArray = response.data?.data?.content || response.data?.data || response.content || [];
+      setUsers(Array.isArray(usersArray) ? usersArray : []);
       setPagination({
         current: page,
         pageSize,
-        total: response.totalElements || response.data?.length || 0,
+        total: response.data?.data?.totalElements || response.totalElements || usersArray.length || 0,
       });
       // Update stats
       setStats({
-        total: response.totalElements || response.data?.length || 0,
-        active: response.content?.filter(u => u.status === 'ACTIVE').length || 0,
-        inactive: response.content?.filter(u => u.status === 'INACTIVE').length || 0,
+        total: response.data?.data?.totalElements || response.totalElements || usersArray.length || 0,
+        active: usersArray?.filter(u => u.status === 'ACTIVE').length || 0,
+        inactive: usersArray?.filter(u => u.status === 'INACTIVE').length || 0,
       });
     } catch (error) {
-      message.error('Failed to load users');
+      messageApi.error('Failed to load users');
       console.error(error);
     } finally {
       setLoading(false);
@@ -109,14 +113,16 @@ const Users = () => {
         sortBy,
         sortDir
       );
-      setUsers(response.content || response.data);
+      // Handle paginated response
+      const usersArray = response.data?.data?.content || response.data?.data || response.content || [];
+      setUsers(Array.isArray(usersArray) ? usersArray : []);
       setPagination({
         current: 1,
         pageSize: pagination.pageSize,
-        total: response.totalElements || 0,
+        total: response.data?.data?.totalElements || response.totalElements || usersArray.length || 0,
       });
     } catch (error) {
-      message.error('Search failed');
+      messageApi.error('Search failed');
     } finally {
       setLoading(false);
     }
@@ -127,17 +133,17 @@ const Users = () => {
     try {
       if (selectedUser) {
         await userService.updateUser(selectedUser.id, values);
-        message.success('User updated successfully');
+        messageApi.success('User updated successfully');
       } else {
         await userService.createUser(values);
-        message.success('User created successfully');
+        messageApi.success('User created successfully');
       }
       setIsModalVisible(false);
       form.resetFields();
       setSelectedUser(null);
       fetchUsers(1, pagination.pageSize);
     } catch (error) {
-      message.error(selectedUser ? 'Failed to update user' : 'Failed to create user');
+      messageApi.error(selectedUser ? 'Failed to update user' : 'Failed to create user');
     }
   };
 
@@ -172,10 +178,10 @@ const Users = () => {
   const handleDeleteUser = async (id) => {
     try {
       await userService.deleteUser(id);
-      message.success('User deleted successfully');
+      messageApi.success('User deleted successfully');
       fetchUsers(pagination.current, pagination.pageSize);
     } catch (error) {
-      message.error('Failed to delete user');
+      messageApi.error('Failed to delete user');
     }
   };
 
@@ -570,6 +576,14 @@ const Users = () => {
         )}
       </Drawer>
     </div>
+  );
+};
+
+const Users = () => {
+  return (
+    <App>
+      <UsersContent />
+    </App>
   );
 };
 

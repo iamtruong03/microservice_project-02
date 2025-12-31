@@ -1,0 +1,57 @@
+/* Permissions Page Styles */
+
+.permissions-container {
+  padding: 24px;
+}
+
+.permissions-header {
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.permissions-header h2 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.permissions-search {
+  margin-bottom: 24px;
+}
+
+.permissions-table {
+  margin-bottom: 24px;
+}
+
+.permission-tag {
+  cursor: pointer;
+  user-select: none;
+}
+
+.permission-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.permission-modal .ant-form-item {
+  margin-bottom: 16px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .permissions-header {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .permission-actions {
+    flex-direction: column;
+  }
+
+  .permission-actions .ant-btn {
+    width: 100%;
+  }
+}

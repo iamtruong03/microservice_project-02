@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.type.SqlTypes;
+import org.hibernate.annotations.JdbcTypeCode;
+import java.util.List;
 
 @Entity
 @Table(name = "roles")
@@ -27,4 +30,8 @@ public class Role {
   @Column(name = "is_active", nullable = false)
   @Builder.Default
   private Boolean isActive = true;
+
+  @Column(name = "permission_ids", columnDefinition = "JSON")
+  @JdbcTypeCode(SqlTypes.JSON)
+  private List<Long> permissionIds;
 }
