@@ -35,7 +35,7 @@ public class UserServiceClient {
             log.info("User authenticated successfully: {}", userDetail.getUserName());
             return userDetail;
         } catch (HttpClientErrorException.Unauthorized e) {
-            log.warn("Authentication failed for user: {} - Invalid credentials or user not found", userName);
+            log.debug("Authentication failed - user credentials invalid or user not found");
             throw new RuntimeException("Invalid username or password", e);
         } catch (HttpClientErrorException.NotFound e) {
             log.warn("User not found: {}", userName);
