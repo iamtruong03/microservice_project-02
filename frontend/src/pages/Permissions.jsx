@@ -125,8 +125,6 @@ const PermissionsContent = () => {
     form.setFieldsValue({
       name: permission.name,
       description: permission.description,
-      resource: permission.resource,
-      action: permission.action,
       isActive: permission.isActive,
     });
     setIsModalVisible(true);
@@ -157,22 +155,6 @@ const PermissionsContent = () => {
       dataIndex: 'name',
       key: 'name',
       render: (text) => <strong>{text}</strong>,
-    },
-    {
-      title: 'Resource',
-      dataIndex: 'resource',
-      key: 'resource',
-      render: (resource) => (
-        <Tag color="blue">{resource}</Tag>
-      ),
-    },
-    {
-      title: 'Action',
-      dataIndex: 'action',
-      key: 'action',
-      render: (action) => (
-        <Tag color="cyan">{action}</Tag>
-      ),
     },
     {
       title: 'Description',
@@ -248,7 +230,7 @@ const PermissionsContent = () => {
         <Input.Group compact style={{ display: 'flex' }}>
           <Input
             style={{ flex: 1 }}
-            placeholder="Search permissions by name, resource, or action..."
+            placeholder="Search permissions"
             value={searchKeyword}
             onChange={(e) => setSearchKeyword(e.target.value)}
             onPressEnter={handleSearch}
@@ -318,22 +300,6 @@ const PermissionsContent = () => {
             rules={[{ required: true, message: 'Please enter permission name' }]}
           >
             <Input placeholder="e.g., USER_VIEW, USER_CREATE" />
-          </Form.Item>
-
-          <Form.Item
-            label="Resource"
-            name="resource"
-            rules={[{ required: true, message: 'Please enter resource name' }]}
-          >
-            <Input placeholder="e.g., USER, ROLE, PERMISSION" />
-          </Form.Item>
-
-          <Form.Item
-            label="Action"
-            name="action"
-            rules={[{ required: true, message: 'Please enter action' }]}
-          >
-            <Input placeholder="e.g., VIEW, CREATE, UPDATE, DELETE" />
           </Form.Item>
 
           <Form.Item

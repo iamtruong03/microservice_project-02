@@ -24,12 +24,6 @@ public class Permission {
   @Column(name = "description")
   private String description;
 
-  @Column(name = "resource")
-  private String resource;
-
-  @Column(name = "action")
-  private String action;
-
   @Column(name = "is_active", nullable = false)
   @Builder.Default
   private Boolean isActive = true;

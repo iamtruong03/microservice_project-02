@@ -33,8 +33,6 @@ public class PermissionService {
         Permission permission = new Permission();
         permission.setName(permissionDTO.getName());
         permission.setDescription(permissionDTO.getDescription());
-        permission.setResource(permissionDTO.getResource());
-        permission.setAction(permissionDTO.getAction());
         permission.setIsActive(true);
 
         Permission savedPermission = permissionRepository.save(permission);
@@ -56,14 +54,6 @@ public class PermissionService {
 
         if (permissionDTO.getDescription() != null) {
             permission.setDescription(permissionDTO.getDescription());
-        }
-
-        if (permissionDTO.getResource() != null) {
-            permission.setResource(permissionDTO.getResource());
-        }
-
-        if (permissionDTO.getAction() != null) {
-            permission.setAction(permissionDTO.getAction());
         }
 
         Permission updatedPermission = permissionRepository.save(permission);
@@ -157,8 +147,6 @@ public class PermissionService {
             .id(permission.getId())
             .name(permission.getName())
             .description(permission.getDescription())
-            .resource(permission.getResource())
-            .action(permission.getAction())
             .isActive(permission.getIsActive())
             .build();
     }

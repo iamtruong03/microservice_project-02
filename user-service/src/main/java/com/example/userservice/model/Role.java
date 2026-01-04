@@ -30,8 +30,4 @@ public class Role {
   @Column(name = "is_active", nullable = false)
   @Builder.Default
   private Boolean isActive = true;
-
-  @Column(name = "permission_ids", columnDefinition = "JSON")
-  @JdbcTypeCode(SqlTypes.JSON)
-  private List<Long> permissionIds;
 }
