@@ -1,0 +1,4 @@
+[ENG]
+The system is designed using a microservice architecture where each service owns its database and communicates through APIs and events. Money transfer is handled safely using account-level locking, per-account transaction sequencing, and immutable audit logging to ensure data consistency and traceability.
+[VN]:
+Hệ thống được thiết kế theo kiến ​​trúc vi dịch vụ, trong đó mỗi dịch vụ sở hữu cơ sở dữ liệu riêng và giao tiếp thông qua API và các sự kiện. Việc chuyển tiền được xử lý an toàn bằng cách sử dụng khóa cấp tài khoản, trình tự giao dịch trên từng tài khoản và ghi nhật ký kiểm toán bất biến để đảm bảo tính nhất quán và khả năng truy vết dữ liệu.
