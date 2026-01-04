@@ -23,5 +23,17 @@ public class RolePermission {
 
   @Column(name = "permission_id", nullable = false)
   private Long permissionId;
+
+  @Column(name = "created_at", nullable = false)
+  private java.time.LocalDateTime createdAt = java.time.LocalDateTime.now();
+
+  @Column(name = "updated_at")
+  private java.time.LocalDateTime updatedAt;
+
+  @Column(name = "created_by")
+  private String createdBy;
+
+  @Column(name = "updated_by")
+  private String updatedBy;
 }
 

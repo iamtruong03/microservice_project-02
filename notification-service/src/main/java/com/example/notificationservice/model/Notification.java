@@ -16,4 +16,6 @@ public class Notification {
     private String status; // PENDING, SENT, FAILED
     private LocalDateTime createdAt;
     private LocalDateTime sentAt;
+    private String createdBy;
+    private String updatedBy;
 }

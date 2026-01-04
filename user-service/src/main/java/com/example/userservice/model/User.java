@@ -140,6 +140,12 @@ public class User {
   @Column(name = "updated_at", nullable = false)
   private LocalDateTime updatedAt;
 
+  @Column(name = "created_by")
+  private String createdBy;
+
+  @Column(name = "updated_by")
+  private String updatedBy;
+
   @Column(name = "last_login_at")
   private LocalDateTime lastLoginAt;
 

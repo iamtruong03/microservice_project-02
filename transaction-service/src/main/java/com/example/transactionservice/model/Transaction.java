@@ -50,6 +50,12 @@ public class Transaction {
     @Column(name = "completed_at")
     private LocalDateTime completedAt;
 
+    @Column(name = "created_by")
+    private String createdBy;
+
+    @Column(name = "updated_by")
+    private String updatedBy;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
