@@ -21,6 +21,7 @@
 	<modules>
 		<module>account-service</module>
 		<module>api-gateway</module>
+		<module>audit-service</module>
 		<module>auth-service</module>
 		<module>eureka-server</module>
 		<module>notification-service</module>
