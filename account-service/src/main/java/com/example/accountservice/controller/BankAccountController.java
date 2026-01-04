@@ -22,11 +22,11 @@ public class BankAccountController {
      */
     @PostMapping
     public ResponseEntity<?> createBankAccount(
-            @RequestHeader(name = "uid", defaultValue = "") String uid,
-            @RequestParam(required = false) String accountType) {
+            @RequestHeader(name = "uid", defaultValue = "") String uid )
+        {
         try {
             Long uidLong = Long.parseLong(uid);
-            BankAccountDTO account = bankAccountService.createBankAccount(uidLong, accountType);
+            BankAccountDTO account = bankAccountService.createBankAccount(uidLong);
             return ResponseUtils.handlerCreated(account);
         } catch (Exception e) {
             return ResponseUtils.handlerException(e);

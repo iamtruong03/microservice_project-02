@@ -29,11 +29,14 @@ public class Transaction {
     @Column(name = "currency", nullable = false)
     private String currency = "USD";
 
-    @Column(name = "transaction_type", nullable = false)
-    private String transactionType;
+    @Column(name = "transaction_type_id", nullable = false)
+    private Long transactionTypeId;
 
-    @Column(name = "status", nullable = false)
-    private String status;
+    @Column(name = "state", nullable = false)
+    private String state;
+
+    @Column(name = "account_sequence", nullable = false)
+    private Long accountSequence;
 
     @Column(name = "reference_code", unique = true)
     private String referenceCode;
@@ -54,7 +57,7 @@ public class Transaction {
 
     @PreUpdate
     protected void onUpdate() {
-        if ("COMPLETED".equals(status) && completedAt == null) {
+        if ("COMPLETED".equals(state) && completedAt == null) {
             completedAt = LocalDateTime.now();
         }
     }

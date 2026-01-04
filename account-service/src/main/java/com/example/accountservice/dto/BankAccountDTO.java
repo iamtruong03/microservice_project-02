@@ -13,7 +13,7 @@ public class BankAccountDTO {
     private Long id;
     private Long userId;
     private String accountNumber;
-    private String accountType;
+    private Long accountTypeId;
     private BigDecimal balance;
     private String status;
     private LocalDateTime createdAt;

@@ -27,16 +27,11 @@ public class BankAccountService {
      * Tạo tài khoản ngân hàng sau khi đăng ký
      */
     @Transactional
-    public BankAccountDTO createBankAccount(Long userId, String accountType) {
-        // Kiểm tra xem user đã có tài khoản hay chưa
-        if (bankAccountRepository.findByUserId(userId).isPresent()) {
-            throw new RuntimeException("User already has a bank account");
-        }
+    public BankAccountDTO createBankAccount(Long userId) {
 
         BankAccount bankAccount = new BankAccount();
         bankAccount.setUserId(userId);
         bankAccount.setAccountNumber(generateAccountNumber());
-        bankAccount.setAccountType(accountType != null ? accountType : "SAVINGS");
         bankAccount.setBalance(BigDecimal.ZERO);
         bankAccount.setStatus("ACTIVE");
 
@@ -160,10 +155,6 @@ public class BankAccountService {
             throw new RuntimeException("Access denied");
         }
 
-        if (accountType != null && !accountType.isBlank()) {
-            account.setAccountType(accountType);
-        }
-
         BankAccount updated = bankAccountRepository.save(account);
         
         // Publish account updated event
@@ -224,7 +215,7 @@ public class BankAccountService {
                 account.getId(),
                 account.getUserId(),
                 account.getAccountNumber(),
-                account.getAccountType(),
+                account.getAccountTypeId(),
                 account.getBalance(),
                 account.getStatus(),
                 account.getCreatedAt(),

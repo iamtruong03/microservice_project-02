@@ -23,17 +23,20 @@ public class BankAccount {
     @Column(name = "account_number", nullable = false, unique = true)
     private String accountNumber;
 
-    @Column(name = "account_type", nullable = false)
-    private String accountType;
+    @Column(name = "account_type_id", nullable = false)
+    private Long accountTypeId;
 
     @Column(name = "currency", nullable = false)
     private String currency = "USD";
 
-    @Column(name = "balance", nullable = false)
-    private BigDecimal balance;
+    @Column(name = "balance", nullable = false, precision = 19, scale = 2)
+    private BigDecimal balance = BigDecimal.ZERO;
 
-    @Column(name = "status", nullable = false)
-    private String status; // ACTIVE, INACTIVE, CLOSED
+    @Column(name = "tx_sequence", nullable = false)
+    private Long txSequence = 0L;
+
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive = true;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -47,8 +50,14 @@ public class BankAccount {
         if (balance == null) {
             balance = BigDecimal.ZERO;
         }
-        if (status == null) {
-            status = "ACTIVE";
+        if (currency == null) {
+            currency = "USD";
+        }
+        if (txSequence == null) {
+            txSequence = 0L;
+        }
+        if (isActive == null) {
+            isActive = true;
         }
     }
 
