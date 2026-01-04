@@ -47,7 +47,7 @@ public class AccountTypeController {
         @RequestBody AccountType accountType) {
         try {
 
-            AccountType created = accountTypeService.create(accountType);
+            AccountType created = accountTypeService.create(uid, accountType);
             return ResponseEntity.status(201).body(created);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
@@ -55,15 +55,12 @@ public class AccountTypeController {
     }
 
 
-    @PutMapping("/{id}")
+    @PutMapping("/update")
     public ResponseEntity<?> update(
         @RequestHeader(name = "uid", defaultValue = "") String uid,
-        @PathVariable Long id, @RequestBody AccountType accountType) {
+        @RequestBody AccountType accountType) {
         try {
-            if (!accountTypeService.getById(id).isPresent()) {
-                return ResponseEntity.notFound().build();
-            }
-            AccountType updated = accountTypeService.update(id, accountType);
+            AccountType updated = accountTypeService.update(uid, accountType);
             return ResponseEntity.ok(updated);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
@@ -81,6 +78,21 @@ public class AccountTypeController {
             }
             accountTypeService.delete(id);
             return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}/soft-delete")
+    public ResponseEntity<?> softDelete(
+        @RequestHeader(name = "uid", defaultValue = "") String uid,
+        @PathVariable Long id) {
+        try {
+            AccountType softDeleted = accountTypeService.softDelete(uid, id);
+            if (softDeleted == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(softDeleted);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }

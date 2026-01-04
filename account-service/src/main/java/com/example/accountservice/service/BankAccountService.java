@@ -33,13 +33,11 @@ public class BankAccountService {
         bankAccount.setUserId(userId);
         bankAccount.setAccountNumber(generateAccountNumber());
         bankAccount.setBalance(BigDecimal.ZERO);
-        bankAccount.setStatus("ACTIVE");
+        bankAccount.setIsActive(true);
 
         BankAccount saved = bankAccountRepository.save(bankAccount);
-        
         // Publish account created event
         // kafkaTemplate.send("account-events", "account_created", saved);
-        
         return convertToDTO(saved);
     }
 
@@ -180,12 +178,11 @@ public class BankAccountService {
             throw new RuntimeException("Invalid account status");
         }
 
-        account.setStatus(status);
+        // Nếu status là "ACTIVE" thì setIsActive(true), ngược lại setIsActive(false)
+        account.setIsActive("ACTIVE".equalsIgnoreCase(status));
         BankAccount updated = bankAccountRepository.save(account);
-        
         // Publish account updated event
         // kafkaTemplate.send("account-events", "account_updated", updated);
-
         return convertToDTO(updated);
     }
 
@@ -212,14 +209,14 @@ public class BankAccountService {
      */
     private BankAccountDTO convertToDTO(BankAccount account) {
         return new BankAccountDTO(
-                account.getId(),
-                account.getUserId(),
-                account.getAccountNumber(),
-                account.getAccountTypeId(),
-                account.getBalance(),
-                account.getStatus(),
-                account.getCreatedAt(),
-                account.getUpdatedAt()
+            account.getId(),
+            account.getUserId(),
+            account.getAccountNumber(),
+            account.getAccountTypeId(),
+            account.getBalance(),
+            (account.getIsActive() != null && account.getIsActive()) ? "ACTIVE" : "INACTIVE",
+            account.getCreatedAt(),
+            account.getUpdatedAt()
         );
     }
 
