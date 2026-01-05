@@ -31,7 +31,6 @@ public class AccountTypeController {
         @RequestHeader(name = "uid", defaultValue = "") String uid,
         @PathVariable Long id) {
         try {
-
             return accountTypeService.getById(id)
                     .map(ResponseEntity::ok)
                     .orElse(ResponseEntity.notFound().build());
@@ -46,7 +45,6 @@ public class AccountTypeController {
         @RequestHeader(name = "uid", defaultValue = "") String uid,
         @RequestBody AccountType accountType) {
         try {
-
             AccountType created = accountTypeService.create(uid, accountType);
             return ResponseEntity.status(201).body(created);
         } catch (Exception e) {
@@ -73,9 +71,6 @@ public class AccountTypeController {
         @RequestHeader(name = "uid", defaultValue = "") String uid,
         @PathVariable Long id) {
         try {
-            if (!accountTypeService.getById(id).isPresent()) {
-                return ResponseEntity.notFound().build();
-            }
             accountTypeService.delete(id);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
@@ -89,9 +84,6 @@ public class AccountTypeController {
         @PathVariable Long id) {
         try {
             AccountType softDeleted = accountTypeService.softDelete(uid, id);
-            if (softDeleted == null) {
-                return ResponseEntity.notFound().build();
-            }
             return ResponseEntity.ok(softDeleted);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
