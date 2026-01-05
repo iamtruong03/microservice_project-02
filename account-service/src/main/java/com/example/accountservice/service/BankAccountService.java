@@ -26,15 +26,8 @@ public class BankAccountService {
 
   @Transactional
   public BankAccountDTO createBankAccount(String userId) {
-    if (userId == null || userId.isEmpty()) {
-      throw new IllegalArgumentException("userId is required");
-    }
+
     BankAccount bankAccount = new BankAccount();
-    try {
-      bankAccount.setUserId(Long.valueOf(userId));
-    } catch (NumberFormatException e) {
-      throw new IllegalArgumentException("userId must be a valid number", e);
-    }
     bankAccount.setBalance(BigDecimal.ZERO);
     bankAccount.setIsActive(true);
 
@@ -241,7 +234,6 @@ public class BankAccountService {
    * Helper: Generate unique account number
    */
   private String generateAccountNumber() {
-      // Sinh 12 chữ số ngẫu nhiên
       StringBuilder sb = new StringBuilder();
       ThreadLocalRandom random = ThreadLocalRandom.current();
       for (int i = 0; i < 12; i++) {
