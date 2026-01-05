@@ -22,10 +22,11 @@ public class BankAccountController {
      */
     @PostMapping
     public ResponseEntity<?> createBankAccount(
-            @RequestHeader(name = "uid", defaultValue = "") String uid )
+        @RequestHeader(name = "uid", defaultValue = "") String uid,
+        @RequestBody BankAccountDTO dto)
         {
         try {
-            BankAccountDTO account = bankAccountService.createBankAccount(uid);
+            BankAccountDTO account = bankAccountService.createBankAccount(uid, dto);
             return ResponseUtils.handlerCreated(account);
         } catch (Exception e) {
             return ResponseUtils.handlerException(e);
@@ -113,18 +114,18 @@ public class BankAccountController {
     /**
      * Khóa/Mở khóa tài khoản
      */
-    @PutMapping("/{accountId}/status")
-    public ResponseEntity<?> updateAccountStatus(
-            @RequestHeader(name = "uid", defaultValue = "") String uid,
-            @PathVariable Long accountId,
-            @RequestParam String status) {
-        try {
-            BankAccountDTO account = bankAccountService.updateAccountStatus(uid, accountId, status);
-            return ResponseUtils.handlerSuccess(account);
-        } catch (Exception e) {
-            return ResponseUtils.handlerException(e);
-        }
-    }
+//    @PutMapping("/{accountId}/status")
+//    public ResponseEntity<?> updateAccountStatus(
+//            @RequestHeader(name = "uid", defaultValue = "") String uid,
+//            @PathVariable Long accountId,
+//            @RequestParam String status) {
+//        try {
+//            BankAccountDTO account = bankAccountService.updateAccountStatus(uid, accountId, status);
+//            return ResponseUtils.handlerSuccess(account);
+//        } catch (Exception e) {
+//            return ResponseUtils.handlerException(e);
+//        }
+//    }
 
     /**
      * Thống kê tổng số dư và Transaction

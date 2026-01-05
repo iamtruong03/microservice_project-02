@@ -15,7 +15,7 @@ public class BankAccountDTO {
     private String accountNumber;
     private Long accountTypeId;
     private BigDecimal balance;
-    private String status;
+    private boolean isActive;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

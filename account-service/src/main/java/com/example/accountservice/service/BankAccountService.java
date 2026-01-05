@@ -25,13 +25,16 @@ public class BankAccountService {
   // private final KafkaTemplate<String, Object> kafkaTemplate;
 
   @Transactional
-  public BankAccountDTO createBankAccount(String userId) {
+  public BankAccountDTO createBankAccount(String userId, BankAccountDTO dto) {
 
     BankAccount bankAccount = new BankAccount();
+    bankAccount.setUserId(Long.valueOf(userId));
+    bankAccount.setCreatedBy(userId);
     bankAccount.setBalance(BigDecimal.ZERO);
+    bankAccount.setAccountTypeId(dto.getAccountTypeId());
     bankAccount.setIsActive(true);
 
-    String stk = bankAccount.getAccountNumber();
+    String stk = dto.getAccountNumber();
 
     if (stk != null && !stk.isEmpty()) {
       if (bankAccountRepository.existsBankAccountByAccountNumber(stk)) {
@@ -173,27 +176,27 @@ public class BankAccountService {
   /**
    * Khóa/Mở khóa tài khoản
    */
-  @Transactional
-  public BankAccountDTO updateAccountStatus(String uid, Long accountId, String status) {
-    BankAccount account = bankAccountRepository.findById(accountId)
-        .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
-
-    // Kiểm tra quyền truy cập
-    if (!account.getUserId().equals(uid)) {
-      throw new RuntimeException("Access denied");
-    }
-
-    if (!"ACTIVE".equals(status) && !"INACTIVE".equals(status) && !"CLOSED".equals(status)) {
-      throw new RuntimeException("Invalid account status");
-    }
-
-    // Nếu status là "ACTIVE" thì setIsActive(true), ngược lại setIsActive(false)
-    account.setIsActive("ACTIVE".equalsIgnoreCase(status));
-    BankAccount updated = bankAccountRepository.save(account);
-    // Publish account updated event
-    // kafkaTemplate.send("account-events", "account_updated", updated);
-    return convertToDTO(updated);
-  }
+//  @Transactional
+//  public BankAccountDTO updateAccountStatus(String uid, Long accountId, String status) {
+//    BankAccount account = bankAccountRepository.findById(accountId)
+//        .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
+//
+//    // Kiểm tra quyền truy cập
+//    if (!account.getUserId().equals(uid)) {
+//      throw new RuntimeException("Access denied");
+//    }
+//
+//    if (!"ACTIVE".equals(status) && !"INACTIVE".equals(status) && !"CLOSED".equals(status)) {
+//      throw new RuntimeException("Invalid account status");
+//    }
+//
+//    // Nếu status là "ACTIVE" thì setIsActive(true), ngược lại setIsActive(false)
+//    account.setIsActive("ACTIVE".equalsIgnoreCase(status));
+//    BankAccount updated = bankAccountRepository.save(account);
+//    // Publish account updated event
+//    // kafkaTemplate.send("account-events", "account_updated", updated);
+//    return convertToDTO(updated);
+//  }
 
   /**
    * Thống kê tài khoản
@@ -224,7 +227,7 @@ public class BankAccountService {
         account.getAccountNumber(),
         account.getAccountTypeId(),
         account.getBalance(),
-        (account.getIsActive() != null && account.getIsActive()) ? "ACTIVE" : "INACTIVE",
+        account.getIsActive(),
         account.getCreatedAt(),
         account.getUpdatedAt()
     );
