@@ -23,11 +23,13 @@ public class AccountTypeService {
 
     public AccountType create(String uid, AccountType accountType) {
         accountType.setCreatedBy(uid);
+        accountType.setIsActive(true);
         return accountTypeRepository.save(accountType);
     }
 
     public AccountType update(String uid, AccountType accountType) {
         accountType.setUpdatedBy(uid);
+        accountType.setIsActive(true);
         return accountTypeRepository.save(accountType);
     }
 

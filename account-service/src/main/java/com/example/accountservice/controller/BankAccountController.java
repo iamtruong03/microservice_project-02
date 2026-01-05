@@ -4,18 +4,18 @@ import com.example.accountservice.dto.*;
 import com.example.accountservice.service.BankAccountService;
 import com.example.accountservice.util.ResponseUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:3000"})
 @RestController
-@RequestMapping("/accounts")
-@RequiredArgsConstructor
+@RequestMapping("/api/accounts")
 public class BankAccountController {
 
-    private final BankAccountService bankAccountService;
+    @Autowired
+    private BankAccountService bankAccountService;
 
     /**
      * Tạo tài khoản ngân hàng (gọi sau khi đăng ký)
@@ -25,8 +25,7 @@ public class BankAccountController {
             @RequestHeader(name = "uid", defaultValue = "") String uid )
         {
         try {
-            Long uidLong = Long.parseLong(uid);
-            BankAccountDTO account = bankAccountService.createBankAccount(uidLong);
+            BankAccountDTO account = bankAccountService.createBankAccount(uid);
             return ResponseUtils.handlerCreated(account);
         } catch (Exception e) {
             return ResponseUtils.handlerException(e);
@@ -41,8 +40,7 @@ public class BankAccountController {
             @RequestHeader(name = "uid", defaultValue = "") String uid,
             @PathVariable Long accountId) {
         try {
-            Long uidLong = Long.parseLong(uid);
-            BankAccountDTO account = bankAccountService.getAccountBalance(uidLong, accountId);
+            BankAccountDTO account = bankAccountService.getAccountBalance(uid, accountId);
             return ResponseUtils.handlerSuccess(account);
         } catch (Exception e) {
             return ResponseUtils.handlerException(e);
@@ -56,8 +54,7 @@ public class BankAccountController {
     public ResponseEntity<?> getUserAccounts(
             @RequestHeader(name = "uid", defaultValue = "") String uid) {
         try {
-            Long uidLong = Long.parseLong(uid);
-            List<BankAccountDTO> accounts = bankAccountService.getUserAccounts(uidLong);
+            List<BankAccountDTO> accounts = bankAccountService.getUserAccounts(uid);
             return ResponseUtils.handlerSuccess(accounts);
         } catch (Exception e) {
             return ResponseUtils.handlerException(e);
@@ -75,8 +72,7 @@ public class BankAccountController {
             @RequestParam java.math.BigDecimal amount,
             @RequestParam(required = false) String description) {
         try {
-            Long uidLong = Long.parseLong(uid);
-            BankAccountDTO account = bankAccountService.transferBetweenAccounts(uidLong, fromAccountId, toAccountId, amount, description);
+            BankAccountDTO account = bankAccountService.transferBetweenAccounts(uid, fromAccountId, toAccountId, amount, description);
             return ResponseUtils.handlerSuccess(account);
         } catch (Exception e) {
             return ResponseUtils.handlerException(e);
@@ -91,8 +87,7 @@ public class BankAccountController {
             @RequestHeader(name = "uid", defaultValue = "") String uid,
             @RequestBody DepositWithdrawDTO dto) {
         try {
-            Long uidLong = Long.parseLong(uid);
-            BankAccountDTO account = bankAccountService.depositOrWithdraw(uidLong, dto);
+            BankAccountDTO account = bankAccountService.depositOrWithdraw(uid, dto);
             return ResponseUtils.handlerSuccess(account);
         } catch (Exception e) {
             return ResponseUtils.handlerException(e);
@@ -108,8 +103,7 @@ public class BankAccountController {
             @PathVariable Long accountId,
             @RequestParam(required = false) String accountType) {
         try {
-            Long uidLong = Long.parseLong(uid);
-            BankAccountDTO account = bankAccountService.updateAccount(uidLong, accountId, accountType);
+            BankAccountDTO account = bankAccountService.updateAccount(uid, accountId, accountType);
             return ResponseUtils.handlerSuccess(account);
         } catch (Exception e) {
             return ResponseUtils.handlerException(e);
@@ -125,8 +119,7 @@ public class BankAccountController {
             @PathVariable Long accountId,
             @RequestParam String status) {
         try {
-            Long uidLong = Long.parseLong(uid);
-            BankAccountDTO account = bankAccountService.updateAccountStatus(uidLong, accountId, status);
+            BankAccountDTO account = bankAccountService.updateAccountStatus(uid, accountId, status);
             return ResponseUtils.handlerSuccess(account);
         } catch (Exception e) {
             return ResponseUtils.handlerException(e);
@@ -140,8 +133,7 @@ public class BankAccountController {
     public ResponseEntity<?> getAccountStatistics(
             @RequestHeader(name = "uid", defaultValue = "") String uid) {
         try {
-            Long uidLong = Long.parseLong(uid);
-            AccountStatisticsDTO stats = bankAccountService.getAccountStatistics(uidLong);
+            AccountStatisticsDTO stats = bankAccountService.getAccountStatistics(uid);
             return ResponseUtils.handlerSuccess(stats);
         } catch (Exception e) {
             return ResponseUtils.handlerException(e);
@@ -155,8 +147,7 @@ public class BankAccountController {
     public ResponseEntity<?> getTransactionHistory(
             @RequestHeader(name = "uid", defaultValue = "") String uid) {
         try {
-            Long uidLong = Long.parseLong(uid);
-            AccountStatisticsDTO stats = bankAccountService.getAccountStatistics(uidLong);
+            AccountStatisticsDTO stats = bankAccountService.getAccountStatistics(uid);
             return ResponseUtils.handlerSuccess(stats);
         } catch (Exception e) {
             return ResponseUtils.handlerException(e);
