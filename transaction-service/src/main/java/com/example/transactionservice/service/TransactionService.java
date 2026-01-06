@@ -41,14 +41,9 @@ public class TransactionService {
     /**
      * Xem chi tiết giao dịch
      */
-    public TransactionDTO getTransactionById(String userId, Long transactionId) {
+    public TransactionDTO getTransactionById(String uid, Long transactionId) {
         Transaction transaction = transactionRepository.findById(transactionId)
                 .orElseThrow(() -> new RuntimeException("Transaction not found"));
-        
-        // Verify userId has access to this transaction
-        if (!transaction.getFromAccountId().equals(userId) && !transaction.getToAccountId().equals(userId)) {
-            throw new RuntimeException("Unauthorized access to transaction");
-        }
         
         return convertToDTO(transaction);
     }

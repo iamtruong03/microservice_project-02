@@ -11,8 +11,10 @@ public record TransactionDTO(
     String currency,
     Long accountSequence,
     Long transactionTypeId,
+    String state,
     String referenceCode,
     String description,
+    String createdBy,
     LocalDateTime createdAt,
     LocalDateTime completedAt
 ) {}
