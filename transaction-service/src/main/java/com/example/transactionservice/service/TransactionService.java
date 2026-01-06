@@ -29,8 +29,7 @@ public class TransactionService {
         transaction.setToAccountId(transactionDTO.toAccountId());
         transaction.setAmount(transactionDTO.amount());
         transaction.setCurrency(transactionDTO.currency() != null ? transactionDTO.currency() : "USD");
-        transaction.setTransactionType(transactionDTO.transactionType());
-        transaction.setStatus("PENDING");
+        transaction.setTransactionTypeId(transactionDTO.transactionTypeId());
         transaction.setReferenceCode(transactionDTO.referenceCode());
         transaction.setDescription(transactionDTO.description());
 
@@ -88,16 +87,6 @@ public class TransactionService {
     }
 
     /**
-     * Xem tất cả giao dịch theo trạng thái
-     */
-    public List<TransactionDTO> getTransactionsByStatus(String status) {
-        return transactionRepository.findByStatus(status)
-                .stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-    }
-
-    /**
      * Cập nhật trạng thái giao dịch
      */
     @Transactional
@@ -110,7 +99,7 @@ public class TransactionService {
             throw new RuntimeException("Unauthorized access to transaction");
         }
 
-        transaction.setStatus(status);
+        transaction.setState(status);
         Transaction updatedTransaction = transactionRepository.save(transaction);
 
         // Publish transaction status updated event
@@ -132,11 +121,7 @@ public class TransactionService {
             throw new RuntimeException("Only the transaction initiator can cancel");
         }
 
-        if (!"PENDING".equals(transaction.getStatus())) {
-            throw new RuntimeException("Cannot cancel completed or failed transaction");
-        }
-
-        transaction.setStatus("CANCELLED");
+        transaction.setState("CANCELLED");
         transactionRepository.save(transaction);
 
         // Publish transaction cancelled event
@@ -153,8 +138,7 @@ public class TransactionService {
                 transaction.getToAccountId(),
                 transaction.getAmount(),
                 transaction.getCurrency(),
-                transaction.getTransactionType(),
-                transaction.getStatus(),
+                transaction.getTransactionTypeId(),
                 transaction.getReferenceCode(),
                 transaction.getDescription(),
                 transaction.getCreatedAt(),
