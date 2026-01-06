@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Transaction {
+public class  Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,19 +23,19 @@ public class Transaction {
     @Column(name = "to_account_id")
     private Long toAccountId;
 
-    @Column(name = "amount", nullable = false)
+    @Column(name = "amount")
     private BigDecimal amount;
 
-    @Column(name = "currency", nullable = false)
+    @Column(name = "currency")
     private String currency = "USD";
 
-    @Column(name = "transaction_type_id", nullable = false)
+    @Column(name = "transaction_type_id")
     private Long transactionTypeId;
 
-    @Column(name = "state", nullable = false)
+    @Column(name = "state")
     private String state;
 
-    @Column(name = "account_sequence", nullable = false)
+    @Column(name = "account_sequence")
     private Long accountSequence;
 
     @Column(name = "reference_code", unique = true)
@@ -44,7 +44,7 @@ public class Transaction {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @Column(name = "completed_at")

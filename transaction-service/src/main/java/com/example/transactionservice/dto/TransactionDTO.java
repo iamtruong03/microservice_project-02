@@ -9,6 +9,7 @@ public record TransactionDTO(
     Long toAccountId,
     BigDecimal amount,
     String currency,
+    Long accountSequence,
     Long transactionTypeId,
     String referenceCode,
     String description,

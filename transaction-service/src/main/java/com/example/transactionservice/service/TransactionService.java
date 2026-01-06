@@ -1,6 +1,7 @@
 package com.example.transactionservice.service;
 
 import com.example.transactionservice.dto.TransactionDTO;
+import com.example.transactionservice.mapper.TransactionMapper;
 import com.example.transactionservice.model.Transaction;
 import com.example.transactionservice.repository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,21 +18,17 @@ import java.util.stream.Collectors;
 public class TransactionService {
 
     private final TransactionRepository transactionRepository;
+    private final TransactionMapper transactionMapper;
     // private final KafkaTemplate<String, Object> kafkaTemplate; // Tắt Kafka
 
     /**
      * Tạo giao dịch chuyển tiền giữa hai user
      */
     @Transactional
-    public TransactionDTO createTransaction(TransactionDTO transactionDTO) {
-        Transaction transaction = new Transaction();
-        transaction.setFromAccountId(transactionDTO.fromAccountId());
-        transaction.setToAccountId(transactionDTO.toAccountId());
-        transaction.setAmount(transactionDTO.amount());
+    public TransactionDTO createTransaction(String uid, TransactionDTO transactionDTO) {
+        Transaction transaction = transactionMapper.transactionDTOToTransaction(transactionDTO);
         transaction.setCurrency(transactionDTO.currency() != null ? transactionDTO.currency() : "USD");
-        transaction.setTransactionTypeId(transactionDTO.transactionTypeId());
-        transaction.setReferenceCode(transactionDTO.referenceCode());
-        transaction.setDescription(transactionDTO.description());
+        transaction.setCreatedBy(uid);
 
         Transaction savedTransaction = transactionRepository.save(transaction);
 
@@ -44,7 +41,7 @@ public class TransactionService {
     /**
      * Xem chi tiết giao dịch
      */
-    public TransactionDTO getTransactionById(Long userId, Long transactionId) {
+    public TransactionDTO getTransactionById(String userId, Long transactionId) {
         Transaction transaction = transactionRepository.findById(transactionId)
                 .orElseThrow(() -> new RuntimeException("Transaction not found"));
         
@@ -59,18 +56,18 @@ public class TransactionService {
     /**
      * Xem tất cả giao dịch của user (gửi hoặc nhận)
      */
-    public List<TransactionDTO> getUserTransactions(Long userId) {
-        return transactionRepository.findByFromAccountIdOrToAccountId(userId, userId)
-                .stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-    }
+//    public List<TransactionDTO> getUserTransactions(String userId) {
+//        return transactionRepository.findByFromAccountIdOrToAccountId(userId, userId)
+//                .stream()
+//                .map(this::convertToDTO)
+//                .collect(Collectors.toList());
+//    }
 
     /**
      * Xem giao dịch gửi của user
      */
-    public List<TransactionDTO> getSentTransactions(Long userId) {
-        return transactionRepository.findByFromAccountId(userId)
+    public List<TransactionDTO> getSentTransactions(String userId) {
+        return transactionRepository.findByFromAccountId(Long.valueOf(userId))
                 .stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
@@ -79,40 +76,18 @@ public class TransactionService {
     /**
      * Xem giao dịch nhận của user
      */
-    public List<TransactionDTO> getReceivedTransactions(Long userId) {
-        return transactionRepository.findByToAccountId(userId)
+    public List<TransactionDTO> getReceivedTransactions(String userId) {
+        return transactionRepository.findByToAccountId(Long.valueOf(userId))
                 .stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     /**
-     * Cập nhật trạng thái giao dịch
-     */
-    @Transactional
-    public TransactionDTO updateTransactionStatus(Long userId, Long transactionId, String status) {
-        Transaction transaction = transactionRepository.findById(transactionId)
-                .orElseThrow(() -> new RuntimeException("Transaction not found"));
-
-        // Verify userId has access to update this transaction
-        if (!transaction.getFromAccountId().equals(userId) && !transaction.getToAccountId().equals(userId)) {
-            throw new RuntimeException("Unauthorized access to transaction");
-        }
-
-        transaction.setState(status);
-        Transaction updatedTransaction = transactionRepository.save(transaction);
-
-        // Publish transaction status updated event
-        // kafkaTemplate.send("transaction-events", "transaction_" + status.toLowerCase(), updatedTransaction); // Tắt Kafka
-
-        return convertToDTO(updatedTransaction);
-    }
-
-    /**
      * Hủy giao dịch (chỉ có thể hủy giao dịch ở trạng thái PENDING)
      */
     @Transactional
-    public void cancelTransaction(Long userId, Long transactionId) {
+    public void cancelTransaction(String userId, Long transactionId) {
         Transaction transaction = transactionRepository.findById(transactionId)
                 .orElseThrow(() -> new RuntimeException("Transaction not found"));
 
@@ -132,17 +107,6 @@ public class TransactionService {
      * Helper: Convert Transaction to DTO
      */
     private TransactionDTO convertToDTO(Transaction transaction) {
-        return new TransactionDTO(
-                transaction.getId(),
-                transaction.getFromAccountId(),
-                transaction.getToAccountId(),
-                transaction.getAmount(),
-                transaction.getCurrency(),
-                transaction.getTransactionTypeId(),
-                transaction.getReferenceCode(),
-                transaction.getDescription(),
-                transaction.getCreatedAt(),
-                transaction.getCompletedAt()
-        );
+        return transactionMapper.transactionToTransactionDTO(transaction);
     }
 }

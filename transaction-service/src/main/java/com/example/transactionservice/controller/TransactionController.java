@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/transactions")
+@RequestMapping("/api/transactions")
 @RequiredArgsConstructor
 public class TransactionController {
 
@@ -19,12 +19,12 @@ public class TransactionController {
   /**
    * Tạo giao dịch chuyển tiền mới
    */
-  @PostMapping
+  @PostMapping("/create")
   public ResponseEntity<TransactionDTO> createTransaction(
-      @RequestHeader(name = "uid", required = true) Long userId,
+      @RequestHeader(name = "uid", defaultValue = "") String uid,
       @RequestBody TransactionDTO transactionDTO) {
     return ResponseEntity.status(HttpStatus.CREATED)
-        .body(transactionService.createTransaction(transactionDTO));
+        .body(transactionService.createTransaction(uid, transactionDTO));
   }
 
   /**
@@ -32,27 +32,28 @@ public class TransactionController {
    */
   @GetMapping("/{transactionId}")
   public ResponseEntity<TransactionDTO> getTransaction(
-      @RequestHeader(name = "uid", required = true) Long userId,
+      @RequestHeader(name = "uid", defaultValue = "") String uid,
       @PathVariable Long transactionId) {
-    return ResponseEntity.ok(transactionService.getTransactionById(userId, transactionId));
+    return ResponseEntity.ok(transactionService.getTransactionById(uid, transactionId));
   }
 
   /**
    * Xem tất cả giao dịch của user (gửi hoặc nhận)
    */
-  @GetMapping
-  public ResponseEntity<List<TransactionDTO>> getUserTransactions(
-      @RequestHeader(name = "uid", required = true) Long userId) {
-    return ResponseEntity.ok(transactionService.getUserTransactions(userId));
-  }
+//  @GetMapping
+//  public ResponseEntity<List<TransactionDTO>> getUserTransactions(
+//      @RequestHeader(name = "uid", defaultValue = "") String uid)
+//      {
+//    return ResponseEntity.ok(transactionService.getUserTransactions(uid));
+//  }
 
   /**
    * Xem giao dịch gửi của user
    */
   @GetMapping("/sent")
   public ResponseEntity<List<TransactionDTO>> getSentTransactions(
-      @RequestHeader(name = "uid", required = true) Long userId) {
-    return ResponseEntity.ok(transactionService.getSentTransactions(userId));
+      @RequestHeader(name = "uid", defaultValue = "") String uid) {
+    return ResponseEntity.ok(transactionService.getSentTransactions(uid));
   }
 
   /**
@@ -60,20 +61,8 @@ public class TransactionController {
    */
   @GetMapping("/received")
   public ResponseEntity<List<TransactionDTO>> getReceivedTransactions(
-      @RequestHeader(name = "uid", required = true) Long userId) {
-    return ResponseEntity.ok(transactionService.getReceivedTransactions(userId));
-  }
-
-  /**
-   * Cập nhật trạng thái giao dịch
-   */
-  @PutMapping("/{transactionId}/status")
-  public ResponseEntity<TransactionDTO> updateTransactionStatus(
-      @RequestHeader(name = "uid", required = true) Long userId,
-      @PathVariable Long transactionId,
-      @RequestParam String status) {
-    return ResponseEntity.ok(
-        transactionService.updateTransactionStatus(userId, transactionId, status));
+      @RequestHeader(name = "uid", defaultValue = "") String uid) {
+    return ResponseEntity.ok(transactionService.getReceivedTransactions(uid));
   }
 
   /**
@@ -81,9 +70,9 @@ public class TransactionController {
    */
   @DeleteMapping("/{transactionId}")
   public ResponseEntity<Void> cancelTransaction(
-      @RequestHeader(name = "uid", required = true) Long userId,
+      @RequestHeader(name = "uid", defaultValue = "") String uid,
       @PathVariable Long transactionId) {
-    transactionService.cancelTransaction(userId, transactionId);
+    transactionService.cancelTransaction(uid, transactionId);
     return ResponseEntity.noContent().build();
   }
 }
