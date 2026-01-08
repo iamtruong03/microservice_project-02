@@ -16,9 +16,6 @@ public class TransactionController {
 
   private final TransactionService transactionService;
 
-  /**
-   * Tạo giao dịch chuyển tiền mới
-   */
   @PostMapping("/create")
   public ResponseEntity<TransactionDTO> createTransaction(
       @RequestHeader(name = "uid", defaultValue = "") String uid,
@@ -27,9 +24,6 @@ public class TransactionController {
         .body(transactionService.createTransaction(uid, transactionDTO));
   }
 
-  /**
-   * Xem chi tiết giao dịch
-   */
   @GetMapping("/{transactionId}")
   public ResponseEntity<TransactionDTO> getTransaction(
       @RequestHeader(name = "uid", defaultValue = "") String uid,
@@ -47,27 +41,18 @@ public class TransactionController {
 //    return ResponseEntity.ok(transactionService.getUserTransactions(uid));
 //  }
 
-  /**
-   * Xem giao dịch gửi của user
-   */
   @GetMapping("/sent")
   public ResponseEntity<List<TransactionDTO>> getSentTransactions(
       @RequestHeader(name = "uid", defaultValue = "") String uid) {
     return ResponseEntity.ok(transactionService.getSentTransactions(uid));
   }
 
-  /**
-   * Xem giao dịch nhận của user
-   */
   @GetMapping("/received")
   public ResponseEntity<List<TransactionDTO>> getReceivedTransactions(
       @RequestHeader(name = "uid", defaultValue = "") String uid) {
     return ResponseEntity.ok(transactionService.getReceivedTransactions(uid));
   }
 
-  /**
-   * Hủy giao dịch
-   */
   @DeleteMapping("/{transactionId}")
   public ResponseEntity<Void> cancelTransaction(
       @RequestHeader(name = "uid", defaultValue = "") String uid,
